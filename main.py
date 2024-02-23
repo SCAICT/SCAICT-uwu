@@ -7,30 +7,31 @@ bot = discord.Bot(intents = discord.Intents.all())
 with open("token.json","r") as file:
     token = json.load(file)
 
-for i in os.listdir("./cog"):
-    if i.endswith(".py"):
-        bot.load_extension(f"cog.{i[:-3]}")
+for filename in os.listdir("./cog"):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cog.{filename[:-3]}")
+        print(f"i read:{filename}^_^")#test
 
 # 頻道總人數(每10分鐘刷新一次 因為API限制)
 async def update_channel():
     await bot.wait_until_ready() 
 
-    guild = bot.get_guild(863649110473048105)  #YOUR_GUILD_ID
+    # Each:我之後會把channel id獨立放在JSON，增加可讀性
+    guild = bot.get_guild(1203338928535379978)  #YOUR_GUILD_ID
 
     if guild is None:
-        print("找不到指定的服务器")
+        print("找不到指定的伺服器")
         return
 
-    channel = guild.get_channel(1208106247115505674)  #YOUR_CHANNEL_ID
+    channel = guild.get_channel(1210619287044096040)  #YOUR_CHANNEL_ID
 
     if channel is None:
-        print("找不到指定的频道")
+        print("找不到指定的頻道")
         return
 
     while not bot.is_closed():
         total_members = guild.member_count
-
-        await channel.edit(name=f"社群總人數: {total_members} 位")
+        await channel.edit(name=f"電子數:{total_members}")
         await asyncio.sleep(600)
 
 
