@@ -59,7 +59,7 @@ class daily_charge(commands.Cog):
             await self.send_message(point, combo, next_lottery, interaction)
             if(next_lottery == 0):
                 next_lottery = 7
-            with open('./point_log.csv', 'a+', newline='') as log:
+            with open('./database/point_log.csv', 'a+', newline='') as log:
                 writer = csv.writer(log)
                 writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(user.read(userId,'point')), 'daily_charge', str(datetime.now())])
         
@@ -74,7 +74,7 @@ class daily_charge(commands.Cog):
             next_lottery = 6
             await self.send_message(point, combo, next_lottery, interaction)
 
-            with open('./point_log.csv', 'a+', newline='') as log:
+            with open('./database/point_log.csv', 'a+', newline='') as log:
                 writer = csv.writer(log)
                 writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(user.read(userId,'point')), 'daily_charge', str(datetime.now())])
 

@@ -5,7 +5,7 @@ from discord.commands import Option
 import json
 import random
 import user
-with open("ctf.json", "r") as file:
+with open("./database/ctf.json", "r") as file:
     ctfFile = json.load(file)
     
 # By EM
@@ -64,8 +64,9 @@ class ctf(build):
     # 測試用
     @ctf_commands.command(description="球")
     async def ping(self, ctx):
-        await ctx.respond(user.readUser(ctx.author.id, "point"))
-
+        user.write(ctx.author.id, "point", 1000)
+        await ctx.respond(user.read(ctx.author.id, "point"))
+    
     @ctf_commands.command(description="列出所有題目")
     async def list_all(self, ctx):
         question_list = []

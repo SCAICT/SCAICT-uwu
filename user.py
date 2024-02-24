@@ -18,7 +18,7 @@ def write(userId, property, value):
     if str(userId) not in data:
         data[str(userId)] = blankUser
     data[str(userId)][property] = value
-    with open('./users.json', 'w') as f:
+    with open('./database/users.json', 'w') as f:
         json.dump(data, f, indent=4)
     return True
 
