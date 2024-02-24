@@ -1,7 +1,7 @@
 import discord
 import json
 import os
-import asyncio
+from core.channelCheck import update_channel#update_channel程式從core目錄底下引入
 
 bot = discord.Bot(intents = discord.Intents.all())
 with open("token.json","r") as file:
@@ -12,34 +12,14 @@ for filename in os.listdir("./cog"):
         bot.load_extension(f"cog.{filename[:-3]}")
         print(f"📖 {filename} loaded")#test
 
-# 頻道總人數(每10分鐘刷新一次 因為API限制)
-async def update_channel():
-    await bot.wait_until_ready() 
 
-    # Each:我之後會把channel id獨立放在JSON，增加可讀性
-    guild = bot.get_guild(1203338928535379978)  #YOUR_GUILD_ID
-
-    if guild is None:
-        print("找不到指定的伺服器")
-        return
-
-    channel = guild.get_channel(1210619287044096040)  #YOUR_CHANNEL_ID
-
-    if channel is None:
-        print("找不到指定的頻道")
-        return
-
-    while not bot.is_closed():
-        total_members = guild.member_count
-        await channel.edit(name=f"電子數:{total_members}")
-        await asyncio.sleep(600)
 
 
 @bot.event
 async def on_ready():
     print(f"✅ {bot.user} is online")
     bot.add_view(token_verify_button())
-    bot.loop.create_task(update_channel())  
+    bot.loop.create_task(update_channel())
 
 # modal
 # 你問我為甚麼寫在main不是Cog 因為操Cog吃不到modal我不知道為甚麼我好爛嗚嗚嗚嗚嗚 所以我放棄直接丟回來者邊沒關係的吧
