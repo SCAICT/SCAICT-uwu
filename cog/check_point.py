@@ -19,7 +19,7 @@ class check_point(commands.Cog):
         self.embed.add_field(name="\n", value='用戶 : '+member, inline=False)
         self.embed.add_field(name="目前點數 : "+str(point), value='\n', inline=False)
         self.embed.add_field(name="已連續充電 : "+str(combo), value='\n', inline=False)
-        self.embed.add_field(name="距離下次連續登入獎勵 : "+str(next_lottery), value='\n', inline=False)
+        self.embed.add_field(name="距離下次連續登入獎勵 : "+str(combo + 7-combo % 7), value='\n', inline=False)
         await interaction.response.send_message(embed=self.embed)
 
     @discord.slash_command(name="check_point", description="查看電電點")
@@ -30,7 +30,6 @@ class check_point(commands.Cog):
         last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
         combo = user.read(userId,'charge_combo')
         point = user.read(userId,'point')
-        next_lottery = user.read(userId,'next_lottery')
 
         await self.send_message(point, combo, next_lottery, interaction)
 
