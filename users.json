@@ -1,0 +1,26 @@
+{
+    "803197174589423626": {
+        "point": 9,
+        "charge_combo": 1,
+        "last_charge": "2024-2-24",
+        "next_lottery": 6,
+        "num_comment": 5,
+        "last_comment": "2024-2-24",
+        "num_comment_point": {
+            "times": 4,
+            "next_reward": 14
+        }
+    },
+    "1209821557388476426": {
+        "point": 2,
+        "charge_combo": 0,
+        "last_charge": "1970-01-01",
+        "next_lottery": 7,
+        "num_comment": 2,
+        "last_comment": "2024-2-24",
+        "num_comment_point": {
+            "times": 3,
+            "next_reward": 5
+        }
+    }
+}
