@@ -12,9 +12,6 @@ for filename in os.listdir("./cog"):
         bot.load_extension(f"cog.{filename[:-3]}")
         print(f"📖 {filename} loaded")#test
 
-
-
-
 @bot.event
 async def on_ready():
     print(f"✅ {bot.user} is online")
@@ -41,7 +38,6 @@ class token_modal(discord.ui.Modal):
         if user_token == "ZGlzY29yZCBib3QgcHljMHJkCg==":
             role = discord.utils.get(interaction.guild.roles, name="二月主題課程")
             await interaction.user.add_roles(role)
-
             embed=discord.Embed(color=0x3dbd46)
             embed.set_thumbnail(url="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/47298/check-mark-button-emoji-clipart-md.png")
             embed.add_field(name="已領取二月主題課程身分組", value=" 課程主題: Discord Bot", inline=False)

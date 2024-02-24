@@ -11,7 +11,6 @@ class comment(commands.Cog):
     def __init__(self, bot):
         self.bot=bot
 
-
     def reset(self, data, message, now):
         data[str(message.author.id)]['num_comment'] = 0
         data[str(message.author.id)]['last_comment'] = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
@@ -39,7 +38,7 @@ class comment(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        with open('./users.json', 'r') as file:
+        with open('./database/users.json', 'r') as file:
 
             data = json.load(file)
 
@@ -65,7 +64,7 @@ class comment(commands.Cog):
 
             data = self.reward(data, message, now)
 
-            with open('./users.json', 'w') as writer:
+            with open('./database/users.json', 'w') as writer:
                 json.dump(data, writer, indent=4)
 
 def setup(bot):
