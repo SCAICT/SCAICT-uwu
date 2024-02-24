@@ -19,7 +19,7 @@ for filename in os.listdir("./cog"):
 async def on_ready():
     print(f"✅ {bot.user} is online")
     bot.add_view(token_verify_button())
-    bot.loop.create_task(update_channel())
+    bot.loop.create_task(update_channel(bot))
 
 # modal
 # 你問我為甚麼寫在main不是Cog 因為操Cog吃不到modal我不知道為甚麼我好爛嗚嗚嗚嗚嗚 所以我放棄直接丟回來者邊沒關係的吧

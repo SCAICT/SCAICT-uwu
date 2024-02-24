@@ -1,8 +1,7 @@
 import asyncio
 import discord
-bot = discord.Bot(intents = discord.Intents.all())
 
-async def update_channel():
+async def update_channel(bot):
         await bot.wait_until_ready() 
         guild = bot.get_guild(1203338928535379978)  #YOUR_GUILD_ID
 
