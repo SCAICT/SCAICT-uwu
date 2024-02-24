@@ -71,5 +71,5 @@ async def send_modal(ctx):
         embed.add_field(name="點下方按鈕輸入token", value="", inline=False)
         embed.add_field(name="領取課程身分組!", value="", inline=False)
         await ctx.respond(embed=embed,view=token_verify_button())
-
-bot.run(token["token"])
+if __name__=="__main__":
+    bot.run(token["token"])
