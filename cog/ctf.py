@@ -35,16 +35,16 @@ class ctf(build):
                     ctf_question = ctfFile[question_id]
                     current_time = datetime.now()
                     if datetime.strptime(ctf_question["start"], '%y/%m/%d %H:%M:%S') > current_time:
-                        await interaction.response.send_message("答題時間尚未開始！")
+                        await interaction.response.send_message("答題時間尚未開始！",ephemeral=True)
                         return
                     if ctf_question["end"] != "None" and datetime.strptime(ctf_question["end"], '%y/%m/%d %H:%M:%S') < current_time:
-                        await interaction.response.send_message("目前不在作答時間內！")
+                        await interaction.response.send_message("目前不在作答時間內！",ephemeral=True)
                         return
                     userId = interaction.user.id
                     if str(userId) not in ctf_question["history"]:
                         ctfFile[question_id]["history"][str(userId)] = 0
-                    if str(userId) in ctf_question and ctf_question["history"][str(userId)] >= ctf_question["limit"]:
-                        await interaction.response.send_message("你已經回答超過限制次數了喔！")
+                    if str(userId) in ctf_question["history"] and ctf_question["history"][str(userId)] >= int(ctf_question["limit"]):
+                        await interaction.response.send_message("你已經回答超過限制次數了喔！",ephemeral=True)
                         return
                     ctfFile[question_id]["history"][str(userId)] = ctfFile[question_id]["history"][str(userId)] + 1
                     ctfFile[question_id]["tried"] = ctf_question["tried"] + 1
@@ -54,7 +54,7 @@ class ctf(build):
                         if int(userId) in ctf_question["solved"]:
                             embed = discord.Embed(title="答題成功!")
                             embed.add_field(name=""  , value="但你已經解答過了所以沒有 :zap: 喔！", inline=False)
-                            await interaction.response.send_message(embeds=[embed])
+                            await interaction.response.send_message(ephemeral=True,embeds=[embed])
                             return
                         current_point = user.read(userId, "point")
                         new_point = current_point + int(ctf_question["score"])
@@ -65,15 +65,21 @@ class ctf(build):
                             writer.writerow([userId, str(interaction.user.name),ctf_question["score"] , str(
                                 user.read(userId, 'point')), 'ctf', str(datetime.now())])
                         embed = discord.Embed(title="答題成功!")
-                        embed.add_field(name="+" + ctf_question["score"] + ":zap:" , value="=" + str(new_point), inline=False)
-                        await interaction.response.send_message(embeds=[embed])
+                        embed.add_field(name="+" + str(ctf_question["score"]) + ":zap:" , value="=" + str(new_point), inline=False)
+                        await interaction.response.send_message(embeds=[embed],ephemeral=True)
                     else:
-                        await interaction.response.send_message("答案錯誤！")
+                        embed = discord.Embed(title="答案錯誤!")
+                        embed.add_field(name="嘗試次數" , value=str(ctf_question["history"][str(userId)]) + "/"+ str(ctf_question["limit"]), inline=False)
+                        await interaction.response.send_message(embeds=[embed],ephemeral=True)
                     with open("./database/ctf.json", "w") as outfile:
                         json.dump(ctfFile, outfile)
                     # edit the original message
                     embed = interaction.message.embeds[0]
-                    embed.set_field_at(1, name="已完成", value=str(len(ctfFile[question_id]["solved"])), inline=True)
+                    embed.set_field_at(0, name="已完成", value=str(len(ctfFile[question_id]["solved"])), inline=True)
+                    embed.set_field_at(1, name="已嘗試", value=str(ctfFile[question_id]["tried"]), inline=True)
+                    embed.set_field_at(2, name="回答次數限制", value=str(ctfFile[question_id]["limit"]), inline=True)
+                    # set the new embed
+                    await interaction.message.edit(embed=embed)
             await interaction.response.send_modal(SubmitModal(title="你找到 Flag 了嗎？"))
     @ctf_commands.command(name="create", description="新題目")
     async def create(self, ctx: discord.Interaction,
