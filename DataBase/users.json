@@ -3,7 +3,6 @@
         "point": 9,
         "charge_combo": 1,
         "last_charge": "2024-2-24",
-        "next_lottery": 6,
         "num_comment": 5,
         "last_comment": "2024-2-24",
         "num_comment_point": {
@@ -15,7 +14,6 @@
         "point": 2,
         "charge_combo": 0,
         "last_charge": "1970-01-01",
-        "next_lottery": 7,
         "num_comment": 2,
         "last_comment": "2024-2-24",
         "num_comment_point": {
@@ -24,27 +22,25 @@
         }
     },
     "685630394431045863": {
-        "point": 2,
-        "charge_combo": 0,
-        "last_charge": "1970-01-01",
-        "next_lottery": 7,
-        "num_comment": 1,
-        "last_comment": "2024-2-24",
+        "point": 1220,
+        "charge_combo": 2,
+        "last_charge": "2024-2-24",
+        "num_comment": 2,
+        "last_comment": "2024-2-23",
         "num_comment_point": {
             "times": 3,
             "next_reward": 5
         }
     },
     "868424334409097249": {
-        "point": 2,
+        "point": 10,
         "charge_combo": 0,
         "last_charge": "1970-01-01",
-        "next_lottery": 7,
-        "num_comment": 2,
+        "num_comment": 58,
         "last_comment": "2024-2-24",
         "num_comment_point": {
-            "times": 3,
-            "next_reward": 5
+            "times": 7,
+            "next_reward": 91
         }
     }
 }

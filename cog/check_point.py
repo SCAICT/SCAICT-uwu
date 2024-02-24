@@ -8,7 +8,7 @@ class check_point(commands.Cog):
     def __init__(self, bot):
         self.bot=bot
 
-    async def send_message(self, point, combo, next_lottery, interaction):
+    async def send_message(self, point, combo, interaction):
         
         member=interaction.user.mention
         #mention the users
@@ -31,7 +31,7 @@ class check_point(commands.Cog):
         combo = user.read(userId,'charge_combo')
         point = user.read(userId,'point')
 
-        await self.send_message(point, combo, next_lottery, interaction)
+        await self.send_message(point, combo, interaction)
 
 def setup(bot):
     bot.add_cog(check_point(bot))
