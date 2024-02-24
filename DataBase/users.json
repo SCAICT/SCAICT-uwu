@@ -22,5 +22,29 @@
             "times": 3,
             "next_reward": 5
         }
+    },
+    "685630394431045863": {
+        "point": 2,
+        "charge_combo": 0,
+        "last_charge": "1970-01-01",
+        "next_lottery": 7,
+        "num_comment": 1,
+        "last_comment": "2024-2-24",
+        "num_comment_point": {
+            "times": 3,
+            "next_reward": 5
+        }
+    },
+    "868424334409097249": {
+        "point": 4,
+        "charge_combo": 0,
+        "last_charge": "1970-01-01",
+        "next_lottery": 7,
+        "num_comment": 5,
+        "last_comment": "2024-2-24",
+        "num_comment_point": {
+            "times": 4,
+            "next_reward": 14
+        }
     }
 }
