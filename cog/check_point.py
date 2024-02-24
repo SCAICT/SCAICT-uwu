@@ -1,8 +1,7 @@
 import discord
 from discord.ext import commands
-import json
 from datetime import datetime
-
+import user
 
 class check_point(commands.Cog):
 
@@ -25,36 +24,15 @@ class check_point(commands.Cog):
 
     @discord.slash_command(name="check_point", description="查看電電點")
     async def check(self, interaction: discord.Interaction):
-       
         member=interaction.user.mention
+        userId = interaction.user.id
+        last_charge = user.read(userId,'last_charge')
+        last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
+        combo = user.read(userId,'charge_combo')
+        point = user.read(userId,'point')
+        next_lottery = user.read(userId,'next_lottery')
 
-        with open('./users.json', 'r') as file:
-
-            data=json.load(file)
-
-            #check if the user in json file
-            if str(interaction.user.id) not in data:
-                data[str(interaction.user.id)] = {
-                    "point": 0,
-                    "charge_combo": 0,
-                    "last_charge": "1970-01-01",
-                    "next_lottery": 7,
-                    "num_comment": 0,
-                    "last_comment": "1970-01-01",
-                    "num_comment_point": {"times": 2, "next_reward": 1}
-                }
-
-                with open('./users.json', 'w') as f:
-                    json.dump(data, f, indent=4)
-
-            last_charge = data[str(interaction.user.id)]['last_charge']
-            last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
-
-            combo = data[str(interaction.user.id)]['charge_combo']
-            point = data[str(interaction.user.id)]['point']
-            next_lottery = data[str(interaction.user.id)]['next_lottery']
-
-            await self.send_message(point, combo, next_lottery, interaction)
+        await self.send_message(point, combo, next_lottery, interaction)
 
 def setup(bot):
     bot.add_cog(check_point(bot))

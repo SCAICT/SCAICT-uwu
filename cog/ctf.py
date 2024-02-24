@@ -9,8 +9,6 @@ with open("ctf.json", "r") as file:
     ctfFile = json.load(file)
     
 # By EM
-
-
 class ctf(build):
     @commands.Cog.listener()
     async def on_ready(self):
@@ -35,7 +33,6 @@ class ctf(build):
             await interaction.response.send_modal(SubmitModal(title="Modal via Slash Command"))
 
     @ctf_commands.command(name="create", description="新題目")
-    # @option(flag = "輸入 flag 解答", score = "分數", limit = "限制次數(空白無限制)")
     async def create(self, ctx: discord.Interaction,
         title: Option(str, "題目標題", required=True, default=''),  
         flag: Option(str, "輸入 flag 解答", required=True, default=''), 

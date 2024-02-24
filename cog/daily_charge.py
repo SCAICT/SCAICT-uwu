@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import json
+import user
 from datetime import datetime
 from datetime import timedelta
 import csv
@@ -9,7 +9,6 @@ class daily_charge(commands.Cog):
 
     def __init__(self, bot):
         self.bot=bot
-
 
     async def send_message(self, point, combo, next_lottery, interaction):
         
@@ -42,73 +41,47 @@ class daily_charge(commands.Cog):
 
     @discord.slash_command(name="daily_charge", description="每日充電")
     async def charge(self, interaction: discord.Interaction):
+        userId = interaction.user.id
+        last_charge = user.read(userId,'last_charge')
+        last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
+        combo = user.read(userId,'charge_combo')
+        point = user.read(userId,'point')
+        next_lottery = user.read(userId,'next_lottery')
+        now=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        #get now time
+        delta = timedelta(days=1)
+        #set combo time limit
+        if(now-last_charge == delta):
+            combo += 1
+            point += 5
+            last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
+            next_lottery -= 1
+            await self.send_message(point, combo, next_lottery, interaction)
+            if(next_lottery == 0):
+                next_lottery = 7
+            with open('./point_log.csv', 'a+', newline='') as log:
+                writer = csv.writer(log)
+                writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(user.read(userId,'point')), 'daily_charge', str(datetime.now())])
+        
+        elif(now == last_charge):
+            last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
+            await self.already_charge(interaction)
 
-        with open('./users.json', 'r') as file:
+        else:
+            combo = 1
+            point += 5
+            last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
+            next_lottery = 6
+            await self.send_message(point, combo, next_lottery, interaction)
 
-            data=json.load(file)
+            with open('./point_log.csv', 'a+', newline='') as log:
+                writer = csv.writer(log)
+                writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(user.read(userId,'point')), 'daily_charge', str(datetime.now())])
 
-            #check if the user in json file
-            if str(interaction.user.id) not in data:
-                data[str(interaction.user.id)] = {
-                    "point": 0,
-                    "charge_combo": 0,
-                    "last_charge": "1970-01-01",
-                    "next_lottery": 7,
-                    "num_comment": 0,
-                    "last_comment": "1970-01-01",
-                    "num_comment_point": {"times": 2, "next_reward": 1}
-                }
-
-            last_charge = data[str(interaction.user.id)]['last_charge']
-            last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
-
-            combo = data[str(interaction.user.id)]['charge_combo']
-
-            point = data[str(interaction.user.id)]['point']
-            
-            next_lottery = data[str(interaction.user.id)]['next_lottery']
-
-            now=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            #get now time
-            delta = timedelta(days=1)
-            #set combo time limit
-
-            if(now-last_charge == delta):
-                combo += 1
-                point += 5
-                last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
-                next_lottery -= 1
-                await self.send_message(point, combo, next_lottery, interaction)
-                if(next_lottery == 0):
-                    next_lottery = 7
-
-                with open('./point_log.csv', 'a+', newline='') as log:
-                    writer = csv.writer(log)
-                    writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(data[str(interaction.user.id)]['point']), 'daily_charge', str(datetime.now())])
-            
-            elif(now == last_charge):
-                last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
-                await self.already_charge(interaction)
-
-            else:
-                combo = 1
-                point += 5
-                last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
-                next_lottery = 6
-                await self.send_message(point, combo, next_lottery, interaction)
-
-                with open('./point_log.csv', 'a+', newline='') as log:
-                    writer = csv.writer(log)
-                    writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(data[str(interaction.user.id)]['point']), 'daily_charge', str(datetime.now())])
-
-            data[str(interaction.user.id)]['last_charge'] = last_charge
-            data[str(interaction.user.id)]['charge_combo'] = combo
-            data[str(interaction.user.id)]['point'] = point
-            data[str(interaction.user.id)]['next_lottery'] = next_lottery
-
-            with open('./users.json', 'w') as writer:
-                json.dump(data, writer, indent=4)
-            
+        user.write(userId,'last_charge',last_charge)
+        user.write(userId,'charge_combo',combo)
+        user.write(userId,'point',point)
+        user.write(userId,'next_lottery',next_lottery)
 
 def setup(bot):
     bot.add_cog(daily_charge(bot))
