@@ -15,3 +15,7 @@
     "redirect_uri":"http://127.0.0.1:5000/callback"
 }
 ```
+
+## credits
+
+<a href="https://www.flaticon.com/free-icons/slot-machine" title="slot machine icons">Slot machine icons created by Freepik - Flaticon</a>

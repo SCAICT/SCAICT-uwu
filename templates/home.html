@@ -1,8 +1,7 @@
 <!-- @format -->
 
-<!-- templates/profile.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -45,219 +44,9 @@
         />
         <meta name="msapplication-TileColor" content="#2b5797" />
         <meta name="theme-color" content="#e9aa11" />
-        <style>
-            @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap");
-
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: "Noto Sans TC", sans-serif;
-                font-optical-sizing: auto;
-                position: relative;
-                background: #000;
-                color: #fff;
-                min-height: 100svh;
-            }
-            .logo {
-                height: 3rem;
-            }
-            h1 {
-                font-size: 3.5rem;
-            }
-            h1 + p {
-                margin-bottom: 2rem;
-                font-size: 1.3rem;
-            }
-            nav,
-            footer {
-                display: flex;
-                align-items: center;
-                position: fixed;
-                padding: 2rem;
-                background-color: #e9aa11;
-            }
-            nav {
-                top: 0;
-                right: 0;
-                border-radius: 0 0 0 3rem;
-                font-size: 1.25rem;
-                padding: 1.5rem 1.5rem 1.5rem 4rem;
-            }
-            nav a {
-                margin-right: 4rem;
-            }
-            nav a.log {
-                margin-right: 0;
-            }
-            .ticket {
-                margin-right: 1rem;
-            }
-            footer {
-                bottom: 0;
-                left: 0;
-                border-radius: 0 3rem 0 0;
-                flex-direction: column;
-                gap: 2rem;
-                font-size: 1.5rem;
-                padding-block: 4rem;
-            }
-            nav a,
-            footer a {
-                transition: transform 0.3s ease-out;
-            }
-            nav a:hover,
-            footer a:hover {
-                transform: scale(1.1);
-            }
-            .avatar {
-                border-radius: 50%;
-                height: 3.5rem;
-                width: 3.5rem;
-                background: #fff;
-                color: transparent;
-                margin-inline: 1rem;
-            }
-            a {
-                color: #fff;
-                text-decoration: none;
-            }
-            .welcome {
-                margin-top: 1rem;
-                font-size: 2rem;
-            }
-            main {
-                max-width: 1650px;
-                margin: auto;
-                padding: 4rem;
-            }
-            section {
-                display: flex;
-                gap: 2rem;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            article {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                background: #638971;
-                width: 20rem;
-                height: 30rem;
-                border-radius: 2rem;
-                padding: 0.5rem;
-            }
-            .product-img {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 2rem;
-                flex-grow: 1;
-            }
-            .product-img img {
-                width: calc(100% - 4rem);
-                height: calc(100% - 4rem);
-                object-fit: contain;
-            }
-            .info {
-                background: #fff;
-                color: #000;
-                border-radius: 1.5rem;
-                padding: 1.5rem;
-            }
-            .info h3 {
-                font-size: 1.5rem;
-            }
-            .info p {
-                font-size: 1rem;
-                margin-bottom: 0.8rem;
-            }
-            .info div {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-end;
-            }
-            button {
-                background: #e9aa11;
-                color: #fff;
-                border: none;
-                border-radius: 1.5rem;
-                font-size: 1.25rem;
-                cursor: pointer;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 3rem;
-                padding: 0 1rem;
-                transition: transform 0.3s ease-out;
-            }
-            .confirm {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0);
-                display: none;
-                justify-content: center;
-                align-items: center;
-                transition: background-color 0.3s ease-out;
-            }
-            .confirm.active {
-                display: flex;
-                background-color: rgba(0, 0, 0, 0.5);
-            }
-            .confirm .content {
-                background: #e9aa11;
-                padding: 2rem;
-                border-radius: 1rem;
-                text-align: center;
-                scale: 0;
-                transition: scale 0.3s ease;
-            }
-            .confirm.active .content {
-                scale: 1;
-            }
-            .warning {
-                color: #f00;
-            }
-            .content span {
-                font-weight: bold;
-            }
-            .confirm-select {
-                display: flex;
-                justify-content: center;
-                gap: 1rem;
-                margin-top: 2rem;
-            }
-            .confirm-select button {
-                background: #189f49;
-                color: #fff;
-                border: none;
-                border-radius: 1rem;
-                font-size: 1.25rem;
-                cursor: pointer;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 3rem;
-                padding: 0 1rem;
-                transition: transform 0.3s ease-out;
-            }
-            .confirm-select button:first-child {
-                background: rgb(116, 116, 116);
-            }
-            .confirm-select button:hover {
-                transform: scale(1.1);
-            }
-            .outStock{
-                background: rgb(123, 123, 123);
-                cursor: not-allowed;
-            }
-        </style>
+        <link
+            rel="stylesheet"
+            href="/static/style.css">
         <script
             src="https://kit.fontawesome.com/f9ca08d03f.js"
             crossorigin="anonymous"
@@ -265,8 +54,10 @@
     </head>
     <body>
         <nav>
-            <a href="/">官網</a>
-            <a href="/profile">Discord</a>
+            <a href="/"><i class="fa-solid fa-store"></i> 商店</a>
+            <a href="https://discord.com/invite/neQ7QEUcqe"
+                ><i class="fa-brands fa-discord"></i> Discord</a
+            >
             {% if ticket %}
             <div class="ticket">{{ ticket }} 🎟️</div>
             {% endif %} {% if point %}
@@ -293,23 +84,9 @@
             <p>以下為目前電電點可兌換的內容</p>
             <section>
                 <!-- article>((div>img)+(.info>h3+p+button)) -->
-                <article>
-                    <div class="product-img">
-                        <img
-                            src="https://scaict.org/src/img/battery-9v.svg"
-                            alt=""
-                        />
-                    </div>
-                    <div class="info">
-                        <h3>電池</h3>
-                        <p>9V 的電池</p>
-                        <div>
-                            <button>1000 ⚡</button>
-                            <div class="left"></div>
-                        </div>
-                    </div>
-                </article>
+                載入中...
             </section>
+            <div class="footer">© 2024 SCAICT All Rights Reserved</div>
         </main>
         <footer>
             <a href="https://www.facebook.com/scaict.tw/" target="_blank"
@@ -338,13 +115,14 @@
                     <button onclick="confirm.classList.remove('active')">
                         取消
                     </button>
-                    <button>確定</button>
+                    <button onclick="buy()">確定</button>
                 </div>
             </div>
         </div>
         <script>
             // load product from /productList to <section>
             let datas = [];
+            let selected;
             const section = document.querySelector("section");
             fetch("/productList")
                 .then(res => res.json())
@@ -353,6 +131,19 @@
                     datas = data.products;
                     datas.forEach(product => {
                         const article = document.createElement("article");
+                        var button;
+                        if (product.pay == "point")
+                            button = `<button
+                                    ${
+                                        product.stock <= 0
+                                            ? "class='outStock'"
+                                            : `onclick="select('` +
+                                              product.id +
+                                              `')"`
+                                    }>
+                                    ${product.price} ⚡</button>`;
+                        else
+                            button = `<a class="product-button" href="${product.url}"  target="_blank">${product.price} 🎟️</a>`;
                         article.innerHTML = `
                             <div class="product-img">
                                 <img src="${product.image}" alt="" />
@@ -360,18 +151,9 @@
                             <div class="info">
                                 <h3>${product.name}</h3>
                                 <p>${product.description}</p>
-                                <div><button 
-                                    ${
-                                        product.stock <= 0
-                                            ? "class='outStock'"
-                                            : `onclick="buy('` +
-                                              product.id +
-                                              `')"`
-                                    }>
-                                    ${product.price} ⚡</button>
-                                    <div class="left">庫存 ${
-                                        product.stock
-                                    }</div>
+                                <div>
+                                    ${button}
+                                    <div class="left">庫存 ${product.stock}</div>
                                 </div>
                             </div>
                         `;
@@ -381,8 +163,9 @@
 
             // buy product
             const confirm = document.querySelector(".confirm");
-            const buy = id => {
+            const select = id => {
                 const product = datas.find(product => product.id === id);
+                selected = product;
                 document.querySelector("#buy-cost").innerText = product.price;
                 document.querySelector("#buy-product").innerText = product.name;
                 if (product.stock <= 0) {
@@ -390,6 +173,34 @@
                     return;
                 }
                 confirm.classList.add("active");
+            };
+
+            // confirm buy
+            const buy = () => {
+                if (!selected) return alert("請選擇商品");
+                if (selected.pay !== "point")
+                    return alert("此商品無法使用電電點購買");
+                fetch("/buyProduct", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: selected.id }),
+                })
+                    //alert recieved text
+                    .then(res => res.text())
+                    .then(text => {
+                        // if response is html then show it in new page
+                        if (text.toLowerCase().startsWith("<!doctype html>")) {
+                            document.write(text);
+                            return;
+                        } else {
+                            alert(text);
+                            confirm.classList.remove("active");
+                            window.location.reload();
+                        }
+                    })
+                    .catch(err => alert(err));
             };
         </script>
     </body>

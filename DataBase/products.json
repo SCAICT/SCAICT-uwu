@@ -1,33 +1,35 @@
 {
-    "products":
-    [
+    "products": [
         {
-            "name" : "電池",
+            "name": "\u96fb\u6c60",
             "id": "battery",
-            "description" : "9V 電池です",
-            "price" : 1000,
-            "image" : "https://scaict.org/src/img/battery-9v.svg",
-            "stock" : 0,
-            "category" : "實體周邊"
-            
+            "description": "9V \u96fb\u6c60\u3067\u3059",
+            "price": 1000,
+            "image": "https://scaict.org/src/img/battery-9v.svg",
+            "stock": 4,
+            "category": "\u5be6\u9ad4\u5468\u908a",
+            "pay": "point"
         },
         {
-            "name" : "8GB USB",
+            "name": "8GB USB",
             "id": "usb",
-            "description" : "8GB 的 USB",
-            "price" : 1500,
-            "image" : "https://cdn-icons-png.flaticon.com/128/2014/2014999.png",
-            "stock" : 0,
-            "category" : "實體周邊"
+            "description": "8GB \u7684 USB",
+            "price": 1500,
+            "image": "https://cdn-icons-png.flaticon.com/128/2014/2014999.png",
+            "stock": 3,
+            "category": "\u5be6\u9ad4\u5468\u908a",
+            "pay": "point"
         },
         {
-            "name": "貓咪機",
+            "name": "\u8c93\u54aa\u6a5f",
             "id": "slot",
-            "description": "來抽獎吧",
+            "description": "\u4f86\u62bd\u734e\u5427",
             "price": 100,
             "image": "https://cdn-icons-png.flaticon.com/128/1055/1055823.png",
-            "stock": 10000,
-            "category": "遊戲"
+            "stock": 10,
+            "category": "\u904a\u6232",
+            "pay": "ticket",
+            "url": "slot"
         }
     ]
 }
