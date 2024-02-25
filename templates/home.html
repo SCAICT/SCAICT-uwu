@@ -4,26 +4,47 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>中電商店</title>
-        <meta name="description" content="使用你的電電點來兌換獎品吧!">
-        <meta name="author" content="中部高中電資社團聯合會議">
+        <meta name="description" content="使用你的電電點來兌換獎品吧!" />
+        <meta name="author" content="中部高中電資社團聯合會議" />
 
-        <meta name="keywords" content="電電點, 中電會, SCAICT">
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="中電商店">
-        <meta property="og:url" content="https://scaict.org">
-        <meta property="og:site_name" content="中電商店">
-        <meta property="og:description" content="使用你的電電點來兌換獎品吧!">
-        <meta property="og:locale" content="zh-TW">
-        <link rel="apple-touch-icon" sizes="180x180" href="https://scaict.org/src/img/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="https://scaict.org/src/img/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="https://scaict.org/src/img/favicon-16x16.png">
-        <link rel="manifest" href="https://scaict.org/src/img/site.webmanifest">
-        <link rel="mask-icon" href="https://scaict.org/src/img/safari-pinned-tab.svg" color="#ca4480">
-        <meta name="msapplication-TileColor" content="#2b5797">
-        <meta name="theme-color" content="#e9aa11">
+        <meta name="keywords" content="電電點, 中電會, SCAICT" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="中電商店" />
+        <meta property="og:url" content="https://scaict.org" />
+        <meta property="og:site_name" content="中電商店" />
+        <meta property="og:description" content="使用你的電電點來兌換獎品吧!" />
+        <meta property="og:locale" content="zh-TW" />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="https://scaict.org/src/img/apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="https://scaict.org/src/img/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="https://scaict.org/src/img/favicon-16x16.png"
+        />
+        <link
+            rel="manifest"
+            href="https://scaict.org/src/img/site.webmanifest"
+        />
+        <link
+            rel="mask-icon"
+            href="https://scaict.org/src/img/safari-pinned-tab.svg"
+            color="#ca4480"
+        />
+        <meta name="msapplication-TileColor" content="#2b5797" />
+        <meta name="theme-color" content="#e9aa11" />
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap");
 
@@ -38,7 +59,7 @@
                 position: relative;
                 background: #000;
                 color: #fff;
-                height: 100svh;
+                min-height: 100svh;
             }
             .logo {
                 height: 3rem;
@@ -46,7 +67,7 @@
             h1 {
                 font-size: 3.5rem;
             }
-            h1+p{
+            h1 + p {
                 margin-bottom: 2rem;
                 font-size: 1.3rem;
             }
@@ -63,12 +84,15 @@
                 right: 0;
                 border-radius: 0 0 0 3rem;
                 font-size: 1.25rem;
-                padding: 1.5rem 2rem 1.5rem 4rem;
+                padding: 1.5rem 1.5rem 1.5rem 4rem;
             }
             nav a {
                 margin-right: 4rem;
             }
-            .ticket{
+            nav a.log {
+                margin-right: 0;
+            }
+            .ticket {
                 margin-right: 1rem;
             }
             footer {
@@ -94,7 +118,7 @@
                 width: 3.5rem;
                 background: #fff;
                 color: transparent;
-                margin-left: 1rem;
+                margin-inline: 1rem;
             }
             a {
                 color: #fff;
@@ -108,6 +132,12 @@
                 max-width: 1650px;
                 margin: auto;
                 padding: 4rem;
+            }
+            section {
+                display: flex;
+                gap: 2rem;
+                justify-content: center;
+                flex-wrap: wrap;
             }
             article {
                 display: flex;
@@ -128,7 +158,8 @@
                 flex-grow: 1;
             }
             .product-img img {
-                width: 100%;
+                width: calc(100% - 4rem);
+                height: calc(100% - 4rem);
                 object-fit: contain;
             }
             .info {
@@ -144,6 +175,11 @@
                 font-size: 1rem;
                 margin-bottom: 0.8rem;
             }
+            .info div {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+            }
             button {
                 background: #e9aa11;
                 color: #fff;
@@ -158,6 +194,69 @@
                 padding: 0 1rem;
                 transition: transform 0.3s ease-out;
             }
+            .confirm {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                transition: background-color 0.3s ease-out;
+            }
+            .confirm.active {
+                display: flex;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+            .confirm .content {
+                background: #e9aa11;
+                padding: 2rem;
+                border-radius: 1rem;
+                text-align: center;
+                scale: 0;
+                transition: scale 0.3s ease;
+            }
+            .confirm.active .content {
+                scale: 1;
+            }
+            .warning {
+                color: #f00;
+            }
+            .content span {
+                font-weight: bold;
+            }
+            .confirm-select {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+            .confirm-select button {
+                background: #189f49;
+                color: #fff;
+                border: none;
+                border-radius: 1rem;
+                font-size: 1.25rem;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 3rem;
+                padding: 0 1rem;
+                transition: transform 0.3s ease-out;
+            }
+            .confirm-select button:first-child {
+                background: rgb(116, 116, 116);
+            }
+            .confirm-select button:hover {
+                transform: scale(1.1);
+            }
+            .outStock{
+                background: rgb(123, 123, 123);
+                cursor: not-allowed;
+            }
         </style>
         <script
             src="https://kit.fontawesome.com/f9ca08d03f.js"
@@ -168,10 +267,20 @@
         <nav>
             <a href="/">官網</a>
             <a href="/profile">Discord</a>
-            <a href="/logout">登出</a>
+            {% if ticket %}
             <div class="ticket">{{ ticket }} 🎟️</div>
+            {% endif %} {% if point %}
             <div class="point">{{ point }} ⚡</div>
+            {% endif %} {% if avatar %}
             <img src="{{ avatar }}" alt="Avatar" class="avatar" />
+            <a href="/logout" class="log"
+                ><i class="fa-solid fa-arrow-right-from-bracket"></i
+            ></a>
+            {% else %}
+            <a href="/login"
+                ><i class="fa-solid fa-arrow-right-to-bracket"></i
+            ></a>
+            {% endif %}
         </nav>
         <main>
             <img
@@ -194,7 +303,10 @@
                     <div class="info">
                         <h3>電池</h3>
                         <p>9V 的電池</p>
-                        <button>1000 ⚡</button>
+                        <div>
+                            <button>1000 ⚡</button>
+                            <div class="left"></div>
+                        </div>
                     </div>
                 </article>
             </section>
@@ -210,5 +322,75 @@
                 ><i class="fa-brands fa-github"></i
             ></a>
         </footer>
+        <div class="confirm">
+            <div class="content">
+                <h2>確認兌換</h2>
+                <p>
+                    你確定要花<span id="buy-cost"></span>購買<span
+                        id="buy-product"
+                    ></span
+                    >嗎?
+                </p>
+                <div class="warning">
+                    此為實體周邊，請於實體活動拿到獎品後再點擊兌換，否則不補發獎品。
+                </div>
+                <div class="confirm-select">
+                    <button onclick="confirm.classList.remove('active')">
+                        取消
+                    </button>
+                    <button>確定</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            // load product from /productList to <section>
+            let datas = [];
+            const section = document.querySelector("section");
+            fetch("/productList")
+                .then(res => res.json())
+                .then(data => {
+                    section.innerHTML = "";
+                    datas = data.products;
+                    datas.forEach(product => {
+                        const article = document.createElement("article");
+                        article.innerHTML = `
+                            <div class="product-img">
+                                <img src="${product.image}" alt="" />
+                            </div>
+                            <div class="info">
+                                <h3>${product.name}</h3>
+                                <p>${product.description}</p>
+                                <div><button 
+                                    ${
+                                        product.stock <= 0
+                                            ? "class='outStock'"
+                                            : `onclick="buy('` +
+                                              product.id +
+                                              `')"`
+                                    }>
+                                    ${product.price} ⚡</button>
+                                    <div class="left">庫存 ${
+                                        product.stock
+                                    }</div>
+                                </div>
+                            </div>
+                        `;
+                        section.appendChild(article);
+                    });
+                });
+
+            // buy product
+            const confirm = document.querySelector(".confirm");
+            const buy = id => {
+                const product = datas.find(product => product.id === id);
+                document.querySelector("#buy-cost").innerText = product.price;
+                document.querySelector("#buy-product").innerText = product.name;
+                if (product.stock <= 0) {
+                    alert("庫存不足");
+                    return;
+                }
+                confirm.classList.add("active");
+            };
+        </script>
     </body>
 </html>

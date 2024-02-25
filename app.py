@@ -13,9 +13,14 @@ client_id = data["client_id"]
 client_secret = data["client_secret"]
 redirect_uri = data["redirect_uri"]
 
-@app.route("/")
-def index():
+@app.route("/login")
+def login():
     return redirect(f"https://discord.com/api/oauth2/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope=identify")
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("profile"))
 
 @app.route("/callback")
 def callback():
@@ -45,20 +50,27 @@ def callback():
     }
     return redirect(url_for("profile"))
 
-@app.route("/profile")
+@app.route("/")
 def profile():
     DcUser = session.get("user")
-    if DcUser:
-        # get file from datebase/users.json and read point and tickets
-        with open("database/users.json") as file:
-            users = json.load(file)
-        user = users.get(DcUser["id"])
-        if user:
-            return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point=user["point"], ticket=user["ticket"])
-        else:
-            return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
+    if not DcUser:
+        return render_template("home.html")
+    with open("database/users.json") as file:
+        users = json.load(file)
+    user = users.get(DcUser["id"])
+    if user:
+        return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point=str(user["point"]), ticket=str(user["ticket"]))
     else:
-        return redirect(url_for("index"))
+        return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
+
+@app.route("/productList")
+def productList():
+    # send pure json data
+    with open("database/products.json",'r', encoding='utf-8') as file:
+        products = json.load(file)
+    return products
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
