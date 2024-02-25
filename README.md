@@ -2,7 +2,7 @@
 
 * main.py: Discord Bot
 * app.py: Flask Web App
-* generate-secrets.py: 生成 Secret Key
+* generate-secrets.py: 生成 Secret Key，請貼至 token.json
 
 ## token.json
 
