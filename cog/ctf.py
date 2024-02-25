@@ -11,7 +11,9 @@ import csv
 def getCTFFile():
     with open("./database/ctf.json", "r") as file:
         return json.load(file)
-    
+def getCTFmakers():
+    with open("./database/server.config.json", "r") as file:
+        return json.load(file)
 # By EM
 class ctf(build):
     @commands.Cog.listener()
@@ -90,7 +92,8 @@ class ctf(build):
         case: Option(bool, "大小寫忽略", required=False, default=False), 
         start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default=""), 
         end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default="")):
-        role_id = 1210935361467977738
+        role_id =getCTFmakers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]#get ctf maker role's ID 
+        # Check whether the user can send a question or not
         role = discord.utils.get(ctx.guild.roles, id=role_id)
         if role not in ctx.author.roles:
             await ctx.respond("你沒有權限創建題目喔！")
