@@ -6,8 +6,11 @@
             "serverID":1203338928535379978,
             "memberCount":1206549021355810816,
             "everyDayCharge":1206549724530999356
+        },
+        "SP-role":
+        {
+            "CTF_Maker":1210935361467977738
         }
-
     },
     "NULL":"NULL"
 }

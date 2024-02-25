@@ -106,11 +106,26 @@ class ticket(build):
     @discord.slash_command()
     async def create_ticket_button(self,ctx):
         if ctx.author.guild_permissions.administrator:
-            embed=discord.Embed(color=0xf5895b)
+            
+            # 修改這裡，使用 ticket.ticketView()
+            embed=discord.Embed(title=" ", color=0xfefcb6)
             embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/2067/2067179.png")
-            embed.add_field(name="如果有任何問題 歡迎開單詢問", value="包含題目、課程、合作等", inline=False)
-            embed.add_field(name=" ", value="詢問時請保有禮貌 等待回復", inline=False)
-            await ctx.respond(embed=embed,view=ticket.ticketView())  # 修改這裡，使用 ticket.ticketView()
+            embed.add_field(name="SCAICT-Discord", value=" ", inline=False)
+            embed.add_field(name="客服單", value="", inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name="-----什麼時候可以按這個酷酷的按鈕？-----", value="  ", inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name="各種伺服器內疑難雜症 : 包括但不限於 不當言行檢舉、領獎、活動轉發、贊助", value="", inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name="課程問題 : 當你對中電會課程的報名、上課通知有疑慮時可以點我詢問", value="", inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name="-----------------注意事項--------------------", value=" ", inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name="請不要隨意開啟客服單，若屢勸不聽將會扣電電點，嚴重者會踢出伺服器", value="", inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.set_footer(text="所有客服單將自動留存，以保障雙方權益。")
+            await ctx.respond(embed=embed,view=ticket.ticketView())
 
 def setup(bot):
     bot.add_cog(ticket(bot))

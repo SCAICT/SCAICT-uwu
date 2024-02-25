@@ -3,8 +3,10 @@ from discord.ext import commands
 import user
 from datetime import datetime
 import csv
-
-
+import json
+def getChannels():#要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻簽到，否則不予授理
+    with open("./database/server.config.json", "r") as file:
+        return json.load(file)["SCAICT-alpha"]["channel"]
 class charge(commands.Cog):
 
     def __init__(self, bot):
@@ -24,8 +26,17 @@ class charge(commands.Cog):
         self.embed.set_thumbnail(url=str(interaction.user.avatar))
         self.embed.add_field(name="您夠電了，明天再來!", value="⚡⚡⚡🛐🛐🛐", inline=False)
         await interaction.response.send_message(embed=self.embed)
+        
+    async def channelError(self,interaction):
+        self.embed = discord.Embed(color=0xff0000)
+        self.embed.set_thumbnail(url="https://http.cat/images/404.jpg")
+        self.embed.add_field(name="這裡似乎沒有打雷...", value="  ⛱️", inline=False)
+        self.embed.add_field(name="到'每日充電'頻道試試吧!", value="", inline=False)
+        #其他文案:這裡似乎離無線充電座太遠了，到'每日充電'頻道試試吧! 待商議
+        await interaction.response.send_message(embed=self.embed, ephemeral=True)
+        
+        
     @discord.slash_command(name="charge", description="每日充電")
-    
     async def charge(self, interaction: discord.Interaction):
         userId = interaction.user.id
         last_charge = user.read(userId, 'last_charge')
@@ -33,6 +44,11 @@ class charge(commands.Cog):
         combo = user.read(userId, 'charge_combo')
         point = user.read(userId, 'point')
         now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        print(interaction.channel.id)
+        if (interaction.channel.id!=getChannels()["everyDayCharge"]):
+            await self.channelError(interaction)
+            return
+        
         # get now time
         if (now == last_charge):
             last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
