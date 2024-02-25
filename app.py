@@ -40,15 +40,23 @@ def callback():
     user_data = user_response.json()
     session["user"] = {
         "name": user_data["username"],
-        "avatar": f"https://cdn.discordapp.com/avatars/{user_data['id']}/{user_data['avatar']}.png"
+        "avatar": f"https://cdn.discordapp.com/avatars/{user_data['id']}/{user_data['avatar']}.png",
+        "id": user_data["id"]
     }
     return redirect(url_for("profile"))
 
 @app.route("/profile")
 def profile():
-    user = session.get("user")
-    if user:
-        return render_template("home.html", username=user["name"], avatar=user["avatar"])
+    DcUser = session.get("user")
+    if DcUser:
+        # get file from datebase/users.json and read point and tickets
+        with open("database/users.json") as file:
+            users = json.load(file)
+        user = users.get(DcUser["id"])
+        if user:
+            return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point=user["point"], ticket=user["ticket"])
+        else:
+            return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
     else:
         return redirect(url_for("index"))
 

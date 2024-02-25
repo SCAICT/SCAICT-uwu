@@ -1,5 +1,6 @@
 {
     "803197174589423626": {
+        "ticket": 0,
         "point": 9,
         "charge_combo": 1,
         "last_charge": "2024-2-24",
@@ -11,6 +12,7 @@
         }
     },
     "1209821557388476426": {
+        "ticket": 0,
         "point": 2,
         "charge_combo": 0,
         "last_charge": "1970-01-01",
@@ -22,6 +24,7 @@
         }
     },
     "685630394431045863": {
+        "ticket": 0,
         "point": 1262,
         "charge_combo": 2,
         "last_charge": "2024-2-24",
@@ -33,6 +36,7 @@
         }
     },
     "868424334409097249": {
+        "ticket": 0,
         "point": 10,
         "charge_combo": 0,
         "last_charge": "1970-01-01",
@@ -44,6 +48,7 @@
         }
     },
     "595471957189984275": {
+        "ticket": 0,
         "point": 20,
         "charge_combo": 0,
         "last_charge": "1970-01-01",
@@ -56,6 +61,7 @@
         }
     },
     "539412061294166037": {
+        "ticket": 0,
         "point": 40,
         "charge_combo": 0,
         "last_charge": "1970-01-01",
@@ -68,6 +74,7 @@
         }
     },
     "1203340226672459857": {
+        "ticket": 0,
         "point": 2,
         "charge_combo": 0,
         "last_charge": "1970-01-01",

@@ -1,13 +1,214 @@
+<!-- @format -->
+
 <!-- templates/profile.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-</head>
-<body>
-    <h1>Welcome, {{ username }}!</h1>
-    <img src="{{ avatar }}" alt="Avatar">
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>中電商店</title>
+        <meta name="description" content="使用你的電電點來兌換獎品吧!">
+        <meta name="author" content="中部高中電資社團聯合會議">
+
+        <meta name="keywords" content="電電點, 中電會, SCAICT">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="中電商店">
+        <meta property="og:url" content="https://scaict.org">
+        <meta property="og:site_name" content="中電商店">
+        <meta property="og:description" content="使用你的電電點來兌換獎品吧!">
+        <meta property="og:locale" content="zh-TW">
+        <link rel="apple-touch-icon" sizes="180x180" href="https://scaict.org/src/img/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="https://scaict.org/src/img/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="https://scaict.org/src/img/favicon-16x16.png">
+        <link rel="manifest" href="https://scaict.org/src/img/site.webmanifest">
+        <link rel="mask-icon" href="https://scaict.org/src/img/safari-pinned-tab.svg" color="#ca4480">
+        <meta name="msapplication-TileColor" content="#2b5797">
+        <meta name="theme-color" content="#e9aa11">
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap");
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: "Noto Sans TC", sans-serif;
+                font-optical-sizing: auto;
+                position: relative;
+                background: #000;
+                color: #fff;
+                height: 100svh;
+            }
+            .logo {
+                height: 3rem;
+            }
+            h1 {
+                font-size: 3.5rem;
+            }
+            h1+p{
+                margin-bottom: 2rem;
+                font-size: 1.3rem;
+            }
+            nav,
+            footer {
+                display: flex;
+                align-items: center;
+                position: fixed;
+                padding: 2rem;
+                background-color: #e9aa11;
+            }
+            nav {
+                top: 0;
+                right: 0;
+                border-radius: 0 0 0 3rem;
+                font-size: 1.25rem;
+                padding: 1.5rem 2rem 1.5rem 4rem;
+            }
+            nav a {
+                margin-right: 4rem;
+            }
+            .ticket{
+                margin-right: 1rem;
+            }
+            footer {
+                bottom: 0;
+                left: 0;
+                border-radius: 0 3rem 0 0;
+                flex-direction: column;
+                gap: 2rem;
+                font-size: 1.5rem;
+                padding-block: 4rem;
+            }
+            nav a,
+            footer a {
+                transition: transform 0.3s ease-out;
+            }
+            nav a:hover,
+            footer a:hover {
+                transform: scale(1.1);
+            }
+            .avatar {
+                border-radius: 50%;
+                height: 3.5rem;
+                width: 3.5rem;
+                background: #fff;
+                color: transparent;
+                margin-left: 1rem;
+            }
+            a {
+                color: #fff;
+                text-decoration: none;
+            }
+            .welcome {
+                margin-top: 1rem;
+                font-size: 2rem;
+            }
+            main {
+                max-width: 1650px;
+                margin: auto;
+                padding: 4rem;
+            }
+            article {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                background: #638971;
+                width: 20rem;
+                height: 30rem;
+                border-radius: 2rem;
+                padding: 0.5rem;
+            }
+            .product-img {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+                flex-grow: 1;
+            }
+            .product-img img {
+                width: 100%;
+                object-fit: contain;
+            }
+            .info {
+                background: #fff;
+                color: #000;
+                border-radius: 1.5rem;
+                padding: 1.5rem;
+            }
+            .info h3 {
+                font-size: 1.5rem;
+            }
+            .info p {
+                font-size: 1rem;
+                margin-bottom: 0.8rem;
+            }
+            button {
+                background: #e9aa11;
+                color: #fff;
+                border: none;
+                border-radius: 1.5rem;
+                font-size: 1.25rem;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 3rem;
+                padding: 0 1rem;
+                transition: transform 0.3s ease-out;
+            }
+        </style>
+        <script
+            src="https://kit.fontawesome.com/f9ca08d03f.js"
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body>
+        <nav>
+            <a href="/">官網</a>
+            <a href="/profile">Discord</a>
+            <a href="/logout">登出</a>
+            <div class="ticket">{{ ticket }} 🎟️</div>
+            <div class="point">{{ point }} ⚡</div>
+            <img src="{{ avatar }}" alt="Avatar" class="avatar" />
+        </nav>
+        <main>
+            <img
+                src="https://scaict.org/src/img/logo.svg"
+                alt=""
+                class="logo"
+            />
+            <div class="welcome">嗨 {{ username }}!</div>
+            <h1>歡迎來到中電商店</h1>
+            <p>以下為目前電電點可兌換的內容</p>
+            <section>
+                <!-- article>((div>img)+(.info>h3+p+button)) -->
+                <article>
+                    <div class="product-img">
+                        <img
+                            src="https://scaict.org/src/img/battery-9v.svg"
+                            alt=""
+                        />
+                    </div>
+                    <div class="info">
+                        <h3>電池</h3>
+                        <p>9V 的電池</p>
+                        <button>1000 ⚡</button>
+                    </div>
+                </article>
+            </section>
+        </main>
+        <footer>
+            <a href="https://www.facebook.com/scaict.tw/" target="_blank"
+                ><i class="fa-brands fa-facebook"></i
+            ></a>
+            <a href="https://www.instagram.com/scaict.tw/" target="_blank"
+                ><i class="fa-brands fa-instagram"></i
+            ></a>
+            <a href="https://github.com/SCAICT" target="_blank"
+                ><i class="fa-brands fa-github"></i
+            ></a>
+        </footer>
+    </body>
 </html>
