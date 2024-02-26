@@ -72,7 +72,7 @@ def profile():
 def slot():
     DcUser = session.get("user")
     if not DcUser:
-        return render_template("home.html")
+        return render_template("slot.html")
     with open("database/users.json", encoding='utf-8') as file:
         users = json.load(file)
     user = users.get(DcUser["id"])

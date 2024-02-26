@@ -58,15 +58,110 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
+                cursor: pointer;
             }
             section {
                 flex: 1;
-                overflow: hidden;
+                position: relative;
+                aspect-ratio: 1 / 1;
+                width: fit-content;
+                margin: auto;
             }
             section img,
             section svg {
-                height:  100%;
+                height: 100%;
                 display: block;
+            }
+            .rolling .st1,
+            .rolling .st0 {
+                animation: colorChanging 1s linear infinite;
+            }
+
+            @keyframes colorChanging {
+                0% {
+                    filter: hue-rotate(0deg) brightness(150%);
+                }
+                100% {
+                    filter: hue-rotate(360deg) brightness(150%);
+                }
+            }
+            .slot-pull {
+                transition: 0.5s;
+                background-color: blue;
+            }
+            .slot-pull:hover {
+                transform: scale(1, -1) translateY(-140%);
+            }
+            .shine,
+            .cost {
+                text-align: center;
+            }
+            .cost {
+                margin-block: 1.25em;
+            }
+            .slot-right {
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 100px;
+                height: 100px;
+            }
+            .shine {
+                animation: shine 2s infinite;
+            }
+
+            @keyframes shine {
+                0% {
+                    filter: brightness(100%);
+                }
+                50% {
+                    filter: brightness(60%);
+                }
+                100% {
+                    filter: brightness(100%);
+                }
+            }
+            #Capa_1 {
+                position: relative;
+            }
+
+            .lever-h,
+            .lever-v,
+            .lever-ball {
+                position: absolute;
+                top: 75.5%;
+                left: 86%;
+                width: 14%;
+                height: 3.7%;
+                background-color: #8b9ba9;
+            }
+            .lever-v {
+                top: 59%;
+                left: 95.9%;
+                height: 19%;
+                width: 4.1%;
+                transform-origin: bottom;
+                transition: transform 0.5s;
+            }
+            .lever-ball {
+                top: 55%;
+                left: 94.6%;
+                width: 7%;
+                height: unset;
+                aspect-ratio: 1/1;
+                background-color: #ff5368;
+                border-radius: 50%;
+                transition: top 0.5s;
+            }
+            .pulled .lever-ball {
+                top: 85%;
+            }
+
+            .pulled .lever-v {
+                transform: scaleY(-0.58);
+            }
+            main > * {
+                pointer-events: none;
             }
         </style>
     </head>
@@ -102,8 +197,8 @@
             <div class="welcome">嗨 {{ username }}!</div>
             <h1>貓咪機</h1>
             <section>
-                <?xml version="1.0" encoding="windows-1252"?>
-                <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+                <?xml version="1.0" encoding="utf-8"?>
+                <!-- Generator: Adobe Illustrator 28.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
                 <svg
                     version="1.1"
                     id="Capa_1"
@@ -115,127 +210,80 @@
                     style="enable-background: new 0 0 512 512"
                     xml:space="preserve"
                 >
+                    <style type="text/css">
+                        .st0 {
+                            fill: #ff5368;
+                        }
+                        .st1 {
+                            fill: #c5324f;
+                        }
+                        .st2 {
+                            fill: #8b9ba9;
+                        }
+                        .st3 {
+                            fill: #ffb545;
+                        }
+                        .st4 {
+                            fill: #ff983b;
+                        }
+                        .st5 {
+                            fill: #ff7e40;
+                        }
+                        .st6 {
+                            fill: #ff6344;
+                        }
+                        .st7 {
+                            fill: #4d5967;
+                        }
+                    </style>
                     <path
-                        style="fill: #8b9ba9"
-                        d="M423.404,397.65h-14.165v-15.453h14.165c21.302,0,38.632-17.33,38.632-38.632v-90.141h15.453v90.141  C477.489,373.388,453.227,397.65,423.404,397.65z"
-                    />
-                    <circle
-                        style="fill: #c5324f"
-                        cx="469.763"
-                        cy="245.698"
-                        r="15.453"
-                    />
-                    <path
-                        style="fill: #ff5368"
-                        d="M181.312,54.085H284.33V30.905C284.33,13.836,270.494,0,253.425,0h-41.207  c-17.069,0-30.905,13.836-30.905,30.905V54.085z"
-                    />
-                    <path
-                        style="fill: #c5324f"
-                        d="M182.285,23.179c-0.636,2.469-0.974,5.058-0.974,7.726v23.179l51.166,16.483l51.852-16.483V30.905  C284.33,13.836,270.494,0,253.425,0l0,0c0,12.801-10.378,23.179-23.179,23.179H182.285z"
-                    />
-                    <path
-                        style="fill: #8b9ba9"
-                        d="M160.708,84.99l72.113,37.087l72.113-37.087V74.688c0-11.379-9.224-20.604-20.604-20.604H181.312  c-11.379,0-20.604,9.224-20.604,20.604V84.99z"
-                    />
-                    <path
-                        style="fill: #ffb545"
-                        d="M47.388,512h370.865V115.895c0-17.069-13.836-30.905-30.905-30.905H78.294  c-17.069,0-30.905,13.836-30.905,30.905V512z"
-                    />
-                    <path
-                        style="fill: #ff983b"
-                        d="M47.388,481.095V512h370.865V115.895c0-17.069-13.836-30.905-30.905-30.905v396.105H47.388z"
-                    />
-                    <path
-                        style="fill: #ff7e40"
-                        d="M232.821,132.378H42.237c-8.534,0-15.453,6.919-15.453,15.453v195.734  c0,8.534,6.919,15.453,15.453,15.453h190.583h190.583c8.534,0,15.453-6.919,15.453-15.453V147.831  c0-8.534-6.919-15.453-15.453-15.453H232.821z"
+                        class="st0"
+                        d="M204.5,54.1h103V30.9c0-17.1-13.8-30.9-30.9-30.9h-41.2c-17.1,0-30.9,13.8-30.9,30.9L204.5,54.1L204.5,54.1z"
                     />
                     <path
-                        style="fill: #ff6344"
-                        d="M423.404,132.378h-15.453v195.734H26.785v15.453c0,8.534,6.919,15.453,15.453,15.453h190.583h190.583  c8.534,0,15.453-6.919,15.453-15.453V147.831C438.857,139.297,431.938,132.378,423.404,132.378z"
-                    />
-                    <g>
-                        <rect
-                            x="80.869"
-                            y="186.463"
-                            style="fill: #fff9eb"
-                            width="101.298"
-                            height="118.471"
-                        />
-                        <rect
-                            x="283.475"
-                            y="186.463"
-                            style="fill: #fff9eb"
-                            width="101.298"
-                            height="118.471"
-                        />
-                    </g>
-                    <g>
-                        <rect
-                            x="182.167"
-                            y="186.463"
-                            style="fill: #e9e3d5"
-                            width="101.298"
-                            height="118.471"
-                        />
-                        <polygon
-                            style="fill: #e9e3d5"
-                            points="283.472,274.028 283.472,304.934 384.773,304.934 384.773,186.463 353.867,186.463    353.867,274.028  "
-                        />
-                    </g>
-                    <rect
-                        x="182.167"
-                        y="274.028"
-                        style="fill: #d3cdbf"
-                        width="101.298"
-                        height="30.905"
-                    />
-                    <rect
-                        x="80.869"
-                        y="274.028"
-                        style="fill: #e9e3d5"
-                        width="101.298"
-                        height="30.905"
-                    />
-                    <g>
-                        <path
-                            style="fill: #c5324f"
-                            d="M147.545,209.127h-32.05c-4.267,0-7.726,3.459-7.726,7.726v6.197c0,4.267,3.459,7.726,7.726,7.726   c3.744,0,6.865-2.662,7.575-6.197h9.057c-6.506,10.265-11.427,23.1-12.374,42.892c-2.72,1.196-4.621,3.911-4.621,7.072   c0,4.267,3.459,7.726,7.726,7.726h9.272c4.267,0,7.726-3.459,7.726-7.726c0-3.165-1.905-5.88-4.628-7.075   c1.445-25.577,10.688-36.636,18.24-45.655c1.926-2.301,2.347-5.509,1.077-8.229C153.275,210.865,150.546,209.127,147.545,209.127z"
-                        />
-                        <path
-                            style="fill: #c5324f"
-                            d="M248.846,209.127h-32.05c-4.267,0-7.726,3.459-7.726,7.726v6.197c0,4.267,3.459,7.726,7.726,7.726   c3.744,0,6.865-2.662,7.575-6.197h9.058c-6.506,10.265-11.427,23.1-12.374,42.892c-2.72,1.196-4.621,3.911-4.621,7.072   c0,4.267,3.459,7.726,7.726,7.726h9.272c4.267,0,7.726-3.459,7.726-7.726c0-3.165-1.905-5.88-4.628-7.075   c1.445-25.577,10.688-36.636,18.24-45.655c1.926-2.301,2.347-5.509,1.077-8.229C254.577,210.865,251.847,209.127,248.846,209.127z"
-                        />
-                        <path
-                            style="fill: #c5324f"
-                            d="M357.148,213.584c-1.27-2.72-3.999-4.458-7.001-4.458h-32.05c-4.267,0-7.726,3.459-7.726,7.726   v6.197c0,4.267,3.459,7.726,7.726,7.726c3.744,0,6.865-2.662,7.575-6.197h9.057c-6.506,10.265-11.427,23.1-12.374,42.892   c-2.72,1.196-4.621,3.911-4.621,7.072c0,4.267,3.459,7.726,7.726,7.726h9.272c4.267,0,7.726-3.459,7.726-7.726   c0-3.165-1.905-5.881-4.629-7.075c1.445-25.577,10.688-36.635,18.24-45.655C357.997,219.512,358.417,216.304,357.148,213.584z"
-                        />
-                    </g>
-                    <path
-                        style="fill: #8b9ba9"
-                        d="M160.708,420.829L160.708,420.829c0,17.069,13.836,30.905,30.905,30.905h82.414  c17.069,0,30.905-13.836,30.905-30.905l0,0c0-17.069-13.836-30.905-30.905-30.905h-82.414  C174.545,389.924,160.708,403.76,160.708,420.829z"
+                        class="st1"
+                        d="M205.5,23.2c-0.6,2.5-1,5.1-1,7.7v23.2l51.2,16.5l51.9-16.5V30.9c0-17.1-13.8-30.9-30.9-30.9l0,0
+                        c0,12.8-10.4,23.2-23.2,23.2H205.5z"
                     />
                     <path
-                        style="fill: #4d5967"
-                        d="M273.341,428.555h-82.414c-4.267,0-7.726-3.459-7.726-7.726c0-4.267,3.459-7.726,7.726-7.726h82.414  c4.267,0,7.726,3.459,7.726,7.726C281.067,425.096,277.609,428.555,273.341,428.555z"
+                        class="st2"
+                        d="M183.9,85l72.1,37.1L328.1,85V74.7c0-11.4-9.2-20.6-20.6-20.6h-103c-11.4,0-20.6,9.2-20.6,20.6V85z"
                     />
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
+                    <path
+                        class="st3"
+                        d="M70.6,512h370.9V115.9c0-17.1-13.8-30.9-30.9-30.9H101.5c-17.1,0-30.9,13.8-30.9,30.9L70.6,512L70.6,512z"
+                    />
+                    <path
+                        class="st4"
+                        d="M70.6,481.1V512h370.9V115.9c0-17.1-13.8-30.9-30.9-30.9v396.1H70.6z"
+                    />
+                    <path
+                        class="st5"
+                        d="M256,132.4H65.4c-8.5,0-15.5,6.9-15.5,15.5v195.7c0,8.5,6.9,15.5,15.5,15.5H256h190.6c8.5,0,15.5-6.9,15.5-15.5
+                        V147.8c0-8.5-6.9-15.5-15.5-15.5L256,132.4L256,132.4z"
+                    />
+                    <path
+                        class="st6"
+                        d="M446.6,132.4h-15.5v195.7H50v15.5c0,8.5,6.9,15.5,15.5,15.5H256h190.6c8.5,0,15.5-6.9,15.5-15.5V147.8
+                        C462,139.3,455.1,132.4,446.6,132.4z"
+                    />
+                    <path
+                        class="st2"
+                        d="M183.9,420.8L183.9,420.8c0,17.1,13.8,30.9,30.9,30.9h82.4c17.1,0,30.9-13.8,30.9-30.9l0,0
+                        c0-17.1-13.8-30.9-30.9-30.9h-82.4C197.7,389.9,183.9,403.8,183.9,420.8z"
+                    />
+                    <path
+                        class="st7"
+                        d="M296.5,428.6h-82.4c-4.3,0-7.7-3.5-7.7-7.7s3.5-7.7,7.7-7.7h82.4c4.3,0,7.7,3.5,7.7,7.7
+                        C304.2,425.1,300.8,428.6,296.5,428.6z"
+                    />
                 </svg>
+                <div class="lever-h"></div>
+                <div class="lever-v"></div>
+                <div class="lever-ball"></div>
             </section>
-            <div class="footer">© 2024 SCAICT All Rights Reserved</div>
+            <div class="cost">花費 1 🎟️</div>
+            <div class="shine">長按畫面任意處拉下拉桿</div>
         </main>
         <footer>
             <a href="https://www.facebook.com/scaict.tw/" target="_blank"
@@ -249,16 +297,6 @@
             ></a>
         </footer>
         <script>
-            // load product from /productList to <section>
-            let datas = [];
-            let selected;
-            const section = document.querySelector("section");
-            fetch("/productList")
-                .then(res => res.json())
-                .then(data => {
-                    datas = data;
-                });
-
             // confirm buy
             const buy = () => {
                 fetch("/slot", {
@@ -266,23 +304,38 @@
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ id: selected.id }),
                 })
-                    //alert recieved text
-                    .then(res => res.text())
-                    .then(text => {
-                        // if response is html then show it in new page
-                        if (text.toLowerCase().startsWith("<!doctype html>")) {
-                            document.write(text);
-                            return;
+                    // get json response
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("成功抽到 " + data.prize);
+                            location.reload();
                         } else {
-                            alert(text);
-                            confirm.classList.remove("active");
-                            window.location.reload();
+                            alert("抽獎失敗");
                         }
-                    })
-                    .catch(err => alert(err));
+                    });
             };
+            const main = document.querySelector("main");
+            // pull lever when mouse down or touch start. Add class to show the lever is pulled
+            main.addEventListener("mousedown", e => {
+                e.preventDefault();
+                main.classList.add("pulled");
+            });
+            main.addEventListener("touchstart", e => {
+                e.preventDefault();
+                main.classList.add("pulled");
+            });
+
+            // remove class when mouse up or touch end
+            main.addEventListener("mouseup", e => {
+                e.preventDefault();
+                main.classList.remove("pulled");
+            });
+            main.addEventListener("touchend", e => {
+                e.preventDefault();
+                main.classList.remove("pulled");
+            });
         </script>
     </body>
 </html>
