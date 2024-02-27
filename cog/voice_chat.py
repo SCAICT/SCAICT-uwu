@@ -21,7 +21,7 @@ class VoiceChat(build):
             category = discord.utils.get(guild.categories, name=target_category_name)  
             
             
-            new_channel = await guild.create_voice_channel(f'{member.name}的频道', category=category)
+            new_channel = await guild.create_voice_channel(f'{member.name}的頻道', category=category)
 
             
             await member.move_to(new_channel)
