@@ -76,6 +76,11 @@
             .rolling .st0 {
                 animation: colorChanging 1s linear infinite;
             }
+            .pulled .st1,
+            .pulled .st0 {
+                transition: filter 0.5s;
+                filter: brightness(150%);
+            }
 
             @keyframes colorChanging {
                 0% {
@@ -162,6 +167,40 @@
             }
             main > * {
                 pointer-events: none;
+            }
+            .roll {
+                width: 19.784765625%;
+                height: calc(19.784765625% / 6 * 7);
+                background: url(/static/slot.png) #fff9eb repeat-y;
+                background-size: 100%;
+                position: absolute;
+                left: 20.32197265625%;
+                top: 34.5%;
+                background-position-y: calc(100% / 9 * 0);
+                transition: background-position-y 1s ease-out;
+            }
+            #roll2 {
+                left: 40.10673828125%;
+                background: url(/static/slot.png) #e9e3d5 repeat-y;
+                background-size: 100%;
+                background-position-y: calc(100% / 9 * 0);
+                transition: background-position-y 2s ease-out;
+            }
+            #roll3 {
+                left: 59.89150390625%;
+                transition: background-position-y 5s ease-out;
+            }
+            .fast-rolling .roll {
+                animation: fast-rolling 0.7s linear infinite;
+            }
+
+            @keyframes fast-rolling {
+                0% {
+                    background-position-y: 0%;
+                }
+                to {
+                    background-position-y: 100%;
+                }
             }
         </style>
     </head>
@@ -280,7 +319,10 @@
                 </svg>
                 <div class="lever-h"></div>
                 <div class="lever-v"></div>
-                <div class="lever-ball"></div>
+                <div class="lever-ball"><div></div></div>
+                <div class="roll" id="roll1"></div>
+                <div class="roll" id="roll2"></div>
+                <div class="roll" id="roll3"></div>
             </section>
             <div class="cost">花費 1 🎟️</div>
             <div class="shine">長按畫面任意處拉下拉桿</div>
@@ -297,45 +339,69 @@
             ></a>
         </footer>
         <script>
-            // confirm buy
-            const buy = () => {
-                fetch("/slot", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-                    // get json response
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert("成功抽到 " + data.prize);
-                            location.reload();
-                        } else {
-                            alert("抽獎失敗");
-                        }
-                    });
-            };
             const main = document.querySelector("main");
             // pull lever when mouse down or touch start. Add class to show the lever is pulled
-            main.addEventListener("mousedown", e => {
-                e.preventDefault();
-                main.classList.add("pulled");
-            });
-            main.addEventListener("touchstart", e => {
-                e.preventDefault();
-                main.classList.add("pulled");
-            });
+            let pressStartTime;
 
-            // remove class when mouse up or touch end
-            main.addEventListener("mouseup", e => {
+            function handleLeverPress(e) {
                 e.preventDefault();
-                main.classList.remove("pulled");
-            });
-            main.addEventListener("touchend", e => {
+                pressStartTime = Date.now();
+                main.classList.add("pulled");
+            }
+
+            main.addEventListener("mousedown", handleLeverPress);
+            main.addEventListener("touchstart", handleLeverPress);
+
+            function handleLeverRelease(e) {
                 e.preventDefault();
+                if (Date.now() - pressStartTime > 500) {
+                    document.getElementById(
+                            "roll1"
+                        ).style.backgroundPositionY = `calc(100% / 9 * 0)`;
+                        document.getElementById(
+                            "roll2"
+                        ).style.backgroundPositionY = `calc(100% / 9 * 4)`;
+                        document.getElementById(
+                            "roll3"
+                        ).style.backgroundPositionY = `0`;
+                    main.classList.add("rolling");
+                    main.classList.add("fast-rolling");
+                    fetch("/rollSlot", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                        // get json response
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert("成功抽到 " + data.prize);
+                                location.reload();
+                            } else {
+                                alert("抽獎失敗");
+                            }
+                        });
+                    setTimeout(() => {
+                        main.classList.remove("rolling");
+                        main.classList.remove("fast-rolling");
+                        setTimeout(() => {
+                        document.getElementById(
+                            "roll1"
+                        ).style.backgroundPositionY = `calc(100% / 9 * 0)`;
+                        document.getElementById(
+                            "roll2"
+                        ).style.backgroundPositionY = `calc(100% / 9 * 4)`;
+                        document.getElementById(
+                            "roll3"
+                        ).style.backgroundPositionY = `calc(100% / 9 * 6)`;
+                    }, 1000); }, 3000);
+                }
                 main.classList.remove("pulled");
-            });
+            }
+
+            main.addEventListener("mouseup", handleLeverRelease);
+            main.addEventListener("touchend", handleLeverRelease);
         </script>
     </body>
 </html>
