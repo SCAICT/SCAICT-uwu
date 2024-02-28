@@ -16,6 +16,15 @@
 }
 ```
 
+## Slot
+
+<database/slot.json>
+
+```
+ {
+    "項目": [機率,獲得數量]
+ }
+ ```
 ## credits
 
 <a href="https://www.flaticon.com/free-icons/slot-machine" title="slot machine icons">Slot machine icons created by Freepik - Flaticon</a>

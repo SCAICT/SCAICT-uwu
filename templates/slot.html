@@ -192,7 +192,7 @@
             }
             .fast-rolling .roll {
                 animation: fast-rolling 0.7s linear infinite;
-                transition: none!important;
+                transition: none !important;
             }
 
             @keyframes fast-rolling {
@@ -325,7 +325,7 @@
                 <div class="roll" id="roll2"></div>
                 <div class="roll" id="roll3"></div>
             </section>
-            <div class="cost">花費 1 🎟️</div>
+            <div class="cost">花費 🎟️</div>
             <div class="shine">長按畫面任意處拉下拉桿</div>
         </main>
         <footer>
@@ -352,7 +352,18 @@
 
             main.addEventListener("mousedown", handleLeverPress);
             main.addEventListener("touchstart", handleLeverPress);
-
+            // get three "different numbers", they can't be the same
+            const randomSlot = () => {
+                const result = [];
+                for (let i = 0; i < 3; i++) {
+                    let random;
+                    do {
+                        random = Math.floor(Math.random() * 9) + 1;
+                    } while (result.includes(random));
+                    result.push(random);
+                }
+                return result;
+            };
             function handleLeverRelease(e) {
                 e.preventDefault();
                 if (Date.now() - pressStartTime > 500) {
@@ -373,35 +384,78 @@
                             "Content-Type": "application/json",
                         },
                     })
-                        // get json response
-                        .then(response => response.json())
+                        // get response in plain txt
+                        .then(response => response.text())
                         .then(data => {
-                            if (data.success) {
-                                alert("成功抽到 " + data.prize);
-                                location.reload();
-                            } else {
-                                alert("抽獎失敗");
+                            try {
+                                if (data.startsWith("[")) {
+                                    data = JSON.parse(data);
+                                    let result;
+                                    switch (data[2]) {
+                                        case "lightning":
+                                            result = [7, 7, 7];
+                                            break;
+                                        case "all different":
+                                            result = randomSlot();
+                                            break;
+                                        case "all same":
+                                            var random = Math.floor(
+                                                Math.random() * 9
+                                            );
+                                            result = [random, random, random];
+                                            break;
+                                        case "one pair":
+                                            result = randomSlot();
+                                            result[2] = result[1];
+                                            break;
+                                    }
+                                    setTimeout(() => {
+                                        main.classList.remove("rolling");
+                                        main.classList.remove("fast-rolling");
+                                        setTimeout(() => {
+                                            document.getElementById(
+                                                "roll1"
+                                            ).style.backgroundPositionY = `calc(100% / 9 * ${result[0]})`;
+                                            document.getElementById(
+                                                "roll2"
+                                            ).style.backgroundPositionY = `calc(100% / 9 * ${result[1]})`;
+                                            document.getElementById(
+                                                "roll3"
+                                            ).style.backgroundPositionY = `calc(100% / 9 * ${result[2]})`;
+                                            setTimeout(() => {
+                                                alert(
+                                                    "恭喜獲得 " +
+                                                        data[1] +
+                                                        " ⚡"
+                                                );
+                                                location.reload();
+                                            }, 5300);
+                                        }, 50);
+                                    }, 3000);
+                                } else {
+                                    setTimeout(() => {
+                                        alert(data)  }, 250);};
+                            } catch (err) {
+                                console.error(err);
+                                alert("發生錯誤，但已將獎勵發送至您的帳戶囉!");
                             }
                         });
-                    setTimeout(() => {
-                        main.classList.remove("rolling");
-                        main.classList.remove("fast-rolling");     setTimeout(() => {
-                        document.getElementById(
-                            "roll1"
-                        ).style.backgroundPositionY = `calc(100% / 9 * 0)`;
-                        document.getElementById(
-                            "roll2"
-                        ).style.backgroundPositionY = `calc(100% / 9 * 4)`;
-                        document.getElementById(
-                            "roll3"
-                        ).style.backgroundPositionY = `calc(100% / 9 * 6)`;
-                    }, 50);     }, 3000);
                 }
                 main.classList.remove("pulled");
             }
 
             main.addEventListener("mouseup", handleLeverRelease);
             main.addEventListener("touchend", handleLeverRelease);
+            // fetch price
+            fetch("/productList")
+                .then(res => res.json())
+                .then(data => {
+                    datas = data.products;
+                    document.querySelector(".cost").innerText =
+                        "花費 " +
+                        datas.find(product => product.id === "slot").price +
+                        " 🎟️";
+                });
         </script>
     </body>
 </html>

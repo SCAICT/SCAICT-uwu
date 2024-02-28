@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, session, url_for, render_template, send_from_directory
 import requests
 import json
+import random
 
 app = Flask(__name__)
 
@@ -122,6 +123,35 @@ def buyProduct():
     with open("database/products.json", "w", encoding='utf-8') as file:
         json.dump(products, file)
     return "購買成功!"
+
+@app.route("/rollSlot", methods=["GET"])
+def rollSlot():
+    DcUser = session.get("user")
+    if not DcUser:
+        return "請重新登入"
+    with open("database/users.json", encoding='utf-8') as file:
+        users = json.load(file)
+    user = users.get(DcUser["id"])
+    if not user:
+        return "用戶不存在"
+    with open("database/products.json", 'r', encoding='utf-8') as file:
+        products = json.load(file)
+    # Check in the json array products.products for the product with the id
+    product = next((p for p in products["products"] if p["id"] == "slot"), None)
+    if user["ticket"] < product["price"]:
+        return "抽獎券不足"
+    with open("database/slot.json", 'r', encoding='utf-8') as file:
+        slot_json = json.load(file)
+    result = random.choices(
+        population=slot_json["population"],
+        weights=slot_json["weights"],
+        k=1
+    )[0]
+    user["point"] += slot_json["get"][result]
+    user["ticket"] -= product["price"]
+    with open("database/users.json", "w", encoding='utf-8') as file:
+        json.dump(users, file)
+    return ["抽獎成功", slot_json["get"][result], result]
 
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
