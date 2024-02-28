@@ -19,11 +19,11 @@ cursor.execute("CREATE TABLE `USER`(uid BIGINT NOT NULL,\
                                     PRIMARY KEY (`uid`)\
                                     )"
               )
-cursor.execute("CREAT TABLE `CommentPoints`( seq INT AUTO_INCREMENT PRIMARY KEY,\
+cursor.execute("CREATE TABLE `CommentPoints`(seq INT AUTO_INCREMENT PRIMARY KEY,\
                                               user_id BIGINT NOT NULL,\
                                               times INT,\
                                               next_reward INT,\
-                                              FOREIGN KEY (`user_id`) REFERENCES user_info(`USER`) ON DELETE CASCADE\
+                                              FOREIGN KEY (`user_id`) REFERENCES USER(`uid`) ON DELETE CASCADE\
                                           )"
   )
 
@@ -32,7 +32,7 @@ cursor.execute("CREAT TABLE `CommentPoints`( seq INT AUTO_INCREMENT PRIMARY KEY,
 # cursor.execute("SHOW DATABASES")
 # RET=cursor.fetchall()
 # print(RET)
-
-connection.close()
-connection.commit()
+print("done")
 cursor.close()
+connection.commit()
+connection.close()
