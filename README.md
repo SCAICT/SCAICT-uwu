@@ -3,7 +3,7 @@
 * main.py: Discord Bot
 * app.py: Flask Web App
 * generate-secrets.py: 生成 Secret Key，請貼至 token.json
-
+* Database MySQL:使用外部伺服器，相關設定在cog/core/secret.py
 ## token.json
 
 ```json
