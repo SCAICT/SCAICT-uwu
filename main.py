@@ -1,7 +1,7 @@
 import discord
 import json
 import os
-from core.channelCheck import update_channel#update_channel程式從core目錄底下引入
+from channelCheck import update_channel#update_channel程式從core目錄底下引入
 
 bot = discord.Bot(intents = discord.Intents.all())
 with open("token.json","r") as file:
