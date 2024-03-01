@@ -14,8 +14,8 @@ cursor.execute("CREATE TABLE `USER`(uid BIGINT NOT NULL,\
                                     charge_combo INT,\
                                     next_lottery INT ,\
                                     num_comment INT,\
-                                    last_charge DATE,\
-                                    last_comment DATE,\
+                                    last_charge DATETIME,\
+                                    last_comment DATETIME,\
                                     PRIMARY KEY (`uid`)\
                                     )"
               )
