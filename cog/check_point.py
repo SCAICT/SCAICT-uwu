@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
-import user
+from  cog.core.SQL import read
 
 class check_point(commands.Cog):
 
@@ -24,13 +24,9 @@ class check_point(commands.Cog):
 
     @discord.slash_command(name="check_point", description="查看電電點")
     async def check(self, interaction: discord.Interaction):
-        member=interaction.user.mention
         userId = interaction.user.id
-        last_charge = user.read(userId,'last_charge')
-        last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
-        combo = user.read(userId,'charge_combo')
-        point = user.read(userId,'point')
-
+        combo = read(userId,'charge_combo')
+        point = read(userId,'point')
         await self.send_message(point, combo, interaction)
 
 def setup(bot):
