@@ -39,8 +39,8 @@ class charge(commands.Cog):
     @discord.slash_command(name="charge", description="每日充電")
     async def charge(self, interaction: discord.Interaction):
         userId = interaction.user.id
-        last_charge = user.read(userId, 'last_charge')
-        last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
+        last_charge = user.read(userId, 'last_charge')#SQL回傳型態:<class 'datetime.date'>
+        last_charge = datetime.strptime(last_charge, '%Y-%m-%d')#strptime轉型後':<class 'datetime.datetime'>
         combo = user.read(userId, 'charge_combo')
         point = user.read(userId, 'point')
         now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
