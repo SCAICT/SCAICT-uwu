@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
-from datetime import datetime
 from  cog.core.SQL import read
-
+from cog.core.SQL import linkSQL
+from cog.core.SQL import end
 class check_point(commands.Cog):
 
     def __init__(self, bot):
@@ -24,10 +24,11 @@ class check_point(commands.Cog):
 
     @discord.slash_command(name="check_point", description="查看電電點")
     async def check(self, interaction: discord.Interaction):
+        CONNECTION,CURSOR=linkSQL()#SQL 會話
         userId = interaction.user.id
-        combo = read(userId,'charge_combo')
-        point = read(userId,'point')
+        combo = read(userId,'charge_combo',CURSOR)
+        point = read(userId,'point',CURSOR)
         await self.send_message(point, combo, interaction)
-
+        end(CONNECTION,CURSOR)
 def setup(bot):
     bot.add_cog(check_point(bot))

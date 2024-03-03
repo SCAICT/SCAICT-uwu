@@ -17,7 +17,7 @@ def linkSQL():
 def write(userId, property:str, value,cursor,TABLE="USER"):#欲更改的使用者,屬性,修改值,欲修改表格(預設USER,option)
     #建立連線
     
-    cursor.execute(f'SELECT `uid`,{property} FROM `{TABLE}` WHERE `uid`="{userId}"')
+    cursor.execute(f'SELECT `uid` {property} FROM `{TABLE}` WHERE `uid`="{userId}"')
     RET=cursor.fetchall()
     if len(RET) ==0:#找不到 創造一份
         cursor.execute(f"INSERT INTO `{TABLE}`(uid) VALUE({userId})")
@@ -35,20 +35,15 @@ def read(userId, property,cursor,TABLE="USER"):
     return RET[0][0]
 
 
-def isExist(userId,table):
-    connection=connect()
-    cursor=connection.cursor()
-    cursor.execute(f'SELECT `uid` FROM `{table}` WHERE `uid`="{userId}"')
+def isExist(userId,table,cursor):
+    cursor.execute(f'SELECT `uid` FROM {table} WHERE `uid`="{userId}"')
     RET=cursor.fetchall()
-    end(connection,cursor)
     if (len(RET)==0):#不存在
         return False
     else:
         return True
     
 
-def test():
-    print('hi')
 # if __name__=="__main__":
 #     # write(898141506588770334, "point", 1000)
 #     print(read(89811506588770334,"point"))
