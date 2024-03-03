@@ -18,14 +18,10 @@ def write(userId, property:str, value,TABLE="USER"):#欲更改的使用者,屬�
     
     cursor.execute(f'SELECT `uid`,{property} FROM `{TABLE}` WHERE `uid`="{userId}"')
     RET=cursor.fetchall()
-    print("RET:",RET)
-    print(property,value)
-    if (len(RET) !=0):#有 select 到東西，長度不為0
-        cursor.execute(f'UPDATE `{TABLE}` SET {property}="{value}" WHERE `uid`={userId}')
-        print(RET)
-    else:
-        print("找不到")#創造一份?
-        # cursor.execute("INSERT INTO `USER` VALUE(898141506588770334,999,0,1,2,3,'2024-2-29','2024-2-28')")
+    if len(RET) ==0:#找不到 創造一份
+        cursor.execute(f"INSERT INTO `{TABLE}`(uid) VALUE({userId})")
+    cursor.execute(f'UPDATE `{TABLE}` SET {property}="{value}" WHERE `uid`={userId}')
+    # print(f"write {RET} to ({property},{value})")
     end(connection,cursor)
 def read(userId, property,TABLE="USER"):
     #建立連線
@@ -33,6 +29,10 @@ def read(userId, property,TABLE="USER"):
     cursor=connection.cursor()
     cursor.execute(f'SELECT {property} FROM `{TABLE}` WHERE `uid`={userId}')
     RET=cursor.fetchall()
+    if len(RET) ==0:#找不到 創造一份
+        cursor.execute(f"INSERT INTO `{TABLE}`(uid) VALUE({userId})")
+        cursor.execute(f'SELECT {property} FROM `{TABLE}` WHERE `uid`={userId}')
+        RET=cursor.fetchall()
     end(connection,cursor)
     return RET[0][0]
 
