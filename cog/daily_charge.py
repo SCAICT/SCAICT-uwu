@@ -5,10 +5,14 @@ import csv
 import json
 from cog.core.SQL import write
 from cog.core.SQL import read
+from cog.core.SQL import linkSQL
+from cog.core.SQL import end
 
 def getChannels():#要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻簽到，否則不予授理
     with open("./database/server.config.json", "r") as file:
         return json.load(file)["SCAICT-alpha"]["channel"]
+
+
 class charge(commands.Cog):
 
     def __init__(self, bot):
@@ -41,12 +45,13 @@ class charge(commands.Cog):
     @discord.slash_command(name="charge", description="每日充電")
     async def charge(self, interaction: discord.Interaction):
         userId = interaction.user.id
-        last_charge = read(userId, 'last_charge')#SQL回傳型態:<class 'datetime.date'>
+        CONNECTION,CURSOR=linkSQL()#SQL 會話
+        last_charge = read(userId, 'last_charge',CURSOR)#SQL回傳型態:<class 'datetime.date'>
         last_charge = datetime.strptime(str(last_charge), '%Y-%m-%d %H:%M:%S')#strptime轉型後':<class 'datetime.datetime'>
         # get now time and combo
         now = datetime.now().replace(microsecond=0)
-        combo = read(userId, 'charge_combo')#連續登入
-        point = read(userId, 'point')
+        combo = read(userId, 'charge_combo',CURSOR)#連續登入
+        point = read(userId, 'point',CURSOR)
         if (interaction.channel.id!=getChannels()["everyDayCharge"]):
             await self.channelError(interaction)
             return
@@ -56,10 +61,11 @@ class charge(commands.Cog):
         else:
             combo = 1 if (now - last_charge).days > 1 else combo + 1
             point += 5
-            write(userId, 'last_charge', now)
-            write(userId, 'charge_combo', combo)
-            write(userId, 'point', point)
+            write(userId, 'last_charge', now,CURSOR)
+            write(userId, 'charge_combo', combo,CURSOR)
+            write(userId, 'point', point,CURSOR)
             await self.send_message(point, combo, interaction)
+            print("傳送終了...")
             
             
             #紀錄log
@@ -67,6 +73,7 @@ class charge(commands.Cog):
                 writer = csv.writer(log)
                 writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(
                     read(userId, 'point')), 'charge', str(datetime.now())])
+        end(CONNECTION,CURSOR)
 
 
 
