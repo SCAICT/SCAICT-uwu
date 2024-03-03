@@ -22,10 +22,10 @@ cursor.execute("CREATE TABLE `USER`(uid BIGINT NOT NULL,\
                                     )"
               )
 cursor.execute("CREATE TABLE `CommentPoints`(seq INT AUTO_INCREMENT PRIMARY KEY,\
-                                              user_id BIGINT NOT NULL,\
+                                              uid BIGINT NOT NULL,\
                                               times INT NOT NULL DEFAULT 2,\
                                               next_reward INT NOT NULL DEFAULT 1,\
-                                              FOREIGN KEY (`user_id`) REFERENCES USER(`uid`) ON DELETE CASCADE\
+                                              FOREIGN KEY (`uid`) REFERENCES USER(`uid`) ON DELETE CASCADE\
                                           )"
   )
 
