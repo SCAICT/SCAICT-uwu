@@ -23,17 +23,23 @@ class charge(commands.Cog):
         with open("./database/server.config.json", "r") as file:
             stickers=json.load(file)["SCAICT-alpha"]["stickers"]
         
-        self.embed = discord.Embed(color=0x14e15c)
-        self.embed.set_thumbnail(url=str(interaction.user.avatar))
-        self.embed.add_field(name=":battery: 充電成功!",
-                             value="+5:zap:= "+str(point)+f"{stickers["logo"]}", inline=False)
+        
+        self.embed = discord.Embed(title=f"{interaction.user.name}剛剛充電了!", description="",color=0x14e15c)
+        
+        if interaction.user.avatar!=None:#預設頭像沒有這個
+            self.embed.set_thumbnail(url=str(interaction.user.avatar))
+
+        self.embed.add_field(name="",
+                             value=":battery:+5:zap:= "+str(point)+f"{stickers['logo']}", inline=False)
         self.embed.add_field(name="連續登入獎勵: "+str(combo)+"/" +
                              str(combo + 7- combo % 7), value='\n', inline=False)
+        self.embed.set_footer(text=f"{interaction.user.name}充電成功!")
         await interaction.response.send_message(embed=self.embed)
         
     async def already_charge(self, interaction):
         self.embed = discord.Embed(color=0xff0000)
-        self.embed.set_thumbnail(url=str(interaction.user.avatar))
+        if interaction.user.avatar!=None:#預設頭像沒有這個
+            self.embed.set_thumbnail(url=str(interaction.user.avatar))
         self.embed.add_field(name="您夠電了，明天再來!", value="⚡⚡⚡🛐🛐🛐", inline=False)
         await interaction.response.send_message(embed=self.embed,ephemeral=True)
         
