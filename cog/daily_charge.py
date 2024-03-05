@@ -19,10 +19,14 @@ class charge(commands.Cog):
         self.bot = bot
 
     async def send_message(self, point, combo, interaction):
+        #讀表符ID
+        with open("./database/server.config.json", "r") as file:
+            stickers=json.load(file)["SCAICT-alpha"]["stickers"]
+        
         self.embed = discord.Embed(color=0x14e15c)
         self.embed.set_thumbnail(url=str(interaction.user.avatar))
         self.embed.add_field(name=":battery: 充電成功!",
-                             value="+5:zap: = "+str(point)+":zap:", inline=False)
+                             value="+5:zap:= "+str(point)+f"{stickers["logo"]}", inline=False)
         self.embed.add_field(name="連續登入獎勵: "+str(combo)+"/" +
                              str(combo + 7- combo % 7), value='\n', inline=False)
         await interaction.response.send_message(embed=self.embed)
@@ -55,6 +59,7 @@ class charge(commands.Cog):
         if (interaction.channel.id!=getChannels()["everyDayCharge"]):
             await self.channelError(interaction)
             return
+        print(now.date(),last_charge.date())
         if (now.date() == last_charge.date()):#今天已經充電過了
             await self.already_charge(interaction)
             return
@@ -71,8 +76,7 @@ class charge(commands.Cog):
             #紀錄log
             with open('./database/point_log.csv', 'a+', newline='') as log:
                 writer = csv.writer(log)
-                writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(
-                    read(userId, 'point')), 'charge', str(datetime.now())])
+                writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(read(userId, 'point',CURSOR)), 'charge', str(datetime.now())])
         end(CONNECTION,CURSOR)
 
 
