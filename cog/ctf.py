@@ -49,9 +49,10 @@ class ctf(build):
                     userId = interaction.user.id
                     if str(userId) not in ctf_question["history"]:
                         ctfFile[question_id]["history"][str(userId)] = 0
-                    if str(userId) in ctf_question["history"] and ctf_question["history"][str(userId)] >= int(ctf_question["limit"]):
-                        await interaction.response.send_message("你已經回答超過限制次數了喔！",ephemeral=True)
-                        return
+                    if ctf_question["limit"]!='∞':#無限沒辦法比大小，直接跳過這個邏輯
+                        if str(userId) in ctf_question["history"] and ctf_question["history"][str(userId)] >= int(ctf_question["limit"]):
+                            await interaction.response.send_message("你已經回答超過限制次數了喔！",ephemeral=True)
+                            return
                     ctfFile[question_id]["history"][str(userId)] = ctfFile[question_id]["history"][str(userId)] + 1
                     ctfFile[question_id]["tried"] = ctf_question["tried"] + 1
                     response_flag = self.children[0].value
