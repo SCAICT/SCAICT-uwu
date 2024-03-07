@@ -15,6 +15,7 @@ for filename in os.listdir("./cog"):
 @bot.event
 async def on_ready():
     print(f"✅ {bot.user} is online")
+    await bot.change_presence(activity=discord.Game(name="SITCON"))
     bot.loop.create_task(update_channel(bot))
 
 if __name__=="__main__":
