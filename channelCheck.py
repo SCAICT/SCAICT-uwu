@@ -4,7 +4,7 @@ import os
 def openJSON():
     #open setting file
     os.chdir("./")
-    with open(f"{os.getcwd()}/SCAICT-Discord-Bot/DataBase/server.config.json","r") as file:
+    with open(f"{os.getcwd()}/DataBase/server.config.json","r") as file:
         GlobalSetting= json.load(file)
     return GlobalSetting
 
