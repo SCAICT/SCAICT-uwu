@@ -4,7 +4,11 @@ from discord.ext import commands
 from discord.commands import Option
 import json
 import random
-import user
+# import user
+from cog.core.SQL import read
+from cog.core.SQL import write
+from cog.core.SQL import end    #用來結束和SQL資料庫的會話
+from cog.core.SQL import linkSQL
 from datetime import datetime
 import csv
 
@@ -45,27 +49,29 @@ class ctf(build):
                     userId = interaction.user.id
                     if str(userId) not in ctf_question["history"]:
                         ctfFile[question_id]["history"][str(userId)] = 0
-                    if str(userId) in ctf_question["history"] and ctf_question["history"][str(userId)] >= int(ctf_question["limit"]):
-                        await interaction.response.send_message("你已經回答超過限制次數了喔！",ephemeral=True)
-                        return
+                    if ctf_question["limit"]!='∞':#無限沒辦法比大小，直接跳過這個邏輯
+                        if str(userId) in ctf_question["history"] and ctf_question["history"][str(userId)] >= int(ctf_question["limit"]):
+                            await interaction.response.send_message("你已經回答超過限制次數了喔！",ephemeral=True)
+                            return
                     ctfFile[question_id]["history"][str(userId)] = ctfFile[question_id]["history"][str(userId)] + 1
                     ctfFile[question_id]["tried"] = ctf_question["tried"] + 1
                     response_flag = self.children[0].value
                     answer = ctf_question["flag"]
                     if response_flag == answer:
+                        CONNECTION,CURSOR=linkSQL()#SQL 會話
                         if int(userId) in ctf_question["solved"]:
                             embed = discord.Embed(title="答題成功!")
                             embed.add_field(name=""  , value="但你已經解答過了所以沒有 :zap: 喔！", inline=False)
                             await interaction.response.send_message(ephemeral=True,embeds=[embed])
                             return
-                        current_point = user.read(userId, "point")
+                        current_point = read(userId, "point",CURSOR)
                         new_point = current_point + int(ctf_question["score"])
                         ctfFile[question_id]["solved"].append(userId)
-                        user.write(userId, "point", new_point)
+                        write(userId, "point", new_point,CURSOR)
                         with open('./database/point_log.csv', 'a+', newline='') as log:
                             writer = csv.writer(log)
                             writer.writerow([userId, str(interaction.user.name),ctf_question["score"] , str(
-                                user.read(userId, 'point')), 'ctf', str(datetime.now())])
+                                read(userId, 'point',CURSOR)), 'ctf', str(datetime.now())])
                         embed = discord.Embed(title="答題成功!")
                         embed.add_field(name="+" + str(ctf_question["score"]) + ":zap:" , value="=" + str(new_point), inline=False)
                         await interaction.response.send_message(embeds=[embed],ephemeral=True)
@@ -75,6 +81,7 @@ class ctf(build):
                         await interaction.response.send_message(embeds=[embed],ephemeral=True)
                     with open("./database/ctf.json", "w") as outfile:
                         json.dump(ctfFile, outfile)
+                    end(CONNECTION,CURSOR)
                     # edit the original message
                     embed = interaction.message.embeds[0]
                     embed.set_field_at(0, name="已完成", value=str(len(ctfFile[question_id]["solved"])), inline=True)
@@ -84,7 +91,7 @@ class ctf(build):
                     await interaction.message.edit(embed=embed)
             await interaction.response.send_modal(SubmitModal(title="你找到 Flag 了嗎？"))
     @ctf_commands.command(name="create", description="新題目")
-    async def create(self, ctx: discord.Interaction,
+    async def create(self, ctx,
         title: Option(str, "題目標題", required=True, default=''),  
         flag: Option(str, "輸入 flag 解答", required=True, default=''), 
         score: Option(int, "分數", required=True, default='20'), 

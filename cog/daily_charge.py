@@ -1,31 +1,47 @@
 import discord
 from discord.ext import commands
-import user
 from datetime import datetime
 import csv
 import json
+from cog.core.SQL import write
+from cog.core.SQL import read
+from cog.core.SQL import linkSQL
+from cog.core.SQL import end
+
 def getChannels():#要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻簽到，否則不予授理
     with open("./database/server.config.json", "r") as file:
         return json.load(file)["SCAICT-alpha"]["channel"]
+
+
 class charge(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
     async def send_message(self, point, combo, interaction):
-        self.embed = discord.Embed(color=0x14e15c)
-        self.embed.set_thumbnail(url=str(interaction.user.avatar))
-        self.embed.add_field(name=":battery: 充電成功!",
-                             value="+5:zap: = "+str(point)+":zap:", inline=False)
+        #讀表符ID
+        with open("./database/server.config.json", "r") as file:
+            stickers=json.load(file)["SCAICT-alpha"]["stickers"]
+        
+        
+        self.embed = discord.Embed(title=f"{interaction.user.name}剛剛充電了!", description="",color=0x14e15c)
+        
+        if interaction.user.avatar!=None:#預設頭像沒有這個
+            self.embed.set_thumbnail(url=str(interaction.user.avatar))
+
+        self.embed.add_field(name="",
+                             value=":battery:+5:zap:= "+str(point)+f"{stickers['logo']}", inline=False)
         self.embed.add_field(name="連續登入獎勵: "+str(combo)+"/" +
                              str(combo + 7- combo % 7), value='\n', inline=False)
+        self.embed.set_footer(text=f"{interaction.user.name}充電成功!")
         await interaction.response.send_message(embed=self.embed)
         
     async def already_charge(self, interaction):
         self.embed = discord.Embed(color=0xff0000)
-        self.embed.set_thumbnail(url=str(interaction.user.avatar))
+        if interaction.user.avatar!=None:#預設頭像沒有這個
+            self.embed.set_thumbnail(url=str(interaction.user.avatar))
         self.embed.add_field(name="您夠電了，明天再來!", value="⚡⚡⚡🛐🛐🛐", inline=False)
-        await interaction.response.send_message(embed=self.embed)
+        await interaction.response.send_message(embed=self.embed,ephemeral=True)
         
     async def channelError(self,interaction):
         self.embed = discord.Embed(color=0xff0000)
@@ -37,35 +53,38 @@ class charge(commands.Cog):
         
         
     @discord.slash_command(name="charge", description="每日充電")
-    async def charge(self, interaction: discord.Interaction):
+    async def charge(self, interaction):
         userId = interaction.user.id
-        last_charge = user.read(userId, 'last_charge')
-        last_charge = datetime.strptime(last_charge, '%Y-%m-%d')
-        combo = user.read(userId, 'charge_combo')
-        point = user.read(userId, 'point')
-        now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        print(interaction.channel.id)
+        CONNECTION,CURSOR=linkSQL()#SQL 會話
+        last_charge = read(userId, 'last_charge',CURSOR)#SQL回傳型態:<class 'datetime.date'>
+        last_charge = datetime.strptime(str(last_charge), '%Y-%m-%d %H:%M:%S')#strptime轉型後':<class 'datetime.datetime'>
+        # get now time and combo
+        now = datetime.now().replace(microsecond=0)
+        combo = read(userId, 'charge_combo',CURSOR)#連續登入
+        point = read(userId, 'point',CURSOR)
         if (interaction.channel.id!=getChannels()["everyDayCharge"]):
             await self.channelError(interaction)
             return
-        
-        # get now time
-        if (now == last_charge):
-            last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
+        print(now.date(),last_charge.date())
+        if (now.date() == last_charge.date()):#今天已經充電過了
             await self.already_charge(interaction)
+            return
         else:
             combo = 1 if (now - last_charge).days > 1 else combo + 1
             point += 5
-            last_charge = str(now.year)+"-"+str(now.month)+"-"+str(now.day)
+            write(userId, 'last_charge', now,CURSOR)
+            write(userId, 'charge_combo', combo,CURSOR)
+            write(userId, 'point', point,CURSOR)
             await self.send_message(point, combo, interaction)
+            print("傳送終了...")
+            
+            
+            #紀錄log
             with open('./database/point_log.csv', 'a+', newline='') as log:
                 writer = csv.writer(log)
-                writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(
-                    user.read(userId, 'point')), 'charge', str(datetime.now())])
-            
-        user.write(userId, 'last_charge', last_charge)
-        user.write(userId, 'charge_combo', combo)
-        user.write(userId, 'point', point)
+                writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(read(userId, 'point',CURSOR)), 'charge', str(datetime.now())])
+        end(CONNECTION,CURSOR)
+
 
 
 def setup(bot):

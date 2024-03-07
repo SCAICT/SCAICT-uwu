@@ -4,6 +4,7 @@
 # 2. git update-index --assume-unchanged token.json
 #這兩個指令
 token.json
+read.txt
 
 
 /.vscode
