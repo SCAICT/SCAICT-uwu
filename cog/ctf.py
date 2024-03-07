@@ -91,7 +91,7 @@ class ctf(build):
                     await interaction.message.edit(embed=embed)
             await interaction.response.send_modal(SubmitModal(title="你找到 Flag 了嗎？"))
     @ctf_commands.command(name="create", description="新題目")
-    async def create(self, ctx: discord.Interaction,
+    async def create(self, ctx,
         title: Option(str, "題目標題", required=True, default=''),  
         flag: Option(str, "輸入 flag 解答", required=True, default=''), 
         score: Option(int, "分數", required=True, default='20'), 

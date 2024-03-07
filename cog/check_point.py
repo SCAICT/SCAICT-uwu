@@ -23,7 +23,7 @@ class check_point(commands.Cog):
         await interaction.response.send_message(embed=self.embed)
 
     @discord.slash_command(name="check_point", description="查看電電點")
-    async def check(self, interaction: discord.Interaction):
+    async def check(self, interaction):
         CONNECTION,CURSOR=linkSQL()#SQL 會話
         userId = interaction.user.id
         combo = read(userId,'charge_combo',CURSOR)

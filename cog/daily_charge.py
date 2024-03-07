@@ -53,7 +53,7 @@ class charge(commands.Cog):
         
         
     @discord.slash_command(name="charge", description="每日充電")
-    async def charge(self, interaction: discord.Interaction):
+    async def charge(self, interaction):
         userId = interaction.user.id
         CONNECTION,CURSOR=linkSQL()#SQL 會話
         last_charge = read(userId, 'last_charge',CURSOR)#SQL回傳型態:<class 'datetime.date'>
