@@ -2,12 +2,13 @@ import discord
 import json
 import os
 from channelCheck import update_channel#update_channel程式從core目錄底下引入
-
 bot = discord.Bot(intents = discord.Intents.all())
-with open("token.json","r") as file:
+#更改目前位置到專案根目錄(SCAICT-DISCORD-BOT 資料夾)，再找檔案
+os.chdir("./")
+with open(f"{os.getcwd()}/token.json","r") as file:
     token = json.load(file)
 
-for filename in os.listdir("./cog"):
+for filename in os.listdir(f"{os.getcwd()}/cog"):
     if filename.endswith(".py"):
         bot.load_extension(f"cog.{filename[:-3]}")
         print(f"📖 {filename} loaded")#test

@@ -1,8 +1,11 @@
 import asyncio
 import json
+import os
 def openJSON():
     #open setting file
-    with open("./DataBase/server.config.json","r") as file:
+    os.chdir("./SCAICT-Discord-Bot")
+    print(f"channel check at{os.getcwd()}")
+    with open(f"{os.getcwd()}/DataBase/server.config.json","r") as file:
         GlobalSetting= json.load(file)
     return GlobalSetting
 
