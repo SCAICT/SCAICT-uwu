@@ -71,10 +71,11 @@ def profile():
     # user = users.get(DcUser["id"])
     yourPoints=read(DcUser["id"],"point",CURSOR)
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
-    end(CONNECTION,CURSOR)
     if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
+        end(CONNECTION,CURSOR)
         return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point=str(yourPoints), ticket=str(yourTicket))
     else:
+        end(CONNECTION,CURSOR)
         return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
     
 @app.route("/slot")
