@@ -11,7 +11,7 @@ class VoiceChat(build):
     @commands.Cog.listener()
     async def on_voice_state_update(self,member, before, after):
         target_voice_channel_name =  "創建語音"  
-        target_category_name = "-------------私人語音頻道-------------"
+        target_category_name = "----------動態語音頻道----------"
         if (
             after.channel
             and after.channel != before.channel

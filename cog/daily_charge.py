@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from datetime import datetime
 import csv
+import os
 import json
 from cog.core.SQL import write
 from cog.core.SQL import read
@@ -9,7 +10,8 @@ from cog.core.SQL import linkSQL
 from cog.core.SQL import end
 
 def getChannels():#要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻簽到，否則不予授理
-    with open("./database/server.config.json", "r") as file:
+    
+    with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)["SCAICT-alpha"]["channel"]
 
 
@@ -20,7 +22,7 @@ class charge(commands.Cog):
 
     async def send_message(self, point, combo, interaction):
         #讀表符ID
-        with open("./database/server.config.json", "r") as file:
+        with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
             stickers=json.load(file)["SCAICT-alpha"]["stickers"]
         
         
@@ -65,7 +67,6 @@ class charge(commands.Cog):
         if (interaction.channel.id!=getChannels()["everyDayCharge"]):
             await self.channelError(interaction)
             return
-        print(now.date(),last_charge.date())
         if (now.date() == last_charge.date()):#今天已經充電過了
             await self.already_charge(interaction)
             return
@@ -76,13 +77,9 @@ class charge(commands.Cog):
             write(userId, 'charge_combo', combo,CURSOR)
             write(userId, 'point', point,CURSOR)
             await self.send_message(point, combo, interaction)
-            print("傳送終了...")
-            
             
             #紀錄log
-            with open('./database/point_log.csv', 'a+', newline='') as log:
-                writer = csv.writer(log)
-                writer.writerow([str(interaction.user.id), str(interaction.user.name), '5', str(read(userId, 'point',CURSOR)), 'charge', str(datetime.now())])
+            print(f"{interaction.user.id},{interaction.user.name} Get 5 point by daily_charge {datetime.now()}")
         end(CONNECTION,CURSOR)
 
 

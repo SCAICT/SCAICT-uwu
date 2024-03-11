@@ -3,14 +3,12 @@ import json
 import os
 def openJSON():
     #open setting file
-    os.chdir("./SCAICT-Discord-Bot")
-    print(f"channel check at{os.getcwd()}")
+    os.chdir("./")
     with open(f"{os.getcwd()}/DataBase/server.config.json","r") as file:
         GlobalSetting= json.load(file)
     return GlobalSetting
 
 async def update_channel(bot):
-        
         channel=openJSON()["SCAICT-alpha"]["channel"]
         await bot.wait_until_ready() 
         guild = bot.get_guild(channel["serverID"])  #YOUR_GUILD_ID
@@ -27,5 +25,5 @@ async def update_channel(bot):
 
         while not bot.is_closed():
             total_members = guild.member_count
-            await channel.edit(name=f"🔋總電量：{total_members}")
+            await channel.edit(name=f"👥電池數：{total_members}")
             await asyncio.sleep(600)

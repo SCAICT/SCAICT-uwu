@@ -2,6 +2,7 @@ from flask import Flask, redirect, request, session, url_for, render_template, s
 import requests
 import json
 import random
+import os
 from cog.core.SQL import write
 from cog.core.SQL import read
 from cog.core.SQL import linkSQL
@@ -10,7 +11,7 @@ from cog.core.SQL import isExist
 app = Flask(__name__)
 
 # FILEPATH: /d:/GayHub/SCAICT-Discord-Bot/token.json
-with open("token.json", encoding='utf-8') as file:
+with open(f"{os.getcwd()}/token.json", encoding='utf-8') as file:
     data = json.load(file)
 
 app.secret_key = data["secret_key"]
@@ -18,9 +19,11 @@ client_id = data["client_id"]
 client_secret = data["client_secret"]
 redirect_uri = data["redirect_uri"]
 
+print(client_id)
+
 @app.route("/login")
 def login():
-    return redirect(f"https://discord.com/api/oauth2/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope=identify")
+    return redirect(f"https://discord.com/api/oauth2/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope=identify+email")
 
 @app.route("/logout")
 def logout():
@@ -42,6 +45,7 @@ def callback():
         "Content-Type": "application/x-www-form-urlencoded"
     }
     response = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
+    print("app.py say:",response.json())
     access_token = response.json()["access_token"]
     headers = {
         "Authorization": f"Bearer {access_token}"
@@ -65,16 +69,18 @@ def profile():
     CONNECTION,CURSOR=linkSQL()#SQL 會話
     DcUser = session.get("user")
     if not DcUser:
+        end(CONNECTION,CURSOR)
         return render_template("home.html")
     # with open("database/users.json", encoding='utf-8') as file:
     #     users = json.load(file)
     # user = users.get(DcUser["id"])
     yourPoints=read(DcUser["id"],"point",CURSOR)
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
-    end(CONNECTION,CURSOR)
     if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
+        end(CONNECTION,CURSOR)
         return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point=str(yourPoints), ticket=str(yourTicket))
     else:
+        end(CONNECTION,CURSOR)
         return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
     
 @app.route("/slot")
@@ -88,16 +94,17 @@ def slot():
     # user = users.get(DcUser["id"])
     yourPoints=read(DcUser["id"],"point",CURSOR)
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
-    end(CONNECTION,CURSOR)
     if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
+        end(CONNECTION,CURSOR)
         return render_template("slot.html", username=DcUser["name"], avatar=DcUser["avatar"], point=str(yourPoints), ticket=str(yourTicket))
     else:
+        end(CONNECTION,CURSOR)
         return render_template("slot.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
 
 @app.route("/productList")
 def productList():
     # send pure json data
-    with open("database/products.json", 'r', encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/products.json", 'r', encoding='utf-8') as file:
         products = json.load(file)
     return products
 
@@ -110,7 +117,7 @@ def buyProduct():
     product_id = request.json.get("id")  # Convert product_id to a string
     if not product_id:
         return "無法讀取商品 ID"
-    with open("database/products.json", 'r', encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/products.json", 'r', encoding='utf-8') as file:
         products = json.load(file)
     # Check in the json array products.products for the product with the id
     product = next((p for p in products["products"] if p["id"] == product_id), None)
@@ -128,9 +135,11 @@ def buyProduct():
     CONNECTION,CURSOR=linkSQL()#SQL 會話
     
     if not (isExist(DcUser["id"],"USER",CURSOR)):
+        end(CONNECTION,CURSOR)
         return "用戶不存在"
     yourPoint=read(DcUser["id"],"point",CURSOR)
     if yourPoint < product["price"]:
+        end(CONNECTION,CURSOR)
         return "電電點不足"
     yourPoint -= product["price"]
     # with open("database/users.json", "w", encoding='utf-8') as file:
@@ -138,7 +147,7 @@ def buyProduct():
     write(DcUser["id"],"point",yourPoint,CURSOR)
     end(CONNECTION,CURSOR)
     product["stock"] -= 1
-    with open("database/products.json", "w", encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/products.json", "w", encoding='utf-8') as file:
         json.dump(products, file)
     return "購買成功!"
 
@@ -152,8 +161,9 @@ def rollSlot():
     #     users = json.load(file)
     # user = users.get(DcUser["id"])
     if not (isExist(DcUser["id"],"USER",CURSOR)):
+        end(CONNECTION,CURSOR)
         return "用戶不存在"
-    with open("database/products.json", 'r', encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/products.json", 'r', encoding='utf-8') as file:
         products = json.load(file)
     # Check in the json array products.products for the product with the id
     product = next((p for p in products["products"] if p["id"] == "slot"), None)
@@ -162,8 +172,9 @@ def rollSlot():
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
     yourPoint=read(DcUser["id"],"point",CURSOR)
     if yourTicket < product["price"]:
+        end(CONNECTION,CURSOR)
         return "抽獎券不足"
-    with open("database/slot.json", 'r', encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/slot.json", 'r', encoding='utf-8') as file:
         slot_json = json.load(file)
     result = random.choices(
         population=slot_json["population"],
@@ -175,9 +186,9 @@ def rollSlot():
     # with open("database/users.json", "w", encoding='utf-8') as file:
     #     json.dump(users, file)
     #更新抽獎券和電電點
-    write(DcUser["id"],"ticket",yourTicket)
-    write(DcUser["id"],"point",yourPoint)
-    
+    write(DcUser["id"],"ticket",yourTicket,CURSOR)
+    write(DcUser["id"],"point",yourPoint,CURSOR)
+    end(CONNECTION,CURSOR)
     return ["抽獎成功", slot_json["get"][result], result]
 
 if __name__ == "__main__":
