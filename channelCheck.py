@@ -25,5 +25,5 @@ async def update_channel(bot):
 
         while not bot.is_closed():
             total_members = guild.member_count
-            await channel.edit(name=f"🔋總電量：{total_members}")
+            await channel.edit(name=f"👥電池數：{total_members}")
             await asyncio.sleep(600)

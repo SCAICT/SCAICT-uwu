@@ -1,0 +1,21 @@
+{
+    "SCAICT-alpha":
+    {
+        
+        "channel":{
+            "serverID":1203338928535379978,
+            "memberCount":1206549021355810816,
+            "everyDayCharge":1206549724530999356,
+            "commandChannel":1206550021353242654
+        },
+        "SP-role":
+        {
+            "CTF_Maker":1210935361467977738
+        },
+        "stickers":
+        {
+            "logo":"<a:__:1213132659002441749>"
+        }
+    },
+    "NULL":"NULL"
+}

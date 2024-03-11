@@ -3,18 +3,18 @@
     {
         
         "channel":{
-            "serverID":1203338928535379978,
-            "memberCount":1206549021355810816,
-            "everyDayCharge":1206549724530999356,
-            "commandChannel":1206550021353242654
+            "serverID":959823904266944562,
+            "memberCount":1215645338522755123,
+            "everyDayCharge":1215248009097383956,
+            "commandChannel":1215248450502008832
         },
         "SP-role":
         {
-            "CTF_Maker":1210935361467977738
+            "CTF_Maker":1215248450502008832
         },
         "stickers":
         {
-            "logo":"<a:__:1213132659002441749>"
+            "logo":"<:zap:1215646859067138128>"
         }
     },
     "NULL":"NULL"

@@ -5,6 +5,7 @@ from datetime import datetime
 from datetime import date
 from datetime import timedelta
 import csv
+import os
 from cog.core.SQL import read
 from cog.core.SQL import write
 from cog.core.SQL import isExist
@@ -13,7 +14,8 @@ from cog.core.SQL import linkSQL
 def insertUser(userId,TABLE,CURSOR):#初始化(創建)傳入該ID的表格
     CURSOR.execute(f"INSERT INTO {TABLE} (uid) VALUE({userId})")#其他屬性在創造時MYSQL會給預設值
 def getChannels():#要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻簽到，否則不予授理
-    with open("./database/server.config.json", "r") as file:
+    #os.chdir("./")
+    with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)["SCAICT-alpha"]["channel"]
 
 class comment(commands.Cog):
