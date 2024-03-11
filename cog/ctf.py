@@ -127,7 +127,7 @@ class ctf(build):
             url="https://cdn-icons-png.flaticon.com/128/14929/14929899.png")
         embed.add_field(name="已完成", value= "0", inline=True)
         embed.add_field(name="已嘗試", value= "0", inline=True)
-        embed.add_field(name="回答次數限制", value="0/"+limit,inline=True )
+        embed.add_field(name="回答次數限制", value=f"0/{limit}",inline=True )
         embed.add_field(name="開始作答日期", value=start, inline=True)
         embed.add_field(name="截止作答日期", value=end, inline=True)
         embed.add_field(name="", value="", inline=False)
