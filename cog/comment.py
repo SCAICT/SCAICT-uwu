@@ -31,8 +31,10 @@ class comment(commands.Cog):
         write(userId,"next_reward",1,CURSOR,TABLE="CommentPoints")
     
 
-    def reward(self,userId,CURSOR):
+    def reward(self,message,CURSOR):
         #讀USER資料表的東西
+        userId=message.author.id
+        nickName=message.user.name
         today_comments=read(userId,"today_comments",CURSOR)
         point=read(userId,"point",CURSOR)
         #讀CommentPoints 資料表裡面的東西，這個表格紀錄有關發言次數非線性加分的資料
@@ -48,10 +50,11 @@ class comment(commands.Cog):
             write(userId,"point",point,CURSOR)
             write(userId,"next_reward",next_reward,CURSOR,TABLE="CommentPoints")
             write(userId,"times",times,CURSOR,TABLE="CommentPoints")
+    
+            #紀錄log
+            print(f"{userId},{nickName} Get 2 point by comment {datetime.now()}")
         write(userId,"today_comments",today_comments,CURSOR)
-        with open('./point_log.csv', 'a+', newline='') as log:
-            writer = csv.writer(log)
-            writer.writerow([str(userId), str(userId), '2', str(point), 'comment', str(datetime.now())])
+
     
 
     @commands.Cog.listener()
@@ -59,10 +62,9 @@ class comment(commands.Cog):
         userId=message.author.id
         CONNECTION,CURSOR=linkSQL()#SQL 會話
         
-        print(f"{userId}正在{message.channel.id}說話")
         spChannel=getChannels()#特殊用途的channel
         #創建該user的資料表
-        if userId==1204265627016101969 or message.channel.id==spChannel["commandChannel"]:
+        if userId==1214954731747680326 or message.channel.id==spChannel["commandChannel"]:
             #機器人會想給自己記錄電電點，必須排除
             return
         if not(isExist(userId,"USER",CURSOR)):#該 uesr id 不在USER表格內，插入該筆用戶資料
@@ -75,11 +77,9 @@ class comment(commands.Cog):
 
 
         if(now-last_comment >= delta):
-            print("叮咚，今天第一次發言")#把今天之前的發言次數歸零
             self.reset(message, now,CURSOR)
 
-        self.reward(userId,CURSOR)
-        
+        self.reward(message,CURSOR)
         end(CONNECTION,CURSOR)
         
         
