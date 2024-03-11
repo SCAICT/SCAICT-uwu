@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.commands import Option
 import json
 import random
-# import user
+import os
 from cog.core.SQL import read
 from cog.core.SQL import write
 from cog.core.SQL import end    #用來結束和SQL資料庫的會話
@@ -13,10 +13,10 @@ from datetime import datetime
 import csv
 
 def getCTFFile():
-    with open("./database/ctf.json", "r") as file:
+    with open(f"{os.getcwd()}/DataBase/ctf.json", "r") as file:
         return json.load(file)
 def getCTFmakers():
-    with open("./database/server.config.json", "r") as file:
+    with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)
 # By EM
 class ctf(build):
@@ -68,20 +68,20 @@ class ctf(build):
                         new_point = current_point + int(ctf_question["score"])
                         ctfFile[question_id]["solved"].append(userId)
                         write(userId, "point", new_point,CURSOR)
-                        with open('./database/point_log.csv', 'a+', newline='') as log:
+                        with open(f'{os.getcwd()}/DataBase/point_log.csv', 'a+', newline='') as log:
                             writer = csv.writer(log)
                             writer.writerow([userId, str(interaction.user.name),ctf_question["score"] , str(
                                 read(userId, 'point',CURSOR)), 'ctf', str(datetime.now())])
                         embed = discord.Embed(title="答題成功!")
                         embed.add_field(name="+" + str(ctf_question["score"]) + ":zap:" , value="=" + str(new_point), inline=False)
+                        end(CONNECTION,CURSOR)
                         await interaction.response.send_message(embeds=[embed],ephemeral=True)
                     else:
                         embed = discord.Embed(title="答案錯誤!")
                         embed.add_field(name="嘗試次數" , value=str(ctf_question["history"][str(userId)]) + "/"+ str(ctf_question["limit"]), inline=False)
                         await interaction.response.send_message(embeds=[embed],ephemeral=True)
-                    with open("./database/ctf.json", "w") as outfile:
+                    with open(f"{os.getcwd()}/DataBase/ctf.json", "w") as outfile:
                         json.dump(ctfFile, outfile)
-                    end(CONNECTION,CURSOR)
                     # edit the original message
                     embed = interaction.message.embeds[0]
                     embed.set_field_at(0, name="已完成", value=str(len(ctfFile[question_id]["solved"])), inline=True)
@@ -146,7 +146,7 @@ class ctf(build):
                           "solved":[],
                           "tried": 0,
                           "history": {}}
-        with open("./database/ctf.json", "w") as outfile:
+        with open(f"{os.getcwd()}/DataBase/ctf.json", "w") as outfile:
             json.dump(ctfFile, outfile)
 
     # 測試用
