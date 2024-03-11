@@ -10,3 +10,6 @@ read.txt
 /.vscode
 **/__pycache__
 **/test.py
+nohup.out
+pointLog.out
+flakLog.out
