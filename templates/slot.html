@@ -2,460 +2,425 @@
 
 <!DOCTYPE html>
 <html lang="zh-Hant">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>中電商店</title>
-        <meta name="description" content="使用你的電電點來兌換獎品吧!" />
-        <meta name="author" content="中部高中電資社團聯合會議" />
 
-        <meta name="keywords" content="電電點, 中電會, SCAICT" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="中電商店" />
-        <meta property="og:url" content="https://scaict.org" />
-        <meta property="og:site_name" content="中電商店" />
-        <meta property="og:description" content="使用你的電電點來兌換獎品吧!" />
-        <meta property="og:locale" content="zh-TW" />
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="https://scaict.org/src/img/apple-touch-icon.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="https://scaict.org/src/img/favicon-32x32.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="https://scaict.org/src/img/favicon-16x16.png"
-        />
-        <link
-            rel="manifest"
-            href="https://scaict.org/src/img/site.webmanifest"
-        />
-        <link
-            rel="mask-icon"
-            href="https://scaict.org/src/img/safari-pinned-tab.svg"
-            color="#ca4480"
-        />
-        <meta name="msapplication-TileColor" content="#2b5797" />
-        <meta name="theme-color" content="#e9aa11" />
-        <link rel="stylesheet" href="/static/style.css" />
-        <script
-            src="https://kit.fontawesome.com/f9ca08d03f.js"
-            crossorigin="anonymous"
-        ></script>
-        <style>
-            body {
-                overflow: hidden;
-            }
-            main {
-                height: 100svh;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                cursor: pointer;
-            }
-            section {
-                flex: 1;
-                position: relative;
-                aspect-ratio: 1 / 1;
-                width: fit-content;
-                margin: auto;
-            }
-            section img,
-            section svg {
-                height: 100%;
-                display: block;
-            }
-            .rolling .st1,
-            .rolling .st0 {
-                animation: colorChanging 1s linear infinite;
-            }
-            .pulled .st1,
-            .pulled .st0 {
-                transition: filter 0.5s;
-                filter: brightness(150%);
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中電商店</title>
+    <meta name="description" content="使用你的電電點來兌換獎品吧!" />
+    <meta name="author" content="中部高中電資社團聯合會議" />
+
+    <meta name="keywords" content="電電點, 中電會, SCAICT" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="中電商店" />
+    <meta property="og:url" content="https://scaict.org" />
+    <meta property="og:site_name" content="中電商店" />
+    <meta property="og:description" content="使用你的電電點來兌換獎品吧!" />
+    <meta property="og:locale" content="zh-TW" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scaict.org/src/img/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scaict.org/src/img/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scaict.org/src/img/favicon-16x16.png" />
+    <link rel="manifest" href="https://scaict.org/src/img/site.webmanifest" />
+    <link rel="mask-icon" href="https://scaict.org/src/img/safari-pinned-tab.svg" color="#ca4480" />
+    <meta name="msapplication-TileColor" content="#2b5797" />
+    <meta name="theme-color" content="#e9aa11" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://kit.fontawesome.com/f9ca08d03f.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        main {
+            height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            cursor: pointer;
+        }
+
+        section {
+            flex: 1;
+            position: relative;
+            aspect-ratio: 1 / 1;
+            width: fit-content;
+            margin: auto;
+        }
+
+        section img,
+        section svg {
+            height: 100%;
+            display: block;
+        }
+
+        .rolling .st1,
+        .rolling .st0 {
+            animation: colorChanging 1s linear infinite;
+        }
+
+        .pulled .st1,
+        .pulled .st0 {
+            transition: filter 0.5s;
+            filter: brightness(150%);
+        }
+
+        @keyframes colorChanging {
+            0% {
+                filter: hue-rotate(0deg) brightness(150%);
             }
 
-            @keyframes colorChanging {
-                0% {
-                    filter: hue-rotate(0deg) brightness(150%);
-                }
-                100% {
-                    filter: hue-rotate(360deg) brightness(150%);
-                }
+            100% {
+                filter: hue-rotate(360deg) brightness(150%);
             }
-            .slot-pull {
-                transition: 0.5s;
-                background-color: blue;
-            }
-            .slot-pull:hover {
-                transform: scale(1, -1) translateY(-140%);
-            }
-            .shine,
-            .cost {
-                text-align: center;
-            }
-            .cost {
-                margin-block: 1.25em;
-            }
-            .slot-right {
-                position: absolute;
-                right: 0;
-                top: 0;
-                width: 100px;
-                height: 100px;
-            }
-            .shine {
-                animation: shine 2s infinite;
+        }
+
+        .slot-pull {
+            transition: 0.5s;
+            background-color: blue;
+        }
+
+        .slot-pull:hover {
+            transform: scale(1, -1) translateY(-140%);
+        }
+
+        .shine,
+        .cost {
+            text-align: center;
+        }
+
+        .cost {
+            margin-block: 1.25em;
+        }
+
+        .slot-right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+        }
+
+        .shine {
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                filter: brightness(100%);
             }
 
-            @keyframes shine {
-                0% {
-                    filter: brightness(100%);
-                }
-                50% {
-                    filter: brightness(60%);
-                }
-                100% {
-                    filter: brightness(100%);
-                }
-            }
-            #Capa_1 {
-                position: relative;
+            50% {
+                filter: brightness(60%);
             }
 
-            .lever-h,
-            .lever-v,
-            .lever-ball {
-                position: absolute;
-                top: 75.5%;
-                left: 86%;
-                width: 14%;
-                height: 3.7%;
-                background-color: #8b9ba9;
+            100% {
+                filter: brightness(100%);
             }
-            .lever-v {
-                top: 59%;
-                left: 95.9%;
-                height: 19%;
-                width: 4.1%;
-                transform-origin: bottom;
-                transition: transform 0.5s;
-            }
-            .lever-ball {
-                top: 55%;
-                left: 94.6%;
-                width: 7%;
-                height: unset;
-                aspect-ratio: 1/1;
-                background-color: #ff5368;
-                border-radius: 50%;
-                transition: top 0.5s;
-            }
-            .pulled .lever-ball {
-                top: 85%;
+        }
+
+        #Capa_1 {
+            position: relative;
+        }
+
+        .lever-h,
+        .lever-v,
+        .lever-ball {
+            position: absolute;
+            top: 75.5%;
+            left: 86%;
+            width: 14%;
+            height: 3.7%;
+            background-color: #8b9ba9;
+        }
+
+        .lever-v {
+            top: 59%;
+            left: 95.9%;
+            height: 19%;
+            width: 4.1%;
+            transform-origin: bottom;
+            transition: transform 0.5s;
+        }
+
+        .lever-ball {
+            top: 55%;
+            left: 94.6%;
+            width: 7%;
+            height: unset;
+            aspect-ratio: 1/1;
+            background-color: #ff5368;
+            border-radius: 50%;
+            transition: top 0.5s;
+        }
+
+        .pulled .lever-ball {
+            top: 85%;
+        }
+
+        .pulled .lever-v {
+            transform: scaleY(-0.58);
+        }
+
+        main>* {
+            pointer-events: none;
+        }
+
+        .roll {
+            width: 19.784765625%;
+            height: calc(19.784765625% / 6 * 7);
+            background: url(/static/slot.png) #fff9eb repeat-y;
+            background-size: 100%;
+            position: absolute;
+            left: 20.32197265625%;
+            top: 34.5%;
+            background-position-y: calc(100% / 9 * 0);
+            transition: background-position-y 1s ease-out;
+        }
+
+        #roll2 {
+            left: 40.10673828125%;
+            background: url(/static/slot.png) #e9e3d5 repeat-y;
+            background-size: 100%;
+            background-position-y: calc(100% / 9 * 0);
+            transition: background-position-y 2s ease-out;
+        }
+
+        #roll3 {
+            left: 59.89150390625%;
+            transition: background-position-y 5s ease-out;
+        }
+
+        .fast-rolling .roll {
+            animation: fast-rolling 0.7s linear infinite;
+            transition: none !important;
+        }
+
+        @keyframes fast-rolling {
+            0% {
+                background-position-y: 0%;
             }
 
-            .pulled .lever-v {
-                transform: scaleY(-0.58);
+            to {
+                background-position-y: 100%;
             }
-            main > * {
-                pointer-events: none;
-            }
-            .roll {
-                width: 19.784765625%;
-                height: calc(19.784765625% / 6 * 7);
-                background: url(/static/slot.png) #fff9eb repeat-y;
-                background-size: 100%;
-                position: absolute;
-                left: 20.32197265625%;
-                top: 34.5%;
-                background-position-y: calc(100% / 9 * 0);
-                transition: background-position-y 1s ease-out;
-            }
-            #roll2 {
-                left: 40.10673828125%;
-                background: url(/static/slot.png) #e9e3d5 repeat-y;
-                background-size: 100%;
-                background-position-y: calc(100% / 9 * 0);
-                transition: background-position-y 2s ease-out;
-            }
-            #roll3 {
-                left: 59.89150390625%;
-                transition: background-position-y 5s ease-out;
-            }
-            .fast-rolling .roll {
-                animation: fast-rolling 0.7s linear infinite;
-                transition: none !important;
-            }
+        }
+    </style>
+</head>
 
-            @keyframes fast-rolling {
-                0% {
-                    background-position-y: 0%;
-                }
-                to {
-                    background-position-y: 100%;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <nav>
-            <a href="/"><i class="fa-solid fa-store"></i> 商店</a>
-            <a href="https://discord.com/invite/neQ7QEUcqe"
-                ><i class="fa-brands fa-discord"></i> Discord</a
-            >
-            {% if ticket %}
-            <div class="ticket">{{ ticket }} 🎟️</div>
-            {% endif %} {% if point %}
-            <div class="point">{{ point }} ⚡</div>
-            {% endif %} {% if avatar %}
-            <img src="{{ avatar }}" alt="Avatar" class="avatar" />
-            <a href="/logout" class="log"
-                ><i class="fa-solid fa-arrow-right-from-bracket"></i
-            ></a>
-            {% else %}
-            <a href="/login"
-                ><i class="fa-solid fa-arrow-right-to-bracket"></i
-            ></a>
-            {% endif %}
-        </nav>
-        <main>
-            <div>
-                <img
-                    src="https://scaict.org/src/img/logo.svg"
-                    alt=""
-                    class="logo"
-                />
+<body>
+    <nav>
+        <a href="/"><i class="fa-solid fa-store"></i> 商店</a>
+        <a href="https://discord.com/invite/neQ7QEUcqe"><i class="fa-brands fa-discord"></i>回到 Discord</a>
+        {% if ticket %}
+        <div class="ticket">{{ ticket }} 🎟️</div>
+        {% endif %} {% if point %}
+        <div class="point">{{ point }} <img src="/static/zap.png" class="zap" alt="⚡"></div>
+        {% endif %} {% if avatar %}
+        <img src="{{ avatar }}" alt="Avatar" class="avatar" />
+        <a href="/logout" class="log"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+        {% else %}
+        <a href="/login">登入 <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+        {% endif %}
+    </nav>
+    <main>
+        <div>
+            <img src="https://scaict.org/src/img/logo.svg" alt="" class="logo" />
+        </div>
+        <div class="welcome">嗨 {{ username }}!</div>
+        <h1>貓咪機</h1>
+        <section>
+            <?xml version="1.0" encoding="utf-8"?>
+            <!-- Generator: Adobe Illustrator 28.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" viewBox="0 0 512 512" style="enable-background: new 0 0 512 512" xml:space="preserve">
+                <style type="text/css">
+                    .st0 {
+                        fill: #ff5368;
+                    }
+
+                    .st1 {
+                        fill: #c5324f;
+                    }
+
+                    .st2 {
+                        fill: #8b9ba9;
+                    }
+
+                    .st3 {
+                        fill: #ffb545;
+                    }
+
+                    .st4 {
+                        fill: #ff983b;
+                    }
+
+                    .st5 {
+                        fill: #ff7e40;
+                    }
+
+                    .st6 {
+                        fill: #ff6344;
+                    }
+
+                    .st7 {
+                        fill: #4d5967;
+                    }
+                </style>
+                <path class="st0"
+                    d="M204.5,54.1h103V30.9c0-17.1-13.8-30.9-30.9-30.9h-41.2c-17.1,0-30.9,13.8-30.9,30.9L204.5,54.1L204.5,54.1z" />
+                <path class="st1" d="M205.5,23.2c-0.6,2.5-1,5.1-1,7.7v23.2l51.2,16.5l51.9-16.5V30.9c0-17.1-13.8-30.9-30.9-30.9l0,0
+                        c0,12.8-10.4,23.2-23.2,23.2H205.5z" />
+                <path class="st2"
+                    d="M183.9,85l72.1,37.1L328.1,85V74.7c0-11.4-9.2-20.6-20.6-20.6h-103c-11.4,0-20.6,9.2-20.6,20.6V85z" />
+                <path class="st3"
+                    d="M70.6,512h370.9V115.9c0-17.1-13.8-30.9-30.9-30.9H101.5c-17.1,0-30.9,13.8-30.9,30.9L70.6,512L70.6,512z" />
+                <path class="st4" d="M70.6,481.1V512h370.9V115.9c0-17.1-13.8-30.9-30.9-30.9v396.1H70.6z" />
+                <path class="st5" d="M256,132.4H65.4c-8.5,0-15.5,6.9-15.5,15.5v195.7c0,8.5,6.9,15.5,15.5,15.5H256h190.6c8.5,0,15.5-6.9,15.5-15.5
+                        V147.8c0-8.5-6.9-15.5-15.5-15.5L256,132.4L256,132.4z" />
+                <path class="st6" d="M446.6,132.4h-15.5v195.7H50v15.5c0,8.5,6.9,15.5,15.5,15.5H256h190.6c8.5,0,15.5-6.9,15.5-15.5V147.8
+                        C462,139.3,455.1,132.4,446.6,132.4z" />
+                <path class="st2" d="M183.9,420.8L183.9,420.8c0,17.1,13.8,30.9,30.9,30.9h82.4c17.1,0,30.9-13.8,30.9-30.9l0,0
+                        c0-17.1-13.8-30.9-30.9-30.9h-82.4C197.7,389.9,183.9,403.8,183.9,420.8z" />
+                <path class="st7" d="M296.5,428.6h-82.4c-4.3,0-7.7-3.5-7.7-7.7s3.5-7.7,7.7-7.7h82.4c4.3,0,7.7,3.5,7.7,7.7
+                        C304.2,425.1,300.8,428.6,296.5,428.6z" />
+            </svg>
+            <div class="lever-h"></div>
+            <div class="lever-v"></div>
+            <div class="lever-ball">
+                <div></div>
             </div>
-            <div class="welcome">嗨 {{ username }}!</div>
-            <h1>貓咪機</h1>
-            <section>
-                <?xml version="1.0" encoding="utf-8"?>
-                <!-- Generator: Adobe Illustrator 28.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-                <svg
-                    version="1.1"
-                    id="Capa_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    viewBox="0 0 512 512"
-                    style="enable-background: new 0 0 512 512"
-                    xml:space="preserve"
-                >
-                    <style type="text/css">
-                        .st0 {
-                            fill: #ff5368;
-                        }
-                        .st1 {
-                            fill: #c5324f;
-                        }
-                        .st2 {
-                            fill: #8b9ba9;
-                        }
-                        .st3 {
-                            fill: #ffb545;
-                        }
-                        .st4 {
-                            fill: #ff983b;
-                        }
-                        .st5 {
-                            fill: #ff7e40;
-                        }
-                        .st6 {
-                            fill: #ff6344;
-                        }
-                        .st7 {
-                            fill: #4d5967;
-                        }
-                    </style>
-                    <path
-                        class="st0"
-                        d="M204.5,54.1h103V30.9c0-17.1-13.8-30.9-30.9-30.9h-41.2c-17.1,0-30.9,13.8-30.9,30.9L204.5,54.1L204.5,54.1z"
-                    />
-                    <path
-                        class="st1"
-                        d="M205.5,23.2c-0.6,2.5-1,5.1-1,7.7v23.2l51.2,16.5l51.9-16.5V30.9c0-17.1-13.8-30.9-30.9-30.9l0,0
-                        c0,12.8-10.4,23.2-23.2,23.2H205.5z"
-                    />
-                    <path
-                        class="st2"
-                        d="M183.9,85l72.1,37.1L328.1,85V74.7c0-11.4-9.2-20.6-20.6-20.6h-103c-11.4,0-20.6,9.2-20.6,20.6V85z"
-                    />
-                    <path
-                        class="st3"
-                        d="M70.6,512h370.9V115.9c0-17.1-13.8-30.9-30.9-30.9H101.5c-17.1,0-30.9,13.8-30.9,30.9L70.6,512L70.6,512z"
-                    />
-                    <path
-                        class="st4"
-                        d="M70.6,481.1V512h370.9V115.9c0-17.1-13.8-30.9-30.9-30.9v396.1H70.6z"
-                    />
-                    <path
-                        class="st5"
-                        d="M256,132.4H65.4c-8.5,0-15.5,6.9-15.5,15.5v195.7c0,8.5,6.9,15.5,15.5,15.5H256h190.6c8.5,0,15.5-6.9,15.5-15.5
-                        V147.8c0-8.5-6.9-15.5-15.5-15.5L256,132.4L256,132.4z"
-                    />
-                    <path
-                        class="st6"
-                        d="M446.6,132.4h-15.5v195.7H50v15.5c0,8.5,6.9,15.5,15.5,15.5H256h190.6c8.5,0,15.5-6.9,15.5-15.5V147.8
-                        C462,139.3,455.1,132.4,446.6,132.4z"
-                    />
-                    <path
-                        class="st2"
-                        d="M183.9,420.8L183.9,420.8c0,17.1,13.8,30.9,30.9,30.9h82.4c17.1,0,30.9-13.8,30.9-30.9l0,0
-                        c0-17.1-13.8-30.9-30.9-30.9h-82.4C197.7,389.9,183.9,403.8,183.9,420.8z"
-                    />
-                    <path
-                        class="st7"
-                        d="M296.5,428.6h-82.4c-4.3,0-7.7-3.5-7.7-7.7s3.5-7.7,7.7-7.7h82.4c4.3,0,7.7,3.5,7.7,7.7
-                        C304.2,425.1,300.8,428.6,296.5,428.6z"
-                    />
-                </svg>
-                <div class="lever-h"></div>
-                <div class="lever-v"></div>
-                <div class="lever-ball"><div></div></div>
-                <div class="roll" id="roll1"></div>
-                <div class="roll" id="roll2"></div>
-                <div class="roll" id="roll3"></div>
-            </section>
-            <div class="cost">花費 🎟️</div>
-            <div class="shine">長按畫面任意處拉下拉桿</div>
-        </main>
-        <footer>
-            <a href="https://www.facebook.com/scaict.tw/" target="_blank"
-                ><i class="fa-brands fa-facebook"></i
-            ></a>
-            <a href="https://www.instagram.com/scaict.tw/" target="_blank"
-                ><i class="fa-brands fa-instagram"></i
-            ></a>
-            <a href="https://github.com/SCAICT" target="_blank"
-                ><i class="fa-brands fa-github"></i
-            ></a>
-        </footer>
-        <script>
-            const main = document.querySelector("main");
-            // pull lever when mouse down or touch start. Add class to show the lever is pulled
-            let pressStartTime;
+            <div class="roll" id="roll1"></div>
+            <div class="roll" id="roll2"></div>
+            <div class="roll" id="roll3"></div>
+        </section>
+        <div class="cost">花費 🎟️</div>
+        <div class="shine">長按畫面任意處拉下拉桿</div>
+    </main>
+    <footer>
+        <a href="https://www.facebook.com/scaict.tw/" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://www.instagram.com/scaict.tw/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://github.com/SCAICT" target="_blank"><i class="fa-brands fa-github"></i></a>
+    </footer>
+    <script>
+        const main = document.querySelector("main");
+        // pull lever when mouse down or touch start. Add class to show the lever is pulled
+        let pressStartTime;
 
-            function handleLeverPress(e) {
-                e.preventDefault();
-                pressStartTime = Date.now();
-                main.classList.add("pulled");
+        function handleLeverPress(e) {
+            e.preventDefault();
+            pressStartTime = Date.now();
+            main.classList.add("pulled");
+        }
+
+        main.addEventListener("mousedown", handleLeverPress);
+        main.addEventListener("touchstart", handleLeverPress);
+        // get three "different numbers", they can't be the same
+        const randomSlot = () => {
+            const result = [];
+            for (let i = 0; i < 3; i++) {
+                let random;
+                do {
+                    random = Math.floor(Math.random() * 9) + 1;
+                } while (result.includes(random));
+                result.push(random);
             }
-
-            main.addEventListener("mousedown", handleLeverPress);
-            main.addEventListener("touchstart", handleLeverPress);
-            // get three "different numbers", they can't be the same
-            const randomSlot = () => {
-                const result = [];
-                for (let i = 0; i < 3; i++) {
-                    let random;
-                    do {
-                        random = Math.floor(Math.random() * 9) + 1;
-                    } while (result.includes(random));
-                    result.push(random);
-                }
-                return result;
-            };
-            function handleLeverRelease(e) {
-                e.preventDefault();
-                if (Date.now() - pressStartTime > 500) {
-                    document.getElementById(
-                        "roll1"
-                    ).style.backgroundPositionY = `0`;
-                    document.getElementById(
-                        "roll2"
-                    ).style.backgroundPositionY = `0`;
-                    document.getElementById(
-                        "roll3"
-                    ).style.backgroundPositionY = `0`;
-                    main.classList.add("rolling");
-                    main.classList.add("fast-rolling");
-                    fetch("/rollSlot", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    })
-                        // get response in plain txt
-                        .then(response => response.text())
-                        .then(data => {
-                            try {
-                                if (data.startsWith("[")) {
-                                    data = JSON.parse(data);
-                                    let result;
-                                    switch (data[2]) {
-                                        case "lightning":
-                                            result = [7, 7, 7];
-                                            break;
-                                        case "all different":
-                                            result = randomSlot();
-                                            break;
-                                        case "all same":
-                                            var random = Math.floor(
-                                                Math.random() * 9
-                                            );
-                                            result = [random, random, random];
-                                            break;
-                                        case "one pair":
-                                            result = randomSlot();
-                                            result[2] = result[1];
-                                            break;
-                                    }
+            return result;
+        };
+        function handleLeverRelease(e) {
+            e.preventDefault();
+            if (Date.now() - pressStartTime > 500) {
+                document.getElementById(
+                    "roll1"
+                ).style.backgroundPositionY = `0`;
+                document.getElementById(
+                    "roll2"
+                ).style.backgroundPositionY = `0`;
+                document.getElementById(
+                    "roll3"
+                ).style.backgroundPositionY = `0`;
+                main.classList.add("rolling");
+                main.classList.add("fast-rolling");
+                fetch("/rollSlot", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    // get response in plain txt
+                    .then(response => response.text())
+                    .then(data => {
+                        try {
+                            if (data.startsWith("[")) {
+                                data = JSON.parse(data);
+                                let result;
+                                switch (data[2]) {
+                                    case "lightning":
+                                        result = [7, 7, 7];
+                                        break;
+                                    case "all different":
+                                        result = randomSlot();
+                                        break;
+                                    case "all same":
+                                        var random = Math.floor(
+                                            Math.random() * 9
+                                        );
+                                        result = [random, random, random];
+                                        break;
+                                    case "one pair":
+                                        result = randomSlot();
+                                        result[2] = result[1];
+                                        break;
+                                }
+                                setTimeout(() => {
+                                    main.classList.remove("rolling");
+                                    main.classList.remove("fast-rolling");
                                     setTimeout(() => {
-                                        main.classList.remove("rolling");
-                                        main.classList.remove("fast-rolling");
+                                        document.getElementById(
+                                            "roll1"
+                                        ).style.backgroundPositionY = `calc(100% / 9 * ${result[0]})`;
+                                        document.getElementById(
+                                            "roll2"
+                                        ).style.backgroundPositionY = `calc(100% / 9 * ${result[1]})`;
+                                        document.getElementById(
+                                            "roll3"
+                                        ).style.backgroundPositionY = `calc(100% / 9 * ${result[2]})`;
                                         setTimeout(() => {
-                                            document.getElementById(
-                                                "roll1"
-                                            ).style.backgroundPositionY = `calc(100% / 9 * ${result[0]})`;
-                                            document.getElementById(
-                                                "roll2"
-                                            ).style.backgroundPositionY = `calc(100% / 9 * ${result[1]})`;
-                                            document.getElementById(
-                                                "roll3"
-                                            ).style.backgroundPositionY = `calc(100% / 9 * ${result[2]})`;
-                                            setTimeout(() => {
-                                                alert(
-                                                    "恭喜獲得 " +
-                                                        data[1] +
-                                                        " ⚡"
-                                                );
-                                                location.reload();
-                                            }, 5300);
-                                        }, 50);
-                                    }, 3000);
-                                } else {
-                                    setTimeout(() => {
-                                        alert(data)  }, 250);};
-                            } catch (err) {
-                                console.error(err);
-                                alert("發生錯誤，但已將獎勵發送至您的帳戶囉!");
-                            }
-                        });
-                }
-                main.classList.remove("pulled");
+                                            alert(
+                                                "恭喜獲得 " +
+                                                data[1] +
+                                                " ⚡"
+                                            );
+                                            location.reload();
+                                        }, 5300);
+                                    }, 50);
+                                }, 3000);
+                            } else {
+                                setTimeout(() => {
+                                    alert(data)
+                                }, 250);
+                            };
+                        } catch (err) {
+                            console.error(err);
+                            alert("發生錯誤，但已將獎勵發送至您的帳戶囉!");
+                        }
+                    });
             }
+            main.classList.remove("pulled");
+        }
 
-            main.addEventListener("mouseup", handleLeverRelease);
-            main.addEventListener("touchend", handleLeverRelease);
-            // fetch price
-            fetch("/productList")
-                .then(res => res.json())
-                .then(data => {
-                    datas = data.products;
-                    document.querySelector(".cost").innerText =
-                        "花費 " +
-                        datas.find(product => product.id === "slot").price +
-                        " 🎟️";
-                });
-        </script>
-    </body>
+        main.addEventListener("mouseup", handleLeverRelease);
+        main.addEventListener("touchend", handleLeverRelease);
+        // fetch price
+        fetch("/productList")
+            .then(res => res.json())
+            .then(data => {
+                datas = data.products;
+                document.querySelector(".cost").innerText =
+                    "花費 " +
+                    datas.find(product => product.id === "slot").price +
+                    " 🎟️";
+            });
+    </script>
+</body>
+
 </html>

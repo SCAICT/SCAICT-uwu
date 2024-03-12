@@ -220,6 +220,11 @@ button:hover,
     text-align: center;
 }
 
+.zap{
+    width: 1em;
+    vertical-align: middle;
+}
+
 @media (max-width: 40em) {
     h1 {
         font-size: 2.5rem;

@@ -2,149 +2,105 @@
 
 <!DOCTYPE html>
 <html lang="zh-Hant">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>中電商店</title>
-        <meta name="description" content="使用你的電電點來兌換獎品吧!" />
-        <meta name="author" content="中部高中電資社團聯合會議" />
 
-        <meta name="keywords" content="電電點, 中電會, SCAICT" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="中電商店" />
-        <meta property="og:url" content="https://scaict.org" />
-        <meta property="og:site_name" content="中電商店" />
-        <meta property="og:description" content="使用你的電電點來兌換獎品吧!" />
-        <meta property="og:locale" content="zh-TW" />
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="https://scaict.org/src/img/apple-touch-icon.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="https://scaict.org/src/img/favicon-32x32.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="https://scaict.org/src/img/favicon-16x16.png"
-        />
-        <link
-            rel="manifest"
-            href="https://scaict.org/src/img/site.webmanifest"
-        />
-        <link
-            rel="mask-icon"
-            href="https://scaict.org/src/img/safari-pinned-tab.svg"
-            color="#ca4480"
-        />
-        <meta name="msapplication-TileColor" content="#2b5797" />
-        <meta name="theme-color" content="#e9aa11" />
-        <link
-            rel="stylesheet"
-            href="/static/style.css">
-        <script
-            src="https://kit.fontawesome.com/f9ca08d03f.js"
-            crossorigin="anonymous"
-        ></script>
-    </head>
-    <body>
-        <nav>
-            <a href="/"><i class="fa-solid fa-store"></i> 商店</a>
-            <a href="https://discord.com/invite/neQ7QEUcqe"
-                ><i class="fa-brands fa-discord"></i>回到 Discord</a
-            >
-            {% if ticket %}
-            <div class="ticket">{{ ticket }} 🎟️</div>
-            {% endif %} {% if point %}
-            <div class="point">{{ point }} ⚡</div>
-            {% endif %} {% if avatar %}
-            <img src="{{ avatar }}" alt="Avatar" class="avatar" />
-            <a href="/logout" class="log"
-                ><i class="fa-solid fa-arrow-right-from-bracket"></i
-            ></a>
-            {% else %}
-            <a href="/login"
-			   >登入 <i class="fa-solid fa-arrow-right-to-bracket"></i
-            ></a>
-            {% endif %}
-        </nav>
-        <main>
-            <img
-                src="https://scaict.org/src/img/logo.svg"
-                alt=""
-                class="logo"
-            />
-            <div class="welcome">嗨 {{ username }}!</div>
-            <h1>歡迎來到中電商店</h1>
-            <p>以下為目前電電點可兌換的內容</p>
-            <section>
-                <!-- article>((div>img)+(.info>h3+p+button)) -->
-                載入中...
-            </section>
-            <div class="footer">© 2024 SCAICT All Rights Reserved</div>
-        </main>
-        <footer>
-            <a href="https://www.facebook.com/scaict.tw/" target="_blank"
-                ><i class="fa-brands fa-facebook"></i
-            ></a>
-            <a href="https://www.instagram.com/scaict.tw/" target="_blank"
-                ><i class="fa-brands fa-instagram"></i
-            ></a>
-            <a href="https://github.com/SCAICT" target="_blank"
-                ><i class="fa-brands fa-github"></i
-            ></a>
-        </footer>
-        <div class="confirm">
-            <div class="content">
-                <h2>確認兌換</h2>
-                <p>
-                    你確定要花<span id="buy-cost"></span>購買<span
-                        id="buy-product"
-                    ></span
-                    >嗎?
-                </p>
-                <div class="warning">
-                    此為實體周邊，請於實體活動拿到獎品後再點擊兌換，否則不補發獎品。
-                </div>
-                <div class="confirm-select">
-                    <button onclick="confirm.classList.remove('active')">
-                        取消
-                    </button>
-                    <button onclick="buy()">確定</button>
-                </div>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中電商店</title>
+    <meta name="description" content="使用你的電電點來兌換獎品吧!" />
+    <meta name="author" content="中部高中電資社團聯合會議" />
+
+    <meta name="keywords" content="電電點, 中電會, SCAICT" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="中電商店" />
+    <meta property="og:url" content="https://scaict.org" />
+    <meta property="og:site_name" content="中電商店" />
+    <meta property="og:description" content="使用你的電電點來兌換獎品吧!" />
+    <meta property="og:locale" content="zh-TW" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scaict.org/src/img/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scaict.org/src/img/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scaict.org/src/img/favicon-16x16.png" />
+    <link rel="manifest" href="https://scaict.org/src/img/site.webmanifest" />
+    <link rel="mask-icon" href="https://scaict.org/src/img/safari-pinned-tab.svg" color="#ca4480" />
+    <meta name="msapplication-TileColor" content="#2b5797" />
+    <meta name="theme-color" content="#e9aa11" />
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://kit.fontawesome.com/f9ca08d03f.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav>
+        <a href="/"><i class="fa-solid fa-store"></i> 商店</a>
+        <a href="https://discord.com/invite/neQ7QEUcqe"><i class="fa-brands fa-discord"></i>回到 Discord</a>
+        {% if ticket %}
+        <div class="ticket">{{ ticket }} 🎟️</div>
+        {% endif %} {% if point %}
+        <div class="point">{{ point }} <img src="/static/zap.png" class="zap" alt="⚡"></div>
+        {% endif %} {% if avatar %}
+        <img src="{{ avatar }}" alt="Avatar" class="avatar" />
+        <a href="/logout" class="log"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+        {% else %}
+        <a href="/login">登入 <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+        {% endif %}
+    </nav>
+    <main>
+        <img src="https://scaict.org/src/img/logo.svg" alt="" class="logo" />
+        <div class="welcome">嗨 {{ username }}!</div>
+        <h1>歡迎來到中電商店</h1>
+        <p>以下為目前電電點可兌換的內容</p>
+        <section>
+            <!-- article>((div>img)+(.info>h3+p+button)) -->
+            載入中...
+        </section>
+        <div class="footer">© 2024 SCAICT All Rights Reserved</div>
+    </main>
+    <footer>
+        <a href="https://www.facebook.com/scaict.tw/" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://www.instagram.com/scaict.tw/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://github.com/SCAICT" target="_blank"><i class="fa-brands fa-github"></i></a>
+    </footer>
+    <div class="confirm">
+        <div class="content">
+            <h2>確認兌換</h2>
+            <p>
+                你確定要花<span id="buy-cost"></span>購買<span id="buy-product"></span>嗎?
+            </p>
+            <div class="warning">
+                此為實體周邊，請於實體活動拿到獎品後再點擊兌換，否則不補發獎品。
+            </div>
+            <div class="confirm-select">
+                <button onclick="confirm.classList.remove('active')">
+                    取消
+                </button>
+                <button onclick="buy()">確定</button>
             </div>
         </div>
-        <script>
-            // load product from /productList to <section>
-            let datas = [];
-            let selected;
-            const section = document.querySelector("section");
-            fetch("/productList")
-                .then(res => res.json())
-                .then(data => {
-                    section.innerHTML = "";
-                    datas = data.products;
-                    datas.forEach(product => {
-                        const article = document.createElement("article");
-                        var button;
-                        if (product.pay == "point")
-                            button = `<button
-                                    ${
-                                        product.stock <= 0
-                                            ? "class='outStock'"
-                                            : `onclick="select('` +
-                                              product.id +
-                                              `')"`
-                                    }>
-                                    ${product.price} ⚡</button>`;
-                        else
-                            button = `<a class="product-button" href="${product.url}"  target="_blank">${product.price} 🎟️</a>`;
-                        article.innerHTML = `
+    </div>
+    <script>
+        // load product from /productList to <section>
+        let datas = [];
+        let selected;
+        const section = document.querySelector("section");
+        fetch("/productList")
+            .then(res => res.json())
+            .then(data => {
+                section.innerHTML = "";
+                datas = data.products;
+                datas.forEach(product => {
+                    const article = document.createElement("article");
+                    var button;
+                    if (product.pay == "point")
+                        button = `<button
+                                    ${product.stock <= 0
+                                ? "class='outStock'"
+                                : `onclick="select('` +
+                                product.id +
+                                `')"`
+                            }>
+                                    ${product.price} <img src="/static/zap.png" class="zap" alt="⚡"></button>`;
+                    else
+                        button = `<a class="product-button" href="${product.url}"  target="_blank">${product.price} 🎟️</a>`;
+                    article.innerHTML = `
                             <div class="product-img">
                                 <img src="${product.image}" alt="" />
                             </div>
@@ -157,51 +113,52 @@
                                 </div>
                             </div>
                         `;
-                        section.appendChild(article);
-                    });
+                    section.appendChild(article);
                 });
+            });
 
-            // buy product
-            const confirm = document.querySelector(".confirm");
-            const select = id => {
-                const product = datas.find(product => product.id === id);
-                selected = product;
-                document.querySelector("#buy-cost").innerText = product.price;
-                document.querySelector("#buy-product").innerText = product.name;
-                if (product.stock <= 0) {
-                    alert("庫存不足");
-                    return;
-                }
-                confirm.classList.add("active");
-            };
+        // buy product
+        const confirm = document.querySelector(".confirm");
+        const select = id => {
+            const product = datas.find(product => product.id === id);
+            selected = product;
+            document.querySelector("#buy-cost").innerText = product.price;
+            document.querySelector("#buy-product").innerText = product.name;
+            if (product.stock <= 0) {
+                alert("庫存不足");
+                return;
+            }
+            confirm.classList.add("active");
+        };
 
-            // confirm buy
-            const buy = () => {
-                if (!selected) return alert("請選擇商品");
-                if (selected.pay !== "point")
-                    return alert("此商品無法使用電電點購買");
-                fetch("/buyProduct", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id: selected.id }),
+        // confirm buy
+        const buy = () => {
+            if (!selected) return alert("請選擇商品");
+            if (selected.pay !== "point")
+                return alert("此商品無法使用電電點購買");
+            fetch("/buyProduct", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id: selected.id }),
+            })
+                //alert recieved text
+                .then(res => res.text())
+                .then(text => {
+                    // if response is html then show it in new page
+                    if (text.toLowerCase().startsWith("<!doctype html>")) {
+                        document.write(text);
+                        return;
+                    } else {
+                        alert(text);
+                        confirm.classList.remove("active");
+                        window.location.reload();
+                    }
                 })
-                    //alert recieved text
-                    .then(res => res.text())
-                    .then(text => {
-                        // if response is html then show it in new page
-                        if (text.toLowerCase().startsWith("<!doctype html>")) {
-                            document.write(text);
-                            return;
-                        } else {
-                            alert(text);
-                            confirm.classList.remove("active");
-                            window.location.reload();
-                        }
-                    })
-                    .catch(err => alert(err));
-            };
-        </script>
-    </body>
+                .catch(err => alert(err));
+        };
+    </script>
+</body>
+
 </html>
