@@ -5,7 +5,7 @@ import json
 import os
 def getCLS():
     try:
-        with open("./database/clas.json", "r") as file:
+        with open(f'{os.getcwd()}/DataBase/clas.json', "r") as file:
             data = json.load(file)
         return data
     except (FileNotFoundError, json.JSONDecodeError):
