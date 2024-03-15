@@ -15,7 +15,8 @@ class check_point(commands.Cog):
 
         self.embed = discord.Embed(color=0x14e15c)
         
-        self.embed.set_thumbnail(url=str(interaction.user.avatar))
+        if interaction.user.avatar!=None:#預設頭像沒有這個
+            self.embed.set_thumbnail(url=str(interaction.user.avatar))
         self.embed.add_field(name="\n", value='用戶 : '+member, inline=False)
         self.embed.add_field(name="目前點數 : "+str(point), value='\n', inline=False)
         self.embed.add_field(name="已連續充電 : "+str(combo), value='\n', inline=False)
