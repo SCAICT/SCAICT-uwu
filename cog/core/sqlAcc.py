@@ -1,13 +1,7 @@
 import mysql.connector
+from .SQL import linkSQL
 
-#初始化資料庫程式，從創建表格開始
-connection = mysql.connector.connect(host="172.233.85.95",
-                                    port="3306",
-                                    user="iach",  
-                                    passwd="Mew_mewCat@>",
-                                    database="DCSQLtest"
-)
-cursor=connection.cursor()
+connection,cursor=linkSQL()
 
 cursor.execute("USE DCSQLtest")
 cursor.execute("CREATE TABLE `USER`(uid BIGINT NOT NULL,\
