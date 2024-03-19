@@ -133,7 +133,7 @@ class ctf(build):
         embed.add_field(name="", value="", inline=False)
         embed.add_field(name="可於下方討論，但請勿公布答案", value="", inline=False)
         embed.set_footer(text="題目 ID: "+newId)
-        response = await ctx.respond(embed=embed, view=self.ctfView())
+        response = await ctx.send(embed=embed, view=self.ctfView())
         messageId = response.id
         ctfFile[newId] = {"flag": flag, 
                           "score": score, 
