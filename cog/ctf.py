@@ -103,11 +103,11 @@ class ctf(build):
         # Check whether the user can send a question or not
         role = discord.utils.get(ctx.guild.roles, id=role_id)
         if role not in ctx.author.roles:
-            await ctx.respond("你沒有權限創建題目喔！")
+            await ctx.respond("你沒有權限創建題目喔！",mephemeral=True)
             return
         # 確認是否有填寫 title 和 flag
         if title == '' or flag == '':
-            await ctx.respond("請填寫題目標題和 flag")
+            await ctx.respond("請填寫題目標題和 flag",ephemeral=True)
             return
         newId = generateCTFId()
         ctfFile = getCTFFile()
@@ -133,6 +133,7 @@ class ctf(build):
         embed.add_field(name="", value="", inline=False)
         embed.add_field(name="可於下方討論，但請勿公布答案", value="", inline=False)
         embed.set_footer(text="題目 ID: "+newId)
+        await ctx.respond("題目創建成功!",ephemeral=True)
         response = await ctx.send(embed=embed, view=self.ctfView())
         messageId = response.id
         ctfFile[newId] = {"flag": flag, 
