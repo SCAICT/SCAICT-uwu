@@ -79,7 +79,7 @@ class charge(commands.Cog):
             await self.send_message(point, combo, interaction)
             
             #紀錄log
-            print(f"{interaction.user.id},{interaction.user.name} {interaction.user} Get 5 point by daily_charge {datetime.now()}")
+            print(f"{interaction.user.id},{interaction.user} Get 5 point by daily_charge {datetime.now()}")
         end(CONNECTION,CURSOR)
 
 
