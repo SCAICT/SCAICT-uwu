@@ -34,7 +34,7 @@ class comment(commands.Cog):
     def reward(self,message,CURSOR):
         #讀USER資料表的東西
         userId=message.author.id
-        nickName=message.global_name
+        nickName=message.author
         today_comments=read(userId,"today_comments",CURSOR)
         point=read(userId,"point",CURSOR)
         #讀CommentPoints 資料表裡面的東西，這個表格紀錄有關發言次數非線性加分的資料
