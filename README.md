@@ -4,6 +4,7 @@
 * app.py: Flask Web App
 * generate-secrets.py: 生成 Secret Key，請貼至 token.json
 * Database MySQL:使用外部伺服器，相關設定在cog/core/secret.py
+
 ## token.json
 
 ```json
@@ -25,6 +26,14 @@
     "項目": [機率,獲得數量]
  }
  ```
+
+ ## development pull from main
+
+```bash
+git pull origin main
+git merge main
+git push origin development
+```
 ## credits
 
 <a href="https://www.flaticon.com/free-icons/slot-machine" title="slot machine icons">Slot machine icons created by Freepik - Flaticon</a>
