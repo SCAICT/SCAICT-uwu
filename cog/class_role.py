@@ -2,10 +2,10 @@ import discord
 from build.build import build
 from discord.ext import commands
 import json
-
+import os
 def getCLS():
     try:
-        with open("./database/clas.json", "r") as file:
+        with open(f'{os.getcwd()}/DataBase/clas.json', "r") as file:
             data = json.load(file)
         return data
     except (FileNotFoundError, json.JSONDecodeError):
@@ -21,7 +21,7 @@ def search_data(code):
 def add_data(code, new_data):
     data = getCLS()
     data[code] = new_data
-    with open('/home/osga/discord_bot/scaict/github/SCAICT-Discord-Bot/DataBase/clas.json', 'w') as file:
+    with open(f'{os.getcwd()}/DataBase/clas.json', 'w') as file:
         json.dump(data, file, indent=2,ensure_ascii=False)
 
 
