@@ -61,7 +61,7 @@ class comment(commands.Cog):
     async def on_message(self, message):
         userId=message.author.id
         CONNECTION,CURSOR=linkSQL()#SQL 會話
-        print(f"{userId} {message.author} just wnant create ssom log {datetime.now()}")
+
         spChannel=getChannels()#特殊用途的channel
         #創建該user的資料表
         if userId==1214954731747680326 or message.channel.id==spChannel["commandChannel"]:
