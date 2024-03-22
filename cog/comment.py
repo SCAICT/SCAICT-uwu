@@ -59,9 +59,12 @@ class comment(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        
         userId=message.author.id
         CONNECTION,CURSOR=linkSQL()#SQL 會話
-
+        if message.content.startswith("!set"):
+            arg=message.content.split(" ")
+            await self.bot.change_presence(activity=discord.Streaming(name=f"{arg[1]}", url=f"{arg[2]}"))
         spChannel=getChannels()#特殊用途的channel
         #創建該user的資料表
         if userId==1214954731747680326 or message.channel.id==spChannel["commandChannel"]:
