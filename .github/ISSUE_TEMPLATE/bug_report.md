@@ -1,13 +1,13 @@
 ---
-name: Bug report
+name: 回報彩蛋 "Feature" report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
 
-**問題說明 Describe the bug**
+**問題說明 Describe the feature**
 你有什麼問題？ A clear and concise description of what the bug is.
 
 **To Reproduce**
