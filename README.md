@@ -1,6 +1,8 @@
 # 中電喵 SCAICT uwu
 A can living in SCAICT Discord Group
 
+[](thumbnail.png)
+
 > This project is still in beta. If you have any problem, it works on my machine.
 
 ## How to run?
