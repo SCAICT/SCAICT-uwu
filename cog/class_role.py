@@ -27,7 +27,9 @@ def add_data(code, new_data):
 
 
 class class_role(build):
-
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.bot.add_view(self.token_verify_button())
     class token_verify_button(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
