@@ -75,6 +75,19 @@ class comment(commands.Cog):
         delta = timedelta(days=1)
         last_comment  = read(userId, 'last_comment',CURSOR)#SQL回傳型態:<class 'datetime.date'>
 
+        if message.channel.id==spChannel["countChannel"]:
+            hex_string = message.content
+            decimal_number = int(hex_string, 16)
+            with open(f"{os.getcwd()}/DataBase/game.json", "r") as file:
+                game = json.load(file)
+            if decimal_number == game["count"]+1:
+                game["count"]=decimal_number
+                with open(f"{os.getcwd()}/DataBase/game.json", "w") as file:
+                    json.dump(game,file)
+                # add a check emoji to the message
+                await message.add_reaction("✅")
+            else:
+                await message.add_reaction("❌")
 
         if(now-last_comment >= delta):
             self.reset(message, now,CURSOR)

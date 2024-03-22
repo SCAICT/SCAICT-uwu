@@ -27,7 +27,9 @@ def add_data(code, new_data):
 
 
 class class_role(build):
-
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.bot.add_view(self.token_verify_button())
     class token_verify_button(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
@@ -75,7 +77,7 @@ class class_role(build):
             embed.set_thumbnail(url="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/56531/label-emoji-clipart-md.png")
             embed.add_field(name="點下方按鈕輸入token", value="", inline=False)
             embed.add_field(name="領取課程身分組!", value="", inline=False)
-            await ctx.respond(embed=embed,view=self.token_verify_button())
+            await ctx.send(embed=embed,view=self.token_verify_button())
         
     @discord.slash_command(description="新增主題課程")
     async def add_class(self, ctx, class_code: str, name: str, theme: str, teacher: str, time: str):
