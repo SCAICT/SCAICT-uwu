@@ -5,7 +5,9 @@ permissions:
 
 # Run code on issue or issue comment
 on: 
-  [issues] # what causes the action to run, do you want it on push, issue, etc.
+  issues:
+    types: [opened, edited, milestoned]
+  workflow_dispatch:
 
 jobs:
   build:
