@@ -106,8 +106,8 @@ class comment(commands.Cog):
             else:
                 await message.add_reaction("❌")
         except:
-            #在decimal_number賦值因為不是數字(可能聊天或其他文字)產生錯誤一樣做叉叉回應
-            await message.add_reaction("❌")
+            #在decimal_number賦值因為不是數字(可能聊天或其他文字)產生錯誤產生問號emoji回應
+            await message.add_reaction("❔")
         
 
 def setup(bot):
