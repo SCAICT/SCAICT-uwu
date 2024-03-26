@@ -4,7 +4,6 @@ import json
 from datetime import datetime
 from datetime import date
 from datetime import timedelta
-import csv
 import os
 from cog.core.SQL import read
 from cog.core.SQL import write
@@ -64,15 +63,14 @@ class comment(commands.Cog):
             #狀態指令
             arg=message.content.split(" ")
             await self.bot.change_presence(activity=discord.Streaming(name="YouTube", url=f"{arg[2]}"))#,details=f"{arg[1]}"
-        if userId==self.bot.user.id or message.channel.id==self.spChannel["commandChannel"]:
+        if userId == self.bot.user.id or message.channel.id in self.spChannel["exclude_point"]:
             #機器人會想給自己記錄電電點，必須排除
-            #指令區不算發言次數
-            return
-        if message.channel.id==self.spChannel["countChannel"]:
+            #列表中頻道不算發言次數
+            if message.channel.id == self.spChannel["countChannel"]:
             #數數回應
-            await comment.count(message)
+                await comment.count(message)
+            return
         comment.todayComment(userId,message,CURSOR)
-
         end(CONNECTION,CURSOR)
         
     @staticmethod
@@ -90,6 +88,7 @@ class comment(commands.Cog):
             reset(message, now,CURSOR)
         #更改今天發言狀態
         reward(message,CURSOR)
+        
     @staticmethod
     async def count(message):
         try:
