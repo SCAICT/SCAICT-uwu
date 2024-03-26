@@ -26,7 +26,7 @@
             "description": "\u4f86\u62bd\u734e\u5427",
             "price": 1,
             "image": "https://cdn-icons-png.flaticon.com/128/1055/1055823.png",
-            "stock": 99999,
+            "stock": 9999,
             "category": "\u904a\u6232",
             "pay": "ticket",
             "url": "slot"
