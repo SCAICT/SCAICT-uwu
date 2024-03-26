@@ -1,23 +1,19 @@
 {
-    "SCAICT-alpha":
-    {
-        
-        "channel":{
-            "serverID":1203338928535379978,
-            "memberCount":1206548816552271873,
-            "pointCount":1206549021355810816,
-            "everyDayCharge":1206549724530999356,
-            "commandChannel":1206550021353242654,
+    "SCAICT-alpha": {
+        "channel": {
+            "serverID": 1203338928535379978,
+            "memberCount": 1206548816552271873,
+            "pointCount": 1206549021355810816,
+            "everyDayCharge": 1206549724530999356,
+            "commandChannel": 1206550021353242654,
             "countChannel": 1220130492821667973
         },
-        "SP-role":
-        {
-            "CTF_Maker":1210935361467977738
+        "SP-role": {
+            "CTF_Maker": 1210935361467977738
         },
-        "stickers":
-        {
-            "logo":"<a:__:1213132659002441749>"
+        "stickers": {
+            "logo": "<a:__:1213132659002441749>"
         }
     },
-    "NULL":"NULL"
+    "NULL": "NULL"
 }
