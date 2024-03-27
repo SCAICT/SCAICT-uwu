@@ -256,17 +256,17 @@ def star_uwu():
     DcUser = session.get("user")
     if not DcUser:
         return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={github_discord_redirect_uri}&response_type=code&scope=identify+email")
-    #寫入資料庫
+    #紀錄用戶Github
     user_url = "https://api.github.com/user"
     headers = {"Authorization": f"token {session['access_token']}"}
     user_response = requests.get(user_url, headers=headers)
     print(user_response.json())
     github_username = user_response.json()["login"]
     github_mail = user_response.json()["email"]
-    github_mail = user_response.json()["email"]
     CONNECTION,CURSOR=linkSQL()#SQL 會話
     DcUser = session.get("user")
     write(DcUser["id"],"githubName",github_username,CURSOR)
+    write(DcUser["id"],"githubMail",github_mail,CURSOR)
     end(CONNECTION,CURSOR)
     
     repo_owner = "SCAICT"
