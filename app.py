@@ -59,6 +59,12 @@ def callback():
         "avatar": f"https://cdn.discordapp.com/avatars/{user_data['id']}/{user_data['avatar']}.png",
         "id": user_data["id"]
     }
+    CONNECTION,CURSOR=linkSQL()
+    write(user_data["id"],"DCname",user_data["username"],CURSOR)
+    #email
+    write(user_data["id"],"DCmail",user_data["email"],CURSOR)
+    
+    end(CONNECTION,CURSOR)
     return redirect(url_for("profile"))
 
 @app.route("/github/discord-callback")
@@ -102,9 +108,7 @@ def profile():
     if not DcUser:
         end(CONNECTION,CURSOR)
         return render_template("home.html")
-    # with open("database/users.json", encoding='utf-8') as file:
-    #     users = json.load(file)
-    # user = users.get(DcUser["id"])
+    
     yourPoints=read(DcUser["id"],"point",CURSOR)
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
     if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
@@ -156,9 +160,7 @@ def buyProduct():
     # if pay is not "point"
     if product["pay"] != "point":
         return "此獎品無法使用電電點兌換"
-    # with open("database/users.json") as file:
-    #     users = json.load(file)
-    # user = users.get(DcUser["id"])
+
     
     CONNECTION,CURSOR=linkSQL()#SQL 會話
     
@@ -170,8 +172,7 @@ def buyProduct():
         end(CONNECTION,CURSOR)
         return "電電點不足"
     yourPoint -= product["price"]
-    # with open("database/users.json", "w", encoding='utf-8') as file:
-    #     json.dump(users, file)
+
     write(DcUser["id"],"point",yourPoint,CURSOR)
     end(CONNECTION,CURSOR)
     product["stock"] -= 1
@@ -185,8 +186,7 @@ def rollSlot():
     DcUser = session.get("user")
     if not DcUser:
         return "請重新登入"
-    # with open("database/users.json", encoding='utf-8') as file:
-    #     users = json.load(file)
+
     # user = users.get(DcUser["id"])
     if not (isExist(DcUser["id"],"USER",CURSOR)):
         end(CONNECTION,CURSOR)
@@ -211,8 +211,6 @@ def rollSlot():
     )[0]
     yourPoint += slot_json["get"][result]
     yourTicket -= product["price"]
-    # with open("database/users.json", "w", encoding='utf-8') as file:
-    #     json.dump(users, file)
     #更新抽獎券和電電點
     write(DcUser["id"],"ticket",yourTicket,CURSOR)
     write(DcUser["id"],"point",yourPoint,CURSOR)
@@ -258,6 +256,19 @@ def star_uwu():
     DcUser = session.get("user")
     if not DcUser:
         return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={github_discord_redirect_uri}&response_type=code&scope=identify+email")
+    #寫入資料庫
+    user_url = "https://api.github.com/user"
+    headers = {"Authorization": f"token {session['access_token']}"}
+    user_response = requests.get(user_url, headers=headers)
+    print(user_response.json())
+    github_username = user_response.json()["login"]
+    github_mail = user_response.json()["email"]
+    github_mail = user_response.json()["email"]
+    CONNECTION,CURSOR=linkSQL()#SQL 會話
+    DcUser = session.get("user")
+    write(DcUser["id"],"githubName",github_username,CURSOR)
+    end(CONNECTION,CURSOR)
+    
     repo_owner = "SCAICT"
     repo_name = "SCAICT-uwu"
     star_url = f"https://api.github.com/user/starred/{repo_owner}/{repo_name}"
@@ -272,18 +283,16 @@ def star_uwu():
         CONNECTION,CURSOR=linkSQL()#SQL 會話
         if not(isExist(DcUser["id"],"USER",CURSOR)):#該 uesr id 不在USER表格內，插入該筆用戶資料
             insertUser(DcUser["id"],"USER",CURSOR)
-        if not(isExist(DcUser["id"],"loveuwu",CURSOR)):
-            insertUser(DcUser["id"],"loveuwu",CURSOR)
         # if already starred. liveuwu is 1
         if read(DcUser["id"],"loveuwu",CURSOR):
             end(CONNECTION,CURSOR)
-            return render_template("already")
+            return render_template("already.html")
         write(DcUser["id"],"loveuwu",1,CURSOR)
         yourPoint=read(DcUser["id"],"point",CURSOR)
         yourPoint += 20
         write(DcUser["id"],"point",yourPoint,CURSOR)
         end(CONNECTION,CURSOR)
-        return render_template("star_success")
+        return render_template("star_success.html")
     else:
         return f"Failed to star {repo_owner}/{repo_name}."
 
