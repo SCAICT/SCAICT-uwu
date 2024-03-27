@@ -10,7 +10,7 @@ from cog.core.SQL import write
 from cog.core.SQL import end    #用來結束和SQL資料庫的會話
 from cog.core.SQL import linkSQL
 from datetime import datetime
-import csv
+
 
 def getCTFFile():
     with open(f"{os.getcwd()}/DataBase/ctf.json", "r") as file:
@@ -47,6 +47,7 @@ class ctf(build):
                         await interaction.response.send_message("目前不在作答時間內！",ephemeral=True)
                         return
                     userId = interaction.user.id
+                    nickName = interaction.user
                     if str(userId) not in ctf_question["history"]:
                         ctfFile[question_id]["history"][str(userId)] = 0
                     if ctf_question["limit"]!='∞':#無限沒辦法比大小，直接跳過這個邏輯
@@ -68,10 +69,9 @@ class ctf(build):
                         new_point = current_point + int(ctf_question["score"])
                         ctfFile[question_id]["solved"].append(userId)
                         write(userId, "point", new_point,CURSOR)
-                        with open(f'{os.getcwd()}/DataBase/point_log.csv', 'a+', newline='') as log:
-                            writer = csv.writer(log)
-                            writer.writerow([userId, str(interaction.user.name),ctf_question["score"] , str(
-                                read(userId, 'point',CURSOR)), 'ctf', str(datetime.now())])
+                        #log
+                        print(f'{userId},{nickName} Get {ctf_question["score"]} by ctf, {str(datetime.now())}')
+                        
                         embed = discord.Embed(title="答題成功!")
                         embed.add_field(name="+" + str(ctf_question["score"]) + ":zap:" , value="=" + str(new_point), inline=False)
                         end(CONNECTION,CURSOR)
