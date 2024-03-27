@@ -120,9 +120,6 @@ def slot():
     DcUser = session.get("user")
     if not DcUser:
         return render_template("slot.html")
-    # with open("database/users.json", encoding='utf-8') as file:
-    #     users = json.load(file)
-    # user = users.get(DcUser["id"])
     yourPoints=read(DcUser["id"],"point",CURSOR)
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
     if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
@@ -244,9 +241,9 @@ def github_callback():
     response = requests.post(token_url, headers=headers, data=data)
     print(response.json())
     session["access_token"] = response.json()["access_token"]
-    # check if discord user is logged in
-    if "user" not in session:
-        return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={github_discord_redirect_uri}&response_type=code&scope=identify+email")
+
+
+
     return redirect(url_for("star_uwu"))
 
 @app.route("/star_uwu")
