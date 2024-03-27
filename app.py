@@ -8,6 +8,7 @@ from cog.core.SQL import read
 from cog.core.SQL import linkSQL
 from cog.core.SQL import end
 from cog.core.SQL import isExist
+
 app = Flask(__name__)
 
 # FILEPATH: /d:/GayHub/SCAICT-Discord-Bot/token.json
@@ -15,15 +16,17 @@ with open(f"{os.getcwd()}/token.json", encoding='utf-8') as file:
     data = json.load(file)
 
 app.secret_key = data["secret_key"]
-client_id = data["client_id"]
-client_secret = data["client_secret"]
-redirect_uri = data["redirect_uri"]
-
-print(client_id)
+discord_client_id = data["discord_client_id"]
+discord_client_secret = data["discord_client_secret"]
+discord_redirect_uri = data["discord_redirect_uri"]
+github_client_id = data["github_client_id"]
+github_client_secret = data["github_client_secret"]
+github_redirect_uri = data["github_redirect_uri"]
+github_discord_redirect_uri = data["github_discord_redirect_uri"]
 
 @app.route("/login")
 def login():
-    return redirect(f"https://discord.com/api/oauth2/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope=identify+email")
+    return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={discord_redirect_uri}&response_type=code&scope=identify+email")
 
 @app.route("/logout")
 def logout():
@@ -34,18 +37,17 @@ def logout():
 def callback():
     code = request.args.get("code")
     data = {
-        "client_id": client_id,
-        "client_secret": client_secret,
+        "client_id": discord_client_id,
+        "client_secret": discord_client_secret,
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": redirect_uri,
+        "redirect_uri": discord_redirect_uri,
         "scope": "identify"
     }
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
     response = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
-    print("app.py say:",response.json())
     access_token = response.json()["access_token"]
     headers = {
         "Authorization": f"Bearer {access_token}"
@@ -58,6 +60,35 @@ def callback():
         "id": user_data["id"]
     }
     return redirect(url_for("profile"))
+
+@app.route("/github/discord-callback")
+def discord_callback():
+    code = request.args.get("code")
+    data = {
+        "client_id": discord_client_id,
+        "client_secret": discord_client_secret,
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": github_discord_redirect_uri,
+        "scope": "identify"
+    }
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    response = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
+    print(response.json())
+    access_token = response.json()["access_token"]
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    user_response = requests.get("https://discord.com/api/users/@me", headers=headers)
+    user_data = user_response.json()
+    session["user"] = {
+        "name": user_data["username"],
+        "avatar": f"https://cdn.discordapp.com/avatars/{user_data['id']}/{user_data['avatar']}.png",
+        "id": user_data["id"]
+    }
+    return redirect(url_for("star_uwu"))
 
 # make filder static in templates/static static
 @app.route("/static/<path:filename>")
@@ -190,6 +221,74 @@ def rollSlot():
     write(DcUser["id"],"point",yourPoint,CURSOR)
     end(CONNECTION,CURSOR)
     return ["抽獎成功", slot_json["get"][result], result]
+
+# GitHUb Login
+
+@app.route("/github/login")
+def github_login():
+    # Redirect to GitHub's OAuth login page
+    github_oauth_url = f"https://github.com/login/oauth/authorize?client_id={github_client_id}&scope=user%20repo&redirect_uri={github_redirect_uri}"
+    return redirect(github_oauth_url)
+
+@app.route("/github/callback")
+def github_callback():
+    # Exchange the authorization code for an access token
+    code = request.args.get("code")
+    token_url = "https://github.com/login/oauth/access_token"
+    headers = {"Accept": "application/json"}
+    data = {
+        "client_id": github_client_id,
+        "client_secret": github_client_secret,
+        "code": code
+    }
+    response = requests.post(token_url, headers=headers, data=data)
+    print(response.json())
+    session["access_token"] = response.json()["access_token"]
+    # check if discord user is logged in
+    if "user" not in session:
+        return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={github_discord_redirect_uri}&response_type=code&scope=identify+email")
+    return redirect(url_for("star_uwu"))
+
+@app.route("/star_uwu")
+def star_uwu():
+    def insertUser(userId,TABLE,CURSOR):#初始化(創建)傳入該ID的表格
+        CURSOR.execute(f"INSERT INTO {TABLE} (uid) VALUE({userId})")
+
+    if "access_token" not in session:
+        print("GitHub access token not found!")
+        return redirect(url_for("github_login"))
+    # if dc not loggin
+    DcUser = session.get("user")
+    if not DcUser:
+        return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={github_discord_redirect_uri}&response_type=code&scope=identify+email")
+    repo_owner = "SCAICT"
+    repo_name = "SCAICT-uwu"
+    star_url = f"https://api.github.com/user/starred/{repo_owner}/{repo_name}"
+    headers = {"Authorization": f"token {session['access_token']}"}
+    print(session['access_token'])
+    # Sending a PUT request to star the repository
+    response = requests.put(star_url, headers=headers)
+    print(response.text)
+    # Checking the response status and returning an appropriate message
+    if response.ok:
+        print(f"Successfully starred {repo_owner}/{repo_name}! {response}")
+        CONNECTION,CURSOR=linkSQL()#SQL 會話
+        if not(isExist(DcUser["id"],"USER",CURSOR)):#該 uesr id 不在USER表格內，插入該筆用戶資料
+            insertUser(DcUser["id"],"USER",CURSOR)
+        if not(isExist(DcUser["id"],"loveuwu",CURSOR)):
+            insertUser(DcUser["id"],"loveuwu",CURSOR)
+        # if already starred. liveuwu is 1
+        if read(DcUser["id"],"loveuwu",CURSOR):
+            end(CONNECTION,CURSOR)
+            return render_template("already")
+        write(DcUser["id"],"loveuwu",1,CURSOR)
+        yourPoint=read(DcUser["id"],"point",CURSOR)
+        yourPoint += 20
+        write(DcUser["id"],"point",yourPoint,CURSOR)
+        end(CONNECTION,CURSOR)
+        return render_template("star_success")
+    else:
+        return f"Failed to star {repo_owner}/{repo_name}."
 
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
