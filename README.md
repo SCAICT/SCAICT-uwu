@@ -31,11 +31,16 @@ pip install flask py-cord mysql-connector-python requests
 
 ```json
 {
-    "token":"",
+    "discord_token":"",
     "secret_key":"",
-    "client_id":"",
-    "client_secret":"",
-    "redirect_uri":"http://127.0.0.1:5000/callback"
+    "discord_client_id":"",
+    "discord_client_secret":"",
+    "discord_redirect_uri":"http://127.0.0.1:5000/callback",
+    "github_client_id":"",
+    "github_client_secret":"",
+    "github_redirect_uri":"http://127.0.0.1:5000/github/callback",
+    "github_discord_redirect_uri": "http://127.0.0.1:5000/github/discord-callback"
+    
 }
 ```
 * database/slot.json
