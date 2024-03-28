@@ -23,7 +23,7 @@ cursor.execute("CREATE TABLE `CommentPoints`(seq INT AUTO_INCREMENT PRIMARY KEY,
                                               FOREIGN KEY (`uid`) REFERENCES USER(`uid`) ON DELETE CASCADE\
                                           )"
   )
-
+cursor.execute("CREATE TABLE `game` (seq BIGINT NOT NULL DEFAULT 0)")
 
 #查看所有databases
 # cursor.execute("SHOW DATABASES")
