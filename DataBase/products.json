@@ -1,12 +1,12 @@
 {
     "products": [
         {
-            "name": "\u96fb\u6c60",
-            "id": "battery",
-            "description": "9V \u96fb\u6c60\u3067\u3059",
-            "price": 1000,
-            "image": "https://scaict.org/src/img/battery-9v.svg",
-            "stock": 4,
+            "name": "中電喵便利貼",
+            "id": "stickNotes",
+            "description": "中電喵便利貼",
+            "price": 1500,
+            "image": "https://emtech.cc/notes_137680874794255200.png",
+            "stock": 10,
             "category": "\u5be6\u9ad4\u5468\u908a",
             "pay": "point"
         },
@@ -14,9 +14,9 @@
             "name": "8GB USB",
             "id": "usb",
             "description": "8GB \u7684 USB",
-            "price": 1500,
+            "price": 2000,
             "image": "https://cdn-icons-png.flaticon.com/128/2014/2014999.png",
-            "stock": 3,
+            "stock": 5,
             "category": "\u5be6\u9ad4\u5468\u908a",
             "pay": "point"
         },
@@ -26,7 +26,7 @@
             "description": "\u4f86\u62bd\u734e\u5427",
             "price": 1,
             "image": "https://cdn-icons-png.flaticon.com/128/1055/1055823.png",
-            "stock": 10,
+            "stock": 9999,
             "category": "\u904a\u6232",
             "pay": "ticket",
             "url": "slot"

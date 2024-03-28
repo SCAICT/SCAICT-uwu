@@ -10,13 +10,16 @@ A can living in SCAICT Discord Group
 1. Clone this repo
 2. Create python environment in 3.11
 2. Install independance.
-pip install flask py-cord mysql-connector-python
-3. Config channels in DataBase/server.config.json
-5. Run SQL Server
-100. Config SQL Server in BreadcrumbsSCAICT-uwu/cog/core
-/sqlAcc.py
-999. flask run
-373. python main.py
+
+```bash
+pip install flask py-cord mysql-connector-python requests
+```
+
+1. Config channels in DataBase/server.config.json
+2. Run SQL Server
+3.   Config SQL Server in BreadcrumbsSCAICT-uwu/cog/core/sqlAcc.py
+1.   `flask run`
+2.   `python main.py`
 
 ## Files
 

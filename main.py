@@ -20,4 +20,4 @@ async def on_ready():
     bot.loop.create_task(update_channel(bot))
 
 if __name__=="__main__":
-    bot.run(token["token"])
+    bot.run(token["discord_token"])

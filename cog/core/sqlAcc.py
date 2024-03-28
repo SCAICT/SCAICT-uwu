@@ -5,6 +5,7 @@ connection,cursor=linkSQL()
 
 cursor.execute("USE DCSQLtest")
 cursor.execute("CREATE TABLE `USER`(uid BIGINT NOT NULL,\
+                                    loveuwu TINYINT(1) NOT NULL DEFAULT 0 \
                                     point INT NOT NULL DEFAULT 0,\
                                     ticket INT NOT NULL DEFAULT 0,\
                                     charge_combo INT NOT NULL DEFAULT 0,\
