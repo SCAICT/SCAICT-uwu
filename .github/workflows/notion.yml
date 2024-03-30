@@ -13,4 +13,4 @@ jobs:
         with:
             repo: ${{ github.repository }} 
             NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
-            NOTION_DATABASE: ${{ secrets.NOTION_DATABASE_ID }}
+            NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
