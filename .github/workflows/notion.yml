@@ -8,4 +8,9 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: Edit-Mr/GitHub-issue-2-Notion@main
+      - name: Notion GitHub Issues Automation
+        uses: Edit-Mr/GitHub-issue-2-Notion@main
+        with:
+            repo: ${{ github.repository }} 
+            NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+            NOTION_DATABASE: ${{ secrets.NOTION_DATABASE_ID }}
