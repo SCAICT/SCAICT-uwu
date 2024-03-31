@@ -63,14 +63,15 @@ class comment(commands.Cog):
             #狀態指令
             arg=message.content.split(" ")
             await self.bot.change_presence(activity=discord.Streaming(name="YouTube", url=f"{arg[2]}"))#,details=f"{arg[1]}"
-        if userId == self.bot.user.id or message.channel.id in self.spChannel["exclude_point"]:
+        if userId != self.bot.user.id:
             #機器人會想給自己記錄電電點，必須排除
-            #列表中頻道不算發言次數
             if message.channel.id == self.spChannel["countChannel"]:
             #數數回應
                 await comment.count(message)
             return
-        comment.todayComment(userId,message,CURSOR)
+        if message.channel.id not in self.spChannel["exclude_point"]:
+            #列表中頻道不算發言次數
+            comment.todayComment(userId,message,CURSOR)
         end(CONNECTION,CURSOR)
         
     @staticmethod
@@ -91,22 +92,34 @@ class comment(commands.Cog):
         
     @staticmethod
     async def count(message):
+        CONNECT,CURSOR=linkSQL()
         try:
             hex_string = message.content
+            print(hex_string)
             decimal_number = int(hex_string, 16)
-            with open(f"{os.getcwd()}/DataBase/game.json", "r") as file:
-                game = json.load(file)
-            if decimal_number == game["count"]+1:
-                game["count"]=decimal_number
-                with open(f"{os.getcwd()}/DataBase/game.json", "w") as file:
-                    json.dump(game,file)
+            CONNECT,CURSOR=linkSQL()
+            CURSOR.execute("select seq from game")
+            nowSeq=CURSOR.fetchone()[0]
+            CURSOR.execute("select lastID from game")
+            latestUser=CURSOR.fetchone()[0]
+            print(nowSeq,hex_string,decimal_number,latestUser)
+            if  message.author.id == latestUser:
+                #同人疊數數
+                await message.add_reaction("❌")
+                await message.add_reaction("🔄")
+            elif decimal_number == nowSeq+1:
+                CURSOR.execute("UPDATE game SET seq = seq+1")
+                print(message.author.id)
+                CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
                 # add a check emoji to the message
                 await message.add_reaction("✅")
             else:
-                await message.add_reaction("❌")
+                #保線起見的例外，應該沒機會觸發
+                await message.add_reaction("❓")
         except:
             #在decimal_number賦值因為不是數字(可能聊天或其他文字)產生錯誤產生問號emoji回應
             await message.add_reaction("❔")
+        end(CONNECT,CURSOR)
         
 
 def setup(bot):
