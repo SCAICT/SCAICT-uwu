@@ -1,6 +1,8 @@
 # 中電喵 SCAICT uwu
 A can living in SCAICT Discord Group
 
+[![Sync issues to Notion](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml/badge.svg?event=issues)](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml)
+
 ![](thumbnail.png)
 
 > This project is still in beta. If you have any problem, it works on my machine.
