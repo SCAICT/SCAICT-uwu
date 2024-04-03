@@ -96,7 +96,7 @@ class comment(commands.Cog):
         try:
             hex_string = message.content
             print(hex_string)
-            decimal_number = int(hex_string, 16)
+            decimal_number = int(hex_string, 2)
             CONNECT,CURSOR=linkSQL()
             CURSOR.execute("select seq from game")
             nowSeq=CURSOR.fetchone()[0]
