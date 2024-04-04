@@ -24,8 +24,9 @@ class game(commands.Cog):
             await interaction.response.send_message("這裡不是指令區喔")
             return
         userId = interaction.user.id
+        nickname = interaction.user
         CONNECTION,CURSOR=linkSQL()#SQL 會話
-        userId = interaction.user.id
+        
         point = read(userId,'point',CURSOR)
         if point<5:
             await interaction.response.send_message("你的電電點不足以玩這個遊戲")
