@@ -24,7 +24,7 @@ class game(commands.Cog):
             await interaction.response.send_message("這裡不是指令區喔")
             return
         userId = interaction.user.id
-        nickname = interaction.user
+        nickName = interaction.user
         CONNECTION,CURSOR=linkSQL()#SQL 會話
         
         point = read(userId,'point',CURSOR)
