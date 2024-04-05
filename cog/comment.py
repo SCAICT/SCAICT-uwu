@@ -104,6 +104,36 @@ class comment(commands.Cog):
             latestUser=CURSOR.fetchone()[0]
             if  message.author.id == latestUser:
                 #同人疊數數
+                await message.add_reaction("🔄")
+            elif decimal_number == nowSeq+1:
+                #數數成立
+                CURSOR.execute("UPDATE game SET seq = seq+1")
+                print(message.author.id)
+                CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
+                # add a check emoji to the message
+                await message.add_reaction("✅")
+            else:
+                #不同人數數，但數字不對
+                await message.add_reaction("❌")
+        except:
+            #在decimal_number賦值因為不是數字(可能聊天或其他文字)產生錯誤產生問號emoji回應
+            await message.add_reaction("❔")
+        end(CONNECT,CURSOR)
+    
+    @staticmethod
+    async def count(message):
+        CONNECT,CURSOR=linkSQL()
+        try:
+            bin_string = message.content
+            #若bin_string轉換失敗，會直接跳到except
+            decimal_number = int(bin_string, 2)
+            CONNECT,CURSOR=linkSQL()
+            CURSOR.execute("select seq from game")
+            nowSeq=CURSOR.fetchone()[0]
+            CURSOR.execute("select lastID from game")
+            latestUser=CURSOR.fetchone()[0]
+            if  message.author.id == latestUser:
+                #同人疊數數
                 await message.add_reaction("❌")
                 await message.add_reaction("🔄")
             elif decimal_number == nowSeq+1:
