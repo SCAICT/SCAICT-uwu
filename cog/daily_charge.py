@@ -32,7 +32,7 @@ class charge(commands.Cog):
             self.embed.set_thumbnail(url=str(interaction.user.avatar))
 
         self.embed.add_field(name="",
-                             value=":battery:+5:zap:= "+str(point)+f"{stickers['logo']}", inline=False)
+                             value=f":battery:+5{stickers['logo']}={point}{stickers['logo']}", inline=False)
         self.embed.add_field(name="連續登入獎勵: "+str(combo)+"/" +
                              str(combo + 7- combo % 7), value='\n', inline=False)
         self.embed.set_footer(text=f"{interaction.user.name}充電成功!")
