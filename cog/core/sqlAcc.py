@@ -26,7 +26,9 @@ cursor.execute("CREATE TABLE `CommentPoints`(seq INT AUTO_INCREMENT PRIMARY KEY,
 cursor.execute("CREATE TABLE `game` (seq BIGINT NOT NULL DEFAULT 0,\
                niceColor VARCHAR(3) NOT NULL DEFAULT 'FFF',\
                niceColorRound INT NOT NULL DEFAULT 0,\
-               lastID niceColor niceColorCount BIGINT DEFAULT 0);insert into game (seq) VALUES 0;\
+               lastID niceColorCount BIGINT DEFAULT 0);\
+                \
+               insert into game (seq) VALUES 0;\
                ")
 
 #查看所有databases
