@@ -3,6 +3,7 @@ from build.build import build
 from discord.ext import commands
 import json
 import os
+
 def getCLS():
     try:
         with open(f'{os.getcwd()}/DataBase/clas.json', "r") as file:
@@ -24,15 +25,15 @@ def add_data(code, new_data):
     with open(f'{os.getcwd()}/DataBase/clas.json', 'w') as file:
         json.dump(data, file, indent=2,ensure_ascii=False)
 
-
-
 class class_role(build):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(self.token_verify_button())
+
     class token_verify_button(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
+
         @discord.ui.button(label="輸入課程代碼",style=discord.ButtonStyle.blurple,emoji="🏷️",custom_id="button")
         async def button_callback(self, button, interaction):
             class token_modal(discord.ui.Modal):
@@ -44,7 +45,7 @@ class class_role(build):
 
                 async def callback(self, interaction: discord.Interaction):
                     user_code = self.input_field.value
-                    
+
                     if search_data(user_code):
                         data = getCLS()
                         role = discord.utils.get(interaction.guild.roles, name=data[user_code]["name"])
@@ -78,7 +79,7 @@ class class_role(build):
             embed.add_field(name="點下方按鈕輸入token", value="", inline=False)
             embed.add_field(name="領取課程身分組!", value="", inline=False)
             await ctx.send(embed=embed,view=self.token_verify_button())
-        
+
     @discord.slash_command(description="新增主題課程")
     async def add_class(self, ctx, class_code: str, name: str, theme: str, teacher: str, time: str):
         if ctx.author.guild_permissions.administrator:
@@ -90,8 +91,6 @@ class class_role(build):
             }
             add_data(class_code, d)
             await ctx.respond(f"已添加 {name} 至 JSON 中 主題: {theme}, 講師: {teacher}, 時間: {time}")
-
-        
 
 def setup(bot):
     bot.add_cog(class_role(bot))

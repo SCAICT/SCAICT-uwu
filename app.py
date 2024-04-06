@@ -63,7 +63,7 @@ def callback():
     write(user_data["id"],"DCname",user_data["username"],CURSOR)
     #email
     write(user_data["id"],"DCmail",user_data["email"],CURSOR)
-    
+
     end(CONNECTION,CURSOR)
     return redirect(url_for("profile"))
 
@@ -108,7 +108,7 @@ def profile():
     if not DcUser:
         end(CONNECTION,CURSOR)
         return render_template("home.html")
-    
+
     yourPoints=read(DcUser["id"],"point",CURSOR)
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
     if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
@@ -117,7 +117,7 @@ def profile():
     else:
         end(CONNECTION,CURSOR)
         return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
-    
+
 @app.route("/slot")
 def slot():
     CONNECTION,CURSOR=linkSQL()#SQL 會話
@@ -161,9 +161,9 @@ def buyProduct():
     if product["pay"] != "point":
         return "此獎品無法使用電電點兌換"
 
-    
+
     CONNECTION,CURSOR=linkSQL()#SQL 會話
-    
+
     if not (isExist(DcUser["id"],"USER",CURSOR)):
         end(CONNECTION,CURSOR)
         return "用戶不存在"
@@ -195,7 +195,7 @@ def rollSlot():
         products = json.load(file)
     # Check in the json array products.products for the product with the id
     product = next((p for p in products["products"] if p["id"] == "slot"), None)
-    
+
     #讀用戶的抽獎券和電電點
     yourTicket=read(DcUser["id"],"ticket",CURSOR)
     yourPoint=read(DcUser["id"],"point",CURSOR)
@@ -268,7 +268,7 @@ def star_uwu():
     write(DcUser["id"],"githubName",github_username,CURSOR)
     write(DcUser["id"],"githubMail",github_mail,CURSOR)
     end(CONNECTION,CURSOR)
-    
+
     repo_owner = "SCAICT"
     repo_name = "SCAICT-uwu"
     star_url = f"https://api.github.com/user/starred/{repo_owner}/{repo_name}"

@@ -3,18 +3,19 @@ from discord.ext import commands
 from  cog.core.SQL import read
 from cog.core.SQL import linkSQL
 from cog.core.SQL import end
+
 class check_point(commands.Cog):
 
     def __init__(self, bot):
         self.bot=bot
 
     async def send_message(self, point, combo, interaction):
-        
+
         member=interaction.user.mention
         #mention the users
 
         self.embed = discord.Embed(color=0x14e15c)
-        
+
         if interaction.user.avatar!=None:#預設頭像沒有這個
             self.embed.set_thumbnail(url=str(interaction.user.avatar))
         self.embed.add_field(name="\n", value='用戶 : '+member, inline=False)
@@ -31,5 +32,6 @@ class check_point(commands.Cog):
         point = read(userId,'point',CURSOR)
         await self.send_message(point, combo, interaction)
         end(CONNECTION,CURSOR)
+
 def setup(bot):
     bot.add_cog(check_point(bot))

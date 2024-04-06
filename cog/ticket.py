@@ -13,9 +13,7 @@ class ticket(build):
         self.bot.add_view(self.closeView())
         self.bot.add_view(self.delView())
 
-
-
-    ## del cahnnel button 
+    ## del cahnnel button
     class delView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None) # timeout of the view must be set to Nones
@@ -26,14 +24,12 @@ class ticket(build):
             await interaction.response.send_message(embed=embed)
             await asyncio.sleep(3)
             await interaction.channel.delete()
-            
-
 
     ## close button
     class closeView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None) # timeout of the view must be set to Nones
-        
+
         @discord.ui.button(label="關閉表單",style=discord.ButtonStyle.red,emoji="🔒",custom_id="close")
         async def button_callback(self,button,interaction):
             user = interaction.user
@@ -53,29 +49,29 @@ class ticket(build):
             embed.add_field(name="請確認並刪除頻道", value=" ", inline=False)
             await interaction.response.send_message(role.mention,embed=embed,view=ticket.delView())  # 修改這裡，使用 ticket.delView()
 
-    ## create ticket button 
+    ## create ticket button
     class ticketView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None) # timeout of the view must be set to None
+
         @discord.ui.button(label="點擊開單",style=discord.ButtonStyle.blurple,emoji="📩",custom_id="ticket")
         async def button_callback(self,button,interaction):
             await self.create_ticket_channel(interaction,"開單")
-        
+
         async def create_ticket_channel(self,interaction,button_name):
             user = interaction.user
             guild = interaction.guild
             target_category_name = "開單處"
-            
+
             existing_channels = [
-                channel for channel in guild.text_channels 
+                channel for channel in guild.text_channels
                 if channel.name.startswith(interaction.user.name)
             ]
 
             if existing_channels:
                 await interaction.response.send_message("你已經有創建頻道了!", ephemeral=True)
                 return
-            
-            
+
             # 创建频道名称
             channel_name = f"{interaction.user.name}的ticket頻道"
 
@@ -102,11 +98,11 @@ class ticket(build):
             await channel.send(f"這裡是{user.mention}的頻道",embed=embed,view=ticket.closeView())  # 修改這裡，使用 ticket.closeView()
 
             await interaction.response.send_message(f"已創建 {channel.mention}!", ephemeral=True)
-    
+
     @discord.slash_command()
     async def create_ticket_button(self,ctx):
         if ctx.author.guild_permissions.administrator:
-            
+
             # 修改這裡，使用 ticket.ticketView()
             embed=discord.Embed(title=" ", color=0xfefcb6)
             embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/2067/2067179.png")
