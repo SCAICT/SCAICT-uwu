@@ -1,6 +1,16 @@
 {
-    "population": ["all same", "all different", "one pair", "lightning"],
-    "weights": [10, 69, 20, 1],
+    "population": [
+        "all same",
+        "all different",
+        "one pair",
+        "lightning"
+    ],
+    "weights": [
+        10,
+        69,
+        20,
+        1
+    ],
     "get": {
         "all same": 20,
         "all different": 5,
