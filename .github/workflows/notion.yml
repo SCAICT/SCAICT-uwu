@@ -2,8 +2,9 @@ name: Sync issues to Notion
 
 on:
   issues:
-    types: [opened, edited, deleted, reopened, closed]
+    types: [ opened, edited, deleted, reopened, closed ]
   workflow_dispatch:
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -11,6 +12,6 @@ jobs:
       - name: Notion GitHub Issues Automation
         uses: Edit-Mr/GitHub-issue-2-Notion@main
         with:
-            repo: ${{ github.repository }} 
-            NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
-            NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          repo: ${{ github.repository }} 
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}

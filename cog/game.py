@@ -9,7 +9,7 @@ from cog.core.SQL import end
 import random
 
 def getChannels():#要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻簽到，否則不予授理
-    
+
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)["SCAICT-alpha"]
 
@@ -26,7 +26,7 @@ class game(commands.Cog):
         userId = interaction.user.id
         nickname = interaction.user
         CONNECTION,CURSOR=linkSQL()#SQL 會話
-        
+
         point = read(userId,'point',CURSOR)
         if point<5:
             await interaction.response.send_message("你的電電點不足以玩這個遊戲")

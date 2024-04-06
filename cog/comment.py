@@ -10,18 +10,22 @@ from cog.core.SQL import write
 from cog.core.SQL import isExist
 from cog.core.SQL import end    #用來結束和SQL資料庫的會話
 from cog.core.SQL import linkSQL
+
 def insertUser(userId,TABLE,CURSOR):#初始化(創建)傳入該ID的表格
     CURSOR.execute(f"INSERT INTO {TABLE} (uid) VALUE({userId})")#其他屬性在創造時MYSQL會給預設值
+
 def getChannels():#要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻簽到，否則不予授理
     #os.chdir("./")
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)["SCAICT-alpha"]["channel"]
+
 def reset(message, now,CURSOR):
     userId=message.author.id
     write(userId,"today_comments",0,CURSOR)#歸零發言次數
     write(userId,"last_comment",str(now),CURSOR)
     write(userId,"times",2,CURSOR,TABLE="CommentPoints")#初始化達標後能獲得的電電點
     write(userId,"next_reward",1,CURSOR,TABLE="CommentPoints")
+
 def reward(message,CURSOR):
     #讀USER資料表的東西
     userId=message.author.id
@@ -33,7 +37,7 @@ def reward(message,CURSOR):
     times=read(userId,"times",CURSOR,TABLE="CommentPoints")
 
     today_comments+=1
-    
+
     if today_comments==next_reward:
         point+=2
         next_reward+=times**2
@@ -52,13 +56,13 @@ class comment(commands.Cog):
     def __init__(self, bot):
         self.bot=bot
         self.spChannel=getChannels()#特殊用途的channel
-        
+
     #數數判定
     @commands.Cog.listener()
     async def on_message(self, message):
         userId=message.author.id
         CONNECTION,CURSOR=linkSQL()#SQL 會話
-        
+
         if message.content.startswith("!set"):
             #狀態指令
             arg=message.content.split(" ")
@@ -73,7 +77,7 @@ class comment(commands.Cog):
             #列表中頻道不算發言次數
             comment.todayComment(userId,message,CURSOR)
         end(CONNECTION,CURSOR)
-        
+
     @staticmethod
     def todayComment(userId,message,CURSOR):
         #創建該user的資料表
@@ -89,7 +93,7 @@ class comment(commands.Cog):
             reset(message, now,CURSOR)
         #更改今天發言狀態
         reward(message,CURSOR)
-        
+
     @staticmethod
     async def count(message):
         CONNECT,CURSOR=linkSQL()
@@ -121,7 +125,6 @@ class comment(commands.Cog):
             #在decimal_number賦值因為不是數字(可能聊天或其他文字)產生錯誤產生問號emoji回應
             await message.add_reaction("❔")
         end(CONNECT,CURSOR)
-        
 
 def setup(bot):
     bot.add_cog(comment(bot))

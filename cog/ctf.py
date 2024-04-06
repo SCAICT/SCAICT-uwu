@@ -11,13 +11,14 @@ from cog.core.SQL import end    #用來結束和SQL資料庫的會話
 from cog.core.SQL import linkSQL
 from datetime import datetime
 
-
 def getCTFFile():
     with open(f"{os.getcwd()}/DataBase/ctf.json", "r") as file:
         return json.load(file)
+
 def getCTFmakers():
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)
+
 # By EM
 class ctf(build):
     @commands.Cog.listener()
@@ -29,12 +30,14 @@ class ctf(build):
     class ctfView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)  # timeout of the view must be set to None
+
         @discord.ui.button(label="回報 Flag", style=discord.ButtonStyle.blurple, emoji="🚩" ,custom_id="new_ctf")
         async def button_callback_1(self, button, interaction):
             class SubmitModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
                     super().__init__(*args, **kwargs)
                     self.add_item(discord.ui.InputText(label="Flag", placeholder="Flag", required=True))
+
                 async def callback(self, interaction: discord.Interaction):
                     ctfFile = getCTFFile()
                     question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
@@ -71,7 +74,7 @@ class ctf(build):
                         write(userId, "point", new_point,CURSOR)
                         #log
                         print(f'{userId},{nickName} Get {ctf_question["score"]} by ctf, {str(datetime.now())}')
-                        
+
                         embed = discord.Embed(title="答題成功!")
                         embed.add_field(name="+" + str(ctf_question["score"]) + ":zap:" , value="=" + str(new_point), inline=False)
                         end(CONNECTION,CURSOR)
@@ -90,16 +93,17 @@ class ctf(build):
                     # set the new embed
                     await interaction.message.edit(embed=embed)
             await interaction.response.send_modal(SubmitModal(title="你找到 Flag 了嗎？"))
+
     @ctf_commands.command(name="create", description="新題目")
     async def create(self, ctx,
-        title: Option(str, "題目標題", required=True, default=''),  
-        flag: Option(str, "輸入 flag 解答", required=True, default=''), 
-        score: Option(int, "分數", required=True, default='20'), 
+        title: Option(str, "題目標題", required=True, default=''),
+        flag: Option(str, "輸入 flag 解答", required=True, default=''),
+        score: Option(int, "分數", required=True, default='20'),
         limit: Option(int, "限制回答次數", required=False, default=''),
-        case: Option(bool, "大小寫忽略", required=False, default=False), 
-        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default=""), 
+        case: Option(bool, "大小寫忽略", required=False, default=False),
+        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default=""),
         end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default="")):
-        role_id =getCTFmakers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]#get ctf maker role's ID 
+        role_id =getCTFmakers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]#get ctf maker role's ID
         # Check whether the user can send a question or not
         role = discord.utils.get(ctx.guild.roles, id=role_id)
         if role not in ctx.author.roles:
@@ -136,13 +140,13 @@ class ctf(build):
         await ctx.respond("題目創建成功!",ephemeral=True)
         response = await ctx.send(embed=embed, view=self.ctfView())
         messageId = response.id
-        ctfFile[newId] = {"flag": flag, 
-                          "score": score, 
-                          "limit": limit, 
+        ctfFile[newId] = {"flag": flag,
+                          "score": score,
+                          "limit": limit,
                           "messageId": messageId,
                           "case": case,
-                          "start": str(start), 
-                          "end": str(end), 
+                          "start": str(start),
+                          "end": str(end),
                           "title": title,
                           "solved":[],
                           "tried": 0,
@@ -154,7 +158,7 @@ class ctf(build):
     # @ctf_commands.command(description="球")
     # async def ping(self, ctx):
     #     await ctx.respond(user.read(ctx.author.id, "point"))
-    
+
     @ctf_commands.command(description="列出所有題目")
     async def list_all(self, ctx):
         question_list = ["**CTF 題目列表:**"]

@@ -27,6 +27,5 @@ class admin_role(build):
             embed.add_field(name="哈囉 點一下", value="  ", inline=False)
             await ctx.respond(embed=embed, view=self.roleView())
 
-
 def setup(bot):
     bot.add_cog(admin_role(bot))

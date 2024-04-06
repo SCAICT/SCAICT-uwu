@@ -32,6 +32,5 @@ class rule_roles(build):
             role = discord.utils.get(guild.roles, name="二月主題課程")
             await member.remove_roles(role)
 
-
 def setup(bot):
     bot.add_cog(rule_roles(bot))
