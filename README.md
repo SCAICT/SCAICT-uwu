@@ -20,7 +20,7 @@ A cat living in SCAICT Discord server.
 
 4. Config channels in `DataBase/server.config.json` .
 5. Run SQL Server
-6. Config SQL Server in Breadcrumbs SCAICT-uwu `cog/core/sqlAcc.py`
+6. Config SQL Server in Breadcrumbs SCAICT-uwu `cog/core/sql_acc.py`
 
 7. Run Flask
 
@@ -38,7 +38,7 @@ A cat living in SCAICT Discord server.
 
 * `main.py` : Discord Bot
 * `app.py` : Flask web app
-* `generate-secrets.py` : Generate secret key for app.py. Run and save it in token.json
+* `generate_secrets.py` : Generate secret key for app.py. Run and save it in token.json
 * Database MySQL: 使用外部伺服器，相關設定在cog/core/secret.py
 * `token.json` :
 
