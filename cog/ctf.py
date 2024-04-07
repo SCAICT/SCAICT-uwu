@@ -7,18 +7,20 @@ import random
 import os
 from cog.core.SQL import read
 from cog.core.SQL import write
-from cog.core.SQL import end    #用來結束和SQL資料庫的會話
+from cog.core.SQL import end as endSQL    #用來結束和SQL資料庫的會話，平常都用end()，但和 Discord 指令變數名稱衝突，所以這裡改名
 from cog.core.SQL import linkSQL
 from datetime import datetime
 
 
-def getCTFFile():
-    with open(f"{os.getcwd()}/DataBase/ctf.json", "r") as file:
-        return json.load(file)
+# def getCTFFile():
+#     with open(f"{os.getcwd()}/DataBase/ctf.json", "r") as file:
+#         return json.load(file)
 def getCTFmakers():
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)
 # By EM
+def generateCTFId():
+    return str(random.randint(100000000000000000, 999999999999999999))
 class ctf(build):
     @commands.Cog.listener()
     async def on_ready(self):
@@ -30,75 +32,125 @@ class ctf(build):
         def __init__(self):
             super().__init__(timeout=None)  # timeout of the view must be set to None
         @discord.ui.button(label="回報 Flag", style=discord.ButtonStyle.blurple, emoji="🚩" ,custom_id="new_ctf")
+        #user送出flag
         async def button_callback_1(self, button, interaction):
             class SubmitModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
                     super().__init__(*args, **kwargs)
                     self.add_item(discord.ui.InputText(label="Flag", placeholder="Flag", required=True))
                 async def callback(self, interaction: discord.Interaction):
-                    ctfFile = getCTFFile()
+                    CONNECTION,CURSOR=linkSQL()#SQL 會話
+                    CURSOR.execute(f"USE CTF;")
                     question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
-                    ctf_question = ctfFile[question_id]
+                    #startTime
+                    CURSOR.execute(f"SELECT start_time FROM data WHERE id={question_id};")
+                    starTime=str(CURSOR.fetchone()[0])
+                    #endTime
+                    CURSOR.execute(f"SELECT end_time FROM data WHERE id={question_id};")
+                    end=str(CURSOR.fetchone()[0])
+                    
+                    #判斷是否在作答時間內
                     current_time = datetime.now()
-                    if datetime.strptime(ctf_question["start"], '%y/%m/%d %H:%M:%S') > current_time:
+                    if datetime.strptime(starTime, '%Y-%m-%d %H:%M:%S') > current_time:
                         await interaction.response.send_message("答題時間尚未開始！",ephemeral=True)
+                        endSQL(CONNECTION,CURSOR)
                         return
-                    if ctf_question["end"] != "None" and datetime.strptime(ctf_question["end"], '%y/%m/%d %H:%M:%S') < current_time:
+                    if end != "None" and datetime.strptime(end, '%y/%m/%d %H:%M:%S') < current_time:
                         await interaction.response.send_message("目前不在作答時間內！",ephemeral=True)
+                        endSQL(CONNECTION,CURSOR)
                         return
                     userId = interaction.user.id
                     nickName = interaction.user
-                    if str(userId) not in ctf_question["history"]:
-                        ctfFile[question_id]["history"][str(userId)] = 0
-                    if ctf_question["limit"]!='∞':#無限沒辦法比大小，直接跳過這個邏輯
-                        if str(userId) in ctf_question["history"] and ctf_question["history"][str(userId)] >= int(ctf_question["limit"]):
+                    #判斷題目可作答次數
+                    CURSOR.execute(f"SELECT count FROM history WHERE data_id={question_id} AND uid={userId};")
+                    #return None or tuple.like (1,)
+                    answerCount=CURSOR.fetchone()#使用者回答次數
+                    #第一次作答flag
+                    notExist =False if answerCount!=None else True
+                    if notExist:
+                        #初始化作答次數
+                        CURSOR.execute(f"INSERT INTO history (data_id,uid,count) VALUES ({question_id},{userId},0);")
+                        answerCount=0
+                        # ctfFile[question_id]["history"][str(userId)] = 0
+                    else:
+                        answerCount=answerCount[0]
+                    CURSOR.execute(f"SELECT restrictions FROM data WHERE id={question_id};")
+                    restrictions =str(CURSOR.fetchone()[0])#最大作答次數
+                    if restrictions !='∞':#無限沒辦法比大小，不用判斷有沒有超過限制
+                        #判斷用戶是否超過每人限制次數
+                        if  answerCount>=int(restrictions):
                             await interaction.response.send_message("你已經回答超過限制次數了喔！",ephemeral=True)
+                            endSQL(CONNECTION,CURSOR)
                             return
-                    ctfFile[question_id]["history"][str(userId)] = ctfFile[question_id]["history"][str(userId)] + 1
-                    ctfFile[question_id]["tried"] = ctf_question["tried"] + 1
+
+                    #更新作答次數，包括總表和個人表
+                    CURSOR.execute(f"UPDATE history SET count=count+1 WHERE data_id={question_id} AND uid={userId};")
+                    answerCount+=1#SQL和變數同步，變數之後還要用
+                    CURSOR.execute(f"UPDATE data SET tried=tried+1 WHERE id={question_id};")
+                    
+                    #製造 embed 前置作業-取得必要數值
+                    CURSOR.execute(f"SELECT tried FROM data WHERE id={question_id};")
+                    totalTried = int(CURSOR.fetchone()[0])#該題總共嘗試次數
+                    CURSOR.execute(f"SELECT COUNT(*) FROM history WHERE data_id={question_id} AND solved=1;")
+                    totalSolved = int(CURSOR.fetchone()[0])#該題完成人數
+                    
+                    #取得使用者輸入的 flag
                     response_flag = self.children[0].value
-                    answer = ctf_question["flag"]
+                    CURSOR.execute(f"SELECT flags FROM data WHERE id={question_id};")
+                    answer =str(CURSOR.fetchone()[0])
+                    #輸入內容為正確答案
                     if response_flag == answer:
-                        CONNECTION,CURSOR=linkSQL()#SQL 會話
-                        if int(userId) in ctf_question["solved"]:
+                        #判斷是否重複回答
+                        CURSOR.execute(f"SELECT solved FROM history WHERE data_id={question_id} AND uid={userId};")
+                        isSolved=int(CURSOR.fetchone()[0])
+                        if isSolved:
                             embed = discord.Embed(title="答題成功!")
                             embed.add_field(name=""  , value="但你已經解答過了所以沒有 :zap: 喔！", inline=False)
                             await interaction.response.send_message(ephemeral=True,embeds=[embed])
                             return
-                        current_point = read(userId, "point",CURSOR)
-                        new_point = current_point + int(ctf_question["score"])
-                        ctfFile[question_id]["solved"].append(userId)
-                        write(userId, "point", new_point,CURSOR)
-                        #log
-                        print(f'{userId},{nickName} Get {ctf_question["score"]} by ctf, {str(datetime.now())}')
-                        
-                        embed = discord.Embed(title="答題成功!")
-                        embed.add_field(name="+" + str(ctf_question["score"]) + ":zap:" , value="=" + str(new_point), inline=False)
-                        end(CONNECTION,CURSOR)
-                        await interaction.response.send_message(embeds=[embed],ephemeral=True)
+                        else:#未曾回答過，送獎勵
+                            CURSOR.execute(f"UPDATE history SET solved=1 WHERE data_id={question_id} AND uid={userId};")
+                            CURSOR.execute(f"SELECT score FROM data WHERE id={question_id};")
+                            reward=int(CURSOR.fetchone()[0])
+                            CURSOR.execute(f"USE Discord;")#換資料庫存取電電點
+                            current_point = read(userId, "point",CURSOR)
+                            new_point = current_point + reward
+                            #更新用戶電電點
+                            write(userId, "point", new_point,CURSOR)
+                            #更新作答狀態
+                            #log
+                            print(f'{userId},{nickName} Get {reward} by ctf, {str(datetime.now())}')
+                            
+                            embed = discord.Embed(title="答題成功!")
+                            embed.add_field(name="+" + str(reward) + ":zap:" , value="=" + str(new_point), inline=False)
+                            await interaction.response.send_message(embeds=[embed],ephemeral=True)
                     else:
                         embed = discord.Embed(title="答案錯誤!")
-                        embed.add_field(name="嘗試次數" , value=str(ctf_question["history"][str(userId)]) + "/"+ str(ctf_question["limit"]), inline=False)
+                        embed.add_field(name="嘗試次數" , value=str(answerCount) + "/"+ str(restrictions), inline=False)
                         await interaction.response.send_message(embeds=[embed],ephemeral=True)
-                    with open(f"{os.getcwd()}/DataBase/ctf.json", "w") as outfile:
-                        json.dump(ctfFile, outfile)
+
                     # edit the original message
+                    #更新題目顯示狀態
                     embed = interaction.message.embeds[0]
-                    embed.set_field_at(0, name="已完成", value=str(len(ctfFile[question_id]["solved"])), inline=True)
-                    embed.set_field_at(1, name="已嘗試", value=str(ctfFile[question_id]["tried"]), inline=True)
-                    embed.set_field_at(2, name="回答次數限制", value=str(ctfFile[question_id]["limit"]), inline=True)
+                    embed.set_field_at(0, name="已完成", value=str(totalSolved), inline=True)
+                    embed.set_field_at(1, name="已嘗試", value=str(totalTried), inline=True)
+                    embed.set_field_at(2, name="回答次數限制", value=str(restrictions), inline=True)
                     # set the new embed
                     await interaction.message.edit(embed=embed)
+                    endSQL(CONNECTION,CURSOR)#結束SQL會話
             await interaction.response.send_modal(SubmitModal(title="你找到 Flag 了嗎？"))
     @ctf_commands.command(name="create", description="新題目")
+    #生成新題目
     async def create(self, ctx,
         title: Option(str, "題目標題", required=True, default=''),  
         flag: Option(str, "輸入 flag 解答", required=True, default=''), 
         score: Option(int, "分數", required=True, default='20'), 
         limit: Option(int, "限制回答次數", required=False, default=''),
         case: Option(bool, "大小寫忽略", required=False, default=False), 
-        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default=""), 
+        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default=""), #時間格式
         end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required=False, default="")):
+        #SQL沒有布林值，所以要將T/F轉換成0或1
+        case=1 if case else 0
         role_id =getCTFmakers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]#get ctf maker role's ID 
         # Check whether the user can send a question or not
         role = discord.utils.get(ctx.guild.roles, id=role_id)
@@ -109,12 +161,22 @@ class ctf(build):
         if title == '' or flag == '':
             await ctx.respond("請填寫題目標題和 flag",ephemeral=True)
             return
-        newId = generateCTFId()
-        ctfFile = getCTFFile()
-        while (newId in ctfFile):
+        # ctfFile = getCTFFile()
+        
+        CONNECTION,CURSOR=linkSQL()#SQL 會話
+        print(type(CONNECTION),type(CURSOR))
+        CURSOR.execute("USE CTF;")
+        while (1):
             newId = generateCTFId()
-        start = datetime.strptime(start, '%y/%m/%d %H:%M:%S') if start != "" else datetime.now().strftime('%y/%m/%d %H:%M:%S')
-        end = datetime.strptime(end, '%y/%m/%d %H:%M:%S') if end != "" else None
+            #找尋是否有重複的ID，若無則跳出迴圈
+            CURSOR.execute(f"select id from data WHERE EXISTS(select id from data WHERE id={newId});")
+            idExist=CURSOR.fetchone()
+            if(idExist==None):
+                break
+        #轉型程SQL datetime格式 %Y-%m-%d %H:%M:%S
+        start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S') if start != "" else datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        end = f"'{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}'" if end != "" else "NULL"
+        #limit若沒有填寫，設為可嘗試無限次
         limit = "∞" if limit == "" else limit
         embed = discord.Embed(
             title=title,
@@ -133,47 +195,56 @@ class ctf(build):
         embed.add_field(name="", value="", inline=False)
         embed.add_field(name="可於下方討論，但請勿公布答案", value="", inline=False)
         embed.set_footer(text="題目 ID: "+newId)
+        #embed格式別亂改，會影響回應訊息時取值
         await ctx.respond("題目創建成功!",ephemeral=True)
         response = await ctx.send(embed=embed, view=self.ctfView())
         messageId = response.id
-        ctfFile[newId] = {"flag": flag, 
-                          "score": score, 
-                          "limit": limit, 
-                          "messageId": messageId,
-                          "case": case,
-                          "start": str(start), 
-                          "end": str(end), 
-                          "title": title,
-                          "solved":[],
-                          "tried": 0,
-                          "history": {}}
-        with open(f"{os.getcwd()}/DataBase/ctf.json", "w") as outfile:
-            json.dump(ctfFile, outfile)
+        
+        #在CTF資料庫中的data表格新增一筆ctf資料
+        print(f"INSERT INTO `data`\
+        (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
+        ({newId},'{flag}',{score},'{limit}',{messageId},{case},'{start}',{end},\'{title}\',{0});")
+        CURSOR.execute(f"INSERT INTO `data`\
+        (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
+        ({newId},'{flag}',{score},'{limit}',{messageId},{case},'{start}',{end},\'{title}\',{0});")
+        #CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
+        print(type(CONNECTION),type(CURSOR),end)
+        endSQL(CONNECTION,CURSOR)
+        # ctfFile[newId] = {"flag": flag, 
+        #                   "score": score, 
+        #                   "limit": limit, 
+        #                   "messageId": messageId,
+        #                   "case": case,
+        #                   "start": str(start), 
+        #                   "end": str(end), 
+        #                   "title": title,
+        #                   "solved":[],
+        #                   "tried": 0,
+        #                   "history": {}}
+        # with open(f"{os.getcwd()}/DataBase/ctf.json", "w") as outfile:
+        #     json.dump(ctfFile, outfile)
+        
+#刪除題目，等等寫
+    # @ctf_commands.command(name="delete", description="刪除題目")
+    # async def deleteCTF(self, ctx, question_id: str):
+    #     role_id =getCTFmakers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
+    # @ctf_commands.command(description="列出所有題目")
+    # async def list_all(self, ctx):
+    #     question_list = ["**CTF 題目列表:**"]
+    #     ctfFile = getCTFFile()
+    #     for question_id, question_data in ctfFile.items():
+    #         question_list.append(
+    #             f"* **{question_data['title']}** - {question_data['score']} :zap: *({question_id})*")
+    #     question_text = "\n".join(question_list)
+    #     await ctx.respond(question_text)
 
-    # 測試用
-    # @ctf_commands.command(description="球")
-    # async def ping(self, ctx):
-    #     await ctx.respond(user.read(ctx.author.id, "point"))
-    
-    @ctf_commands.command(description="列出所有題目")
-    async def list_all(self, ctx):
-        question_list = ["**CTF 題目列表:**"]
-        ctfFile = getCTFFile()
-        for question_id, question_data in ctfFile.items():
-            question_list.append(
-                f"* **{question_data['title']}** - {question_data['score']} :zap: *({question_id})*")
-        question_text = "\n".join(question_list)
-        await ctx.respond(question_text)
+    # def __init__(self, bot):
+    #     super().__init__(bot)
+    #     self.bot = bot
 
-    def __init__(self, bot):
-        super().__init__(bot)
-        self.bot = bot
-
-    def setup(self):
-        self.bot.add_application_command(ctf_commands)
+    # def setup(self):
+    #     self.bot.add_application_command(ctf_commands)
 
 def setup(bot):
     bot.add_cog(ctf(bot))
 
-def generateCTFId():
-    return str(random.randint(1000000000000000000, 9999999999999999999))
