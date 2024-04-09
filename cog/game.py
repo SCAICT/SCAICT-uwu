@@ -56,6 +56,18 @@ class game(commands.Cog):
             print(f"{userId},{nickName} Get {game_outcomes[(botChoice, choice)]} point by playing rock-paper-scissors")
         write(userId, 'point',point ,CURSOR)
         end(CONNECTION,CURSOR)
+    @discord.slash_command(name="number_status", description="數數狀態")
+    async def numberStatus(self, interaction):
+        CONNECTION,CURSOR=linkSQL()#SQL 會話
+        CURSOR.execute("SELECT seq FROM game")
+        nowStatus=CURSOR.fetchone()[0]
+        end(CONNECTION,CURSOR)
+        embed = discord.Embed(
+            title="現在數到",
+            description=f"{nowStatus} (dec) 了，接下去吧!",
+            color=0xff24cf,
+            )
+        await interaction.response.send_message(embed=embed)
 
 def setup(bot):
     bot.add_cog(game(bot))
