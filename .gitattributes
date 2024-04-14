@@ -1,0 +1,3 @@
+*.html eol=lf
+*.json eol=lf
+*.py eol=lf

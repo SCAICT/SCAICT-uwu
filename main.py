@@ -1,11 +1,15 @@
-import discord
+# Standard imports
 import json
 import os
-from channelCheck import update_channel#update_channel程式從core目錄底下引入
+# Third-party imports
+import discord
+# Local imports
+from channel_check import update_channel # update_channel程式從core目錄底下引入
+
 bot = discord.Bot(intents = discord.Intents.all())
-#更改目前位置到專案根目錄(SCAICT-DISCORD-BOT 資料夾)，再找檔案
+# 變更目前位置到專案根目錄（SCAICT-DISCORD-BOT 資料夾），再找檔案
 os.chdir("./")
-with open(f"{os.getcwd()}/token.json","r") as file:
+with open(f"{os.getcwd()}/token.json","r", encoding = "utf-8") as file:
     token = json.load(file)
 
 for filename in os.listdir(f"{os.getcwd()}/cog"):
@@ -16,7 +20,7 @@ for filename in os.listdir(f"{os.getcwd()}/cog"):
 @bot.event
 async def on_ready():
     print(f"✅ {bot.user} is online")
-    
+
     bot.loop.create_task(update_channel(bot))
 
 if __name__=="__main__":

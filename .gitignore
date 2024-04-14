@@ -2,10 +2,9 @@
 # 如果你的token.json已經被追蹤可以執行:
 # 1. git rm --cached token.json
 # 2. git update-index --assume-unchanged token.json
-#這兩個指令
+# 這兩個指令
 token.json
 read.txt
-
 
 /.vscode
 **/__pycache__
