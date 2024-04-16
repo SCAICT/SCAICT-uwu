@@ -72,7 +72,7 @@ class comment(commands.Cog):
             #數數回應
                 await comment.count(message)
             elif message.channel.id == self.spChannel["colorChannel"]:
-            #數數回應
+            #猜色碼回應
                 await comment.niceColor(message)
             return
         if message.channel.id not in self.spChannel["exclude_point"]:
@@ -129,43 +129,49 @@ class comment(commands.Cog):
     @staticmethod
     async def niceColor(message):
         CONNECT,CURSOR=linkSQL()
-        try:
-            # if message.content is three letter
-            if len(message.content) != 3:
-                # reply text
-                await message.channel.send("請輸入三位 HEX 碼顏色")
-                return
-            CONNECT,CURSOR=linkSQL()
-            CURSOR.execute("select niceColor from game")
-            nowSeq=CURSOR.fetchone()[0]
-            # to upper case before check
-            hexColor = message.content.upper()
-            
-            if(hexColor == nowSeq):
-                CURSOR.execute("select niceColorRound from game")
-                round=CURSOR.fetchone()[0]
-                # use embled to send message. Set embled color to hexColor
-                embed = discord.Embed(title=f"猜了 {round}次後答對了!", description=f"#{hexColor}\n恭喜 {message.author.mention} 獲得 2{stickers['logo']}", color=int(hexColor, 16))
-                await message.channel.send(embed=embed)
-                # set count to 0
-                CURSOR.execute("UPDATE game SET niceColorRound = 0")
-                # generate a new color by random three letter 0~F
-                hexColor = ''.join([random.choice('0123456789ABCDEF') for _ in range(3)])
-                CURSOR.execute(f"UPDATE game SET niceColor = '{hexColor}'")
-                # send new color to channel
-                embed = discord.Embed(title=f"新題目已生成", description=f"請輸入三位數回答", color=int(hexColor, 16))
-                await message.channel.send(embed=embed)
-            else:
-                CURSOR.execute("UPDATE game SET niceColorRound = niceColorRound+1")
-                # 計算顏色有多相近。計算三個數字分別與答案相差多少的平均值除以16*100%
-                diff = sum([abs(int(hexColor[i], 16) - int(nowSeq[i], 16)) for i in range(3)]) / 48 * 100
-                # reply with embled. background color is hexColor
-                embed = discord.Embed(title="{diff:.2f}%", color=int(hexColor, 16))
-                await message.channel.send(embed=embed)
-                embed = discord.Embed(description=f"答案:#{hexColor}\n回答次數:{round}", color=int(nowSeq, 16))
-                await message.channel.send(embed=embed)
-        except:
-            await message.add_reaction("❔")
+        # try:
+                # if message.content is three letter
+        if len(message.content) != 3:
+            # reply text
+            await message.channel.send("請輸入三位 HEX 碼顏色")
+            return
+        # to upper case before check
+        CONNECT,CURSOR=linkSQL()
+        CURSOR.execute("select niceColor from game")
+        niceColor=CURSOR.fetchone()[0]
+        niceColor = ''.join([c*2 for c in niceColor])#格式化成六位數
+        hexColor = message.content.upper()
+        hexColor = ''.join([c*2 for c in hexColor])#格式化成六位數
+        
+        CURSOR.execute("select `niceColorRound` from game")
+        round=CURSOR.fetchone()[0]
+        if(hexColor == niceColor):
+            # use embled to send message. Set embled color to hexColor
+            embed = discord.Embed(title=f"猜了 {round}次後答對了!", description=f"#{hexColor}\n恭喜 {message.author.mention} 獲得 2{stickers['logo']}", color=discord.Colour(int(niceColor,16)))
+            await message.channel.send(embed=embed)
+            # set count to 0
+            CURSOR.execute("UPDATE game SET niceColorRound = 0")
+            # generate a new color by random three letter 0~F
+            #資料庫內一定要先設定一個初值題目，沒有題目永遠不會答對產生新題目
+            newColor = ''.join([random.choice('0123456789ABCDEF') for _ in range(3)])
+            CURSOR.execute(f"UPDATE game SET niceColor = '{newColor}'")
+            # send new color to channel
+            embed = discord.Embed(title=f"新題目已生成", description=f"請輸入三位數回答", color=discord.Colour(int(newColor,16)))
+            await message.channel.send(embed=embed)
+            #猜對的用戶加分
+            point=read(message.author.id,"point",CURSOR)+2
+            write(message.author.id,"point",point,CURSOR)
+        else:
+            CURSOR.execute("UPDATE game SET niceColorRound = niceColorRound+1;")
+            # 計算顏色有多相近。計算三個數字分別與答案相差多少的平均值除以16*100%
+            diff = sum([abs(int(hexColor[i], 16) - int(niceColor[i], 16)) for i in range(3)]) / 48 * 100
+            # reply with embled. background color is hexColor
+            embed = discord.Embed(title=f"#{hexColor}\n{diff:.2f}%", color=discord.Colour(int(hexColor, 16)))
+            await message.channel.send(embed=embed)
+            embed = discord.Embed(description=f"答案:左邊顏色\n總共回答次數:{round}", color=discord.Colour(int(niceColor,16)))
+            await message.channel.send(embed=embed)
+        # except:
+        #     await message.add_reaction("❔")
             # print error message
             
         end(CONNECT,CURSOR)
