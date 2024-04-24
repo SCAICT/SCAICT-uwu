@@ -1,5 +1,10 @@
+# Standard imports
+from datetime import datetime
+import json
+import os
+import random
+# Third-party imports
 import discord
-from build.build import build
 from discord.ext import commands
 from discord.commands import Option
 import json
@@ -18,17 +23,18 @@ from datetime import datetime
 def getCTFmakers():
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)
+
 # By EM
 def generateCTFId():
     return str(random.randint(100000000000000000, 999999999999999999))
 class ctf(build):
     @commands.Cog.listener()
     async def on_ready(self):
-        self.bot.add_view(self.ctfView())
+        self.bot.add_view(self.CTFView())
 
     ctf_commands = discord.SlashCommandGroup("ctf", "CTF 指令")
 
-    class ctfView(discord.ui.View):
+    class CTFView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)  # timeout of the view must be set to None
         @discord.ui.button(label="回報 Flag", style=discord.ButtonStyle.blurple, emoji="🚩" ,custom_id="new_ctf")
@@ -37,7 +43,9 @@ class ctf(build):
             class SubmitModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
                     super().__init__(*args, **kwargs)
-                    self.add_item(discord.ui.InputText(label="Flag", placeholder="Flag", required=True))
+                    self.add_item(
+                        discord.ui.InputText(label = "Flag", placeholder = "Flag", required = True))
+
                 async def callback(self, interaction: discord.Interaction):
                     CONNECTION,CURSOR=linkSQL()#SQL 會話
                     CURSOR.execute(f"USE CTF;")
@@ -153,13 +161,13 @@ class ctf(build):
         case=1 if case else 0
         role_id =getCTFmakers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]#get ctf maker role's ID 
         # Check whether the user can send a question or not
-        role = discord.utils.get(ctx.guild.roles, id=role_id)
+        role = discord.utils.get(ctx.guild.roles, id = role_id)
         if role not in ctx.author.roles:
-            await ctx.respond("你沒有權限創建題目喔！",mephemeral=True)
+            await ctx.respond("你沒有權限建立題目喔！", mephemeral = True)
             return
         # 確認是否有填寫 title 和 flag
         if title == '' or flag == '':
-            await ctx.respond("請填寫題目標題和 flag",ephemeral=True)
+            await ctx.respond("請填寫題目標題和 flag", ephemeral = True)
             return
         # ctfFile = getCTFFile()
         
@@ -179,12 +187,14 @@ class ctf(build):
         #limit若沒有填寫，設為可嘗試無限次
         limit = "∞" if limit == "" else limit
         embed = discord.Embed(
-            title=title,
-            description="+" +
-                        str(score)+"⚡",
-            color=0xff24cf,
-            )
-        embed.set_author(name="SCAICT CTF", icon_url="https://cdn-icons-png.flaticon.com/128/14929/14929899.png")
+            title = title,
+            description = "+" + str(score) + "⚡",
+            color = 0xff24cf,
+        )
+        embed.set_author(
+            name = "SCAICT CTF",
+            icon_url = "https://cdn-icons-png.flaticon.com/128/14929/14929899.png"
+        )
         embed.set_thumbnail(
             url="https://cdn-icons-png.flaticon.com/128/14929/14929899.png")
         embed.add_field(name="已完成", value= "0", inline=True)
@@ -246,5 +256,5 @@ class ctf(build):
     #     self.bot.add_application_command(ctf_commands)
 
 def setup(bot):
-    bot.add_cog(ctf(bot))
+    bot.add_cog(CTF(bot))
 

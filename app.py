@@ -1,31 +1,35 @@
+# Standard imports
+import json
+import os
+import random
+# Third-party libraries
 from flask import Flask, redirect, request, session, url_for, render_template, send_from_directory
 import requests
-import json
-import random
-import os
-from cog.core.SQL import write
-from cog.core.SQL import read
-from cog.core.SQL import linkSQL
-from cog.core.SQL import end
-from cog.core.SQL import isExist
+# Local imports
+from cog.core.sql import write
+from cog.core.sql import read
+from cog.core.sql import link_sql
+from cog.core.sql import end
+from cog.core.sql import user_id_exists
 
 app = Flask(__name__)
 
 # FILEPATH: /d:/GayHub/SCAICT-Discord-Bot/token.json
-with open(f"{os.getcwd()}/token.json", encoding='utf-8') as file:
-    data = json.load(file)
+with open(f"{os.getcwd()}/token.json", encoding = "utf-8") as token_file:
+    token_data = json.load(token_file)
 
-app.secret_key = data["secret_key"]
-discord_client_id = data["discord_client_id"]
-discord_client_secret = data["discord_client_secret"]
-discord_redirect_uri = data["discord_redirect_uri"]
-github_client_id = data["github_client_id"]
-github_client_secret = data["github_client_secret"]
-github_redirect_uri = data["github_redirect_uri"]
-github_discord_redirect_uri = data["github_discord_redirect_uri"]
+app.secret_key = token_data["secret_key"]
+discord_client_id = token_data["discord_client_id"]
+discord_client_secret = token_data["discord_client_secret"]
+discord_redirect_uri = token_data["discord_redirect_uri"]
+github_client_id = token_data["github_client_id"]
+github_client_secret = token_data["github_client_secret"]
+github_redirect_uri = token_data["github_redirect_uri"]
+github_discord_redirect_uri = token_data["github_discord_redirect_uri"]
 
 @app.route("/login")
 def login():
+    # pylint: disable-next = line-too-long
     return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={discord_redirect_uri}&response_type=code&scope=identify+email")
 
 @app.route("/logout")
@@ -47,24 +51,26 @@ def callback():
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
-    response = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
+    # pylint: disable-next = missing-timeout
+    response = requests.post("https://discord.com/api/oauth2/token", data = data, headers = headers)
     access_token = response.json()["access_token"]
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
-    user_response = requests.get("https://discord.com/api/users/@me", headers=headers)
+    # pylint: disable-next = missing-timeout
+    user_response = requests.get("https://discord.com/api/users/@me", headers = headers)
     user_data = user_response.json()
     session["user"] = {
         "name": user_data["username"],
         "avatar": f"https://cdn.discordapp.com/avatars/{user_data['id']}/{user_data['avatar']}.png",
         "id": user_data["id"]
     }
-    CONNECTION,CURSOR=linkSQL()
-    write(user_data["id"],"DCname",user_data["username"],CURSOR)
+    connection, cursor = link_sql()
+    write(user_data["id"], "DCname", user_data["username"], cursor)
     #email
-    write(user_data["id"],"DCmail",user_data["email"],CURSOR)
-    
-    end(CONNECTION,CURSOR)
+    write(user_data["id"], "DCmail", user_data["email"], cursor)
+
+    end(connection, cursor)
     return redirect(url_for("profile"))
 
 @app.route("/github/discord-callback")
@@ -81,13 +87,15 @@ def discord_callback():
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
-    response = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
+    # pylint: disable-next = missing-timeout
+    response = requests.post("https://discord.com/api/oauth2/token", data = data, headers = headers)
     print(response.json())
     access_token = response.json()["access_token"]
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
-    user_response = requests.get("https://discord.com/api/users/@me", headers=headers)
+    # pylint: disable-next = missing-timeout
+    user_response = requests.get("https://discord.com/api/users/@me", headers = headers)
     user_data = user_response.json()
     session["user"] = {
         "name": user_data["username"],
@@ -103,53 +111,77 @@ def staticfiles(path):
 
 @app.route("/")
 def profile():
-    CONNECTION,CURSOR=linkSQL()#SQL 會話
-    DcUser = session.get("user")
-    if not DcUser:
-        end(CONNECTION,CURSOR)
+    connection, cursor = link_sql() # SQL 會話
+    discord_user = session.get("user")
+    if not discord_user:
+        end(connection, cursor)
         return render_template("home.html")
-    
-    yourPoints=read(DcUser["id"],"point",CURSOR)
-    yourTicket=read(DcUser["id"],"ticket",CURSOR)
-    if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
-        end(CONNECTION,CURSOR)
-        return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point=str(yourPoints), ticket=str(yourTicket))
-    else:
-        end(CONNECTION,CURSOR)
-        return render_template("home.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
-    
+
+    user_points = read(discord_user["id"], "point", cursor)
+    user_tickets = read(discord_user["id"], "ticket", cursor)
+    if user_id_exists(discord_user["id"], "USER", cursor): # 有找到這個使用者在表上
+        end(connection, cursor)
+        return render_template(
+            "home.html",
+            username = discord_user["name"],
+            avatar = discord_user["avatar"],
+            point = str(user_points),
+            ticket = str(user_tickets)
+        )
+
+    end(connection, cursor)
+    return render_template(
+        "home.html",
+        username = discord_user["name"],
+        avatar = discord_user["avatar"],
+        point = "?",
+        ticket = "?"
+    )
+
 @app.route("/slot")
 def slot():
-    CONNECTION,CURSOR=linkSQL()#SQL 會話
-    DcUser = session.get("user")
-    if not DcUser:
+    connection, cursor = link_sql() # SQL 會話
+    discord_user = session.get("user")
+    if not discord_user:
         return render_template("slot.html")
-    yourPoints=read(DcUser["id"],"point",CURSOR)
-    yourTicket=read(DcUser["id"],"ticket",CURSOR)
-    if isExist(DcUser["id"],"USER",CURSOR):#有找到這個使用者在表上
-        end(CONNECTION,CURSOR)
-        return render_template("slot.html", username=DcUser["name"], avatar=DcUser["avatar"], point=str(yourPoints), ticket=str(yourTicket))
-    else:
-        end(CONNECTION,CURSOR)
-        return render_template("slot.html", username=DcUser["name"], avatar=DcUser["avatar"], point="?", ticket="?")
+    user_points = read(discord_user["id"], "point", cursor)
+    user_tickets = read(discord_user["id"], "ticket", cursor)
+    if user_id_exists(discord_user["id"], "USER", cursor): # 有找到這個使用者在資料表上
+        end(connection, cursor)
+        return render_template(
+            "slot.html",
+            username = discord_user["name"],
+            avatar = discord_user["avatar"],
+            point = str(user_points),
+            ticket = str(user_tickets)
+        )
+
+    end(connection, cursor)
+    return render_template(
+        "slot.html",
+        username = discord_user["name"],
+        avatar = discord_user["avatar"],
+        point = "?",
+        ticket = "?"
+    )
 
 @app.route("/productList")
-def productList():
-    # send pure json data
-    with open(f"{os.getcwd()}/DataBase/products.json", 'r', encoding='utf-8') as file:
+def product_list():
+    # send pure JSON data
+    with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding = "utf-8") as file:
         products = json.load(file)
     return products
 
-@app.route("/buyProduct", methods=["POST"])
-def buyProduct():
+@app.route("/buyProduct", methods = [ "POST" ])
+def buy_product():
     # Recieve POST request, get product id and check if logged in
-    DcUser = session.get("user")
-    if not DcUser:
+    discord_user = session.get("user")
+    if not discord_user:
         return "請重新登入"
-    product_id = request.json.get("id")  # Convert product_id to a string
+    product_id = request.json.get("id") # Convert product_id to a string
     if not product_id:
         return "無法讀取商品 ID"
-    with open(f"{os.getcwd()}/DataBase/products.json", 'r', encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding = "utf-8") as file:
         products = json.load(file)
     # Check in the json array products.products for the product with the id
     product = next((p for p in products["products"] if p["id"] == product_id), None)
@@ -161,67 +193,67 @@ def buyProduct():
     if product["pay"] != "point":
         return "此獎品無法使用電電點兌換"
 
-    
-    CONNECTION,CURSOR=linkSQL()#SQL 會話
-    
-    if not (isExist(DcUser["id"],"USER",CURSOR)):
-        end(CONNECTION,CURSOR)
-        return "用戶不存在"
-    yourPoint=read(DcUser["id"],"point",CURSOR)
-    if yourPoint < product["price"]:
-        end(CONNECTION,CURSOR)
+    connection, cursor = link_sql() # SQL 會話
+
+    if not user_id_exists(discord_user["id"], "USER", cursor):
+        end(connection, cursor)
+        return "使用者不存在"
+    user_points = read(discord_user["id"], "point", cursor)
+    if user_points < product["price"]:
+        end(connection, cursor)
         return "電電點不足"
-    yourPoint -= product["price"]
+    user_points -= product["price"]
 
-    write(DcUser["id"],"point",yourPoint,CURSOR)
-    end(CONNECTION,CURSOR)
+    write(discord_user["id"], "point", user_points, cursor)
+    end(connection, cursor)
     product["stock"] -= 1
-    with open(f"{os.getcwd()}/DataBase/products.json", "w", encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/products.json", "w", encoding = "utf-8") as file:
         json.dump(products, file)
-    return "購買成功!"
+    return "購買成功！"
 
-@app.route("/rollSlot", methods=["GET"])
-def rollSlot():
-    CONNECTION,CURSOR=linkSQL()#SQL 會話
-    DcUser = session.get("user")
-    if not DcUser:
+@app.route("/rollSlot", methods = [ "GET" ])
+def roll_slot():
+    connection, cursor = link_sql() # SQL 會話
+    discord_user = session.get("user")
+    if not discord_user:
         return "請重新登入"
 
-    # user = users.get(DcUser["id"])
-    if not (isExist(DcUser["id"],"USER",CURSOR)):
-        end(CONNECTION,CURSOR)
-        return "用戶不存在"
-    with open(f"{os.getcwd()}/DataBase/products.json", 'r', encoding='utf-8') as file:
+    # user = users.get(discord_user["id"])
+    if not user_id_exists(discord_user["id"], "USER", cursor):
+        end(connection, cursor)
+        return "使用者不存在"
+    with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding = "utf-8") as file:
         products = json.load(file)
     # Check in the json array products.products for the product with the id
     product = next((p for p in products["products"] if p["id"] == "slot"), None)
-    
-    #讀用戶的抽獎券和電電點
-    yourTicket=read(DcUser["id"],"ticket",CURSOR)
-    yourPoint=read(DcUser["id"],"point",CURSOR)
-    if yourTicket < product["price"]:
-        end(CONNECTION,CURSOR)
+
+    # 讀使用者的抽獎券和電電點
+    user_tickets = read(discord_user["id"], "ticket", cursor)
+    user_points = read(discord_user["id"], "point", cursor)
+    if user_tickets < product["price"]:
+        end(connection, cursor)
         return "抽獎券不足"
-    with open(f"{os.getcwd()}/DataBase/slot.json", 'r', encoding='utf-8') as file:
+    with open(f"{os.getcwd()}/DataBase/slot.json", "r", encoding = "utf-8") as file:
         slot_json = json.load(file)
     result = random.choices(
-        population=slot_json["population"],
-        weights=slot_json["weights"],
-        k=1
+        population = slot_json["population"],
+        weights = slot_json["weights"],
+        k = 1
     )[0]
-    yourPoint += slot_json["get"][result]
-    yourTicket -= product["price"]
-    #更新抽獎券和電電點
-    write(DcUser["id"],"ticket",yourTicket,CURSOR)
-    write(DcUser["id"],"point",yourPoint,CURSOR)
-    end(CONNECTION,CURSOR)
-    return ["抽獎成功", slot_json["get"][result], result]
+    user_points += slot_json["get"][result]
+    user_tickets -= product["price"]
+    # 更新抽獎券和電電點
+    write(discord_user["id"], "ticket", user_tickets, cursor)
+    write(discord_user["id"], "point", user_points, cursor)
+    end(connection, cursor)
+    return [ "抽獎成功", slot_json["get"][result], result ]
 
-# GitHUb Login
+# GitHub login
 
 @app.route("/github/login")
 def github_login():
     # Redirect to GitHub's OAuth login page
+    # pylint: disable-next = line-too-long
     github_oauth_url = f"https://github.com/login/oauth/authorize?client_id={github_client_id}&scope=user%20repo&redirect_uri={github_redirect_uri}"
     return redirect(github_oauth_url)
 
@@ -230,71 +262,73 @@ def github_callback():
     # Exchange the authorization code for an access token
     code = request.args.get("code")
     token_url = "https://github.com/login/oauth/access_token"
-    headers = {"Accept": "application/json"}
+    headers = { "Accept": "application/json" }
     data = {
         "client_id": github_client_id,
         "client_secret": github_client_secret,
         "code": code
     }
-    response = requests.post(token_url, headers=headers, data=data)
+    # pylint: disable-next = missing-timeout
+    response = requests.post(token_url, headers = headers, data = data)
     print(response.json())
     session["access_token"] = response.json()["access_token"]
-
-
 
     return redirect(url_for("star_uwu"))
 
 @app.route("/star_uwu")
 def star_uwu():
-    def insertUser(userId,TABLE,CURSOR):#初始化(創建)傳入該ID的表格
-        CURSOR.execute(f"INSERT INTO {TABLE} (uid) VALUE({userId})")
+    def insert_user(user_id, table, cursor): # 初始化（新增）傳入該ID的資料表
+        cursor.execute(f"INSERT INTO {table} (uid) VALUE({user_id})")
 
     if "access_token" not in session:
         print("GitHub access token not found!")
         return redirect(url_for("github_login"))
     # if dc not loggin
-    DcUser = session.get("user")
-    if not DcUser:
+    discord_user = session.get("user")
+    if not discord_user:
+        # pylint: disable-next = line-too-long
         return redirect(f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={github_discord_redirect_uri}&response_type=code&scope=identify+email")
-    #紀錄用戶Github
+    # 記錄使用者GitHub
     user_url = "https://api.github.com/user"
-    headers = {"Authorization": f"token {session['access_token']}"}
-    user_response = requests.get(user_url, headers=headers)
+    headers = { "Authorization": f"token {session['access_token']}" }
+    # pylint: disable-next = missing-timeout
+    user_response = requests.get(user_url, headers = headers)
     print(user_response.json())
     github_username = user_response.json()["login"]
-    github_mail = user_response.json()["email"]
-    CONNECTION,CURSOR=linkSQL()#SQL 會話
-    DcUser = session.get("user")
-    write(DcUser["id"],"githubName",github_username,CURSOR)
-    write(DcUser["id"],"githubMail",github_mail,CURSOR)
-    end(CONNECTION,CURSOR)
-    
+    github_email = user_response.json()["email"]
+    connection, cursor = link_sql() # SQL 會話
+    discord_user = session.get("user")
+    write(discord_user["id"], "githubName", github_username, cursor)
+    write(discord_user["id"], "githubMail", github_email, cursor)
+    end(connection, cursor)
+
     repo_owner = "SCAICT"
     repo_name = "SCAICT-uwu"
     star_url = f"https://api.github.com/user/starred/{repo_owner}/{repo_name}"
-    headers = {"Authorization": f"token {session['access_token']}"}
+    headers = { "Authorization": f"token {session['access_token']}" }
     print(session['access_token'])
     # Sending a PUT request to star the repository
-    response = requests.put(star_url, headers=headers)
+    # pylint: disable-next = missing-timeout
+    response = requests.put(star_url, headers = headers)
     print(response.text)
     # Checking the response status and returning an appropriate message
     if response.ok:
         print(f"Successfully starred {repo_owner}/{repo_name}! {response}")
-        CONNECTION,CURSOR=linkSQL()#SQL 會話
-        if not(isExist(DcUser["id"],"USER",CURSOR)):#該 uesr id 不在USER表格內，插入該筆用戶資料
-            insertUser(DcUser["id"],"USER",CURSOR)
+        connection, cursor = link_sql() # SQL 會話
+        if not user_id_exists(discord_user["id"], "USER", cursor): # 該 uesr id 不在USER表格內，插入該筆使用者資料
+            insert_user(discord_user["id"], "USER", cursor)
         # if already starred. liveuwu is 1
-        if read(DcUser["id"],"loveuwu",CURSOR):
-            end(CONNECTION,CURSOR)
+        if read(discord_user["id"], "loveuwu", cursor):
+            end(connection, cursor)
             return render_template("already.html")
-        write(DcUser["id"],"loveuwu",1,CURSOR)
-        yourPoint=read(DcUser["id"],"point",CURSOR)
-        yourPoint += 20
-        write(DcUser["id"],"point",yourPoint,CURSOR)
-        end(CONNECTION,CURSOR)
+        write(discord_user["id"], "loveuwu", 1, cursor)
+        user_points = read(discord_user["id"], "point", cursor)
+        user_points += 20
+        write(discord_user["id"], "point", user_points, cursor)
+        end(connection, cursor)
         return render_template("star_success.html")
-    else:
-        return f"Failed to star {repo_owner}/{repo_name}."
+
+    return f"Failed to star {repo_owner}/{repo_name}."
 
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
