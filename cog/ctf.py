@@ -172,7 +172,6 @@ class ctf(build):
         # ctfFile = getCTFFile()
         
         CONNECTION,CURSOR=linkSQL()#SQL 會話
-        print(type(CONNECTION),type(CURSOR))
         CURSOR.execute("USE CTF;")
         while (1):
             newId = generateCTFId()
@@ -211,14 +210,13 @@ class ctf(build):
         messageId = response.id
         
         #在CTF資料庫中的data表格新增一筆ctf資料
-        print(f"INSERT INTO `data`\
-        (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
-        ({newId},'{flag}',{score},'{limit}',{messageId},{case},'{start}',{end},\'{title}\',{0});")
+        # print(f"INSERT INTO `data`\
+        # (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
+        # ({newId},'{flag}',{score},'{limit}',{messageId},{case},'{start}',{end},\'{title}\',{0});")
         CURSOR.execute(f"INSERT INTO `data`\
         (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
         ({newId},'{flag}',{score},'{limit}',{messageId},{case},'{start}',{end},\'{title}\',{0});")
         #CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
-        print(type(CONNECTION),type(CURSOR),end)
         endSQL(CONNECTION,CURSOR)
         # ctfFile[newId] = {"flag": flag, 
         #                   "score": score, 

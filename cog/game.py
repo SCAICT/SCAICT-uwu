@@ -43,8 +43,8 @@ class Game(commands.Cog):
             await interaction.response.send_message("請輸入正確的選擇")
             end(connection, cursor)
             return
-        bot_choice = random.choice([ "✊", "🤚", "✌️" ])
-        print(bot_choice)
+        botChoice = random.choice(["✊", "🤚", "✌️"])
+        # print(botChoice)
         game_outcomes = {
             ("✌️", "✊"): 5,
             ("✌️", "🤚"): -5,
