@@ -43,8 +43,8 @@ class Game(commands.Cog):
             await interaction.response.send_message("請輸入正確的選擇")
             end(connection, cursor)
             return
-        bot_choice = random.choice([ "✊", "🤚", "✌️" ])
-        print(bot_choice)
+        botChoice = random.choice(["✊", "🤚", "✌️"])
+        # print(botChoice)
         game_outcomes = {
             ("✌️", "✊"): 5,
             ("✌️", "🤚"): -5,
@@ -58,14 +58,24 @@ class Game(commands.Cog):
             await interaction.response.send_message(
                 content = f"我出{bot_choice}，平手。你還有{point}{stickers}")
         else:
-            point += game_outcomes[(bot_choice, choice)]
-            result = "你贏了" if game_outcomes[(bot_choice, choice)] > 0 else "你輸了"
-            await interaction.response.send_message(
-                content = f"我出{bot_choice}，{result}，你還有{point}{stickers}")
-            # pylint: disable-next = line-too-long
-            print(f"{user_id},{nickname} Get {game_outcomes[(bot_choice, choice)]} point by playing rock-paper-scissors")
-        write(user_id, 'point', point, cursor)
-        end(connection, cursor)
+            point += game_outcomes[(botChoice, choice)]
+            result = "你贏了" if game_outcomes[(botChoice, choice)] > 0 else "你輸了"
+            await interaction.response.send_message(content=f"我出{botChoice}，{result}，你還有{point}{stickers}")
+            print(f"{userId},{nickName} Get {game_outcomes[(botChoice, choice)]} point by playing rock-paper-scissors")
+        write(userId, 'point',point ,CURSOR)
+        end(CONNECTION,CURSOR)
+    @discord.slash_command(name="number_status", description="數數狀態")
+    async def numberStatus(self, interaction):
+        CONNECTION,CURSOR=linkSQL()#SQL 會話
+        CURSOR.execute("SELECT seq FROM game")
+        nowStatus=CURSOR.fetchone()[0]
+        end(CONNECTION,CURSOR)
+        embed = discord.Embed(
+            title="現在數到",
+            description=f"{nowStatus} (dec) 了，接下去吧!",
+            color=0xff24cf,
+            )
+        await interaction.response.send_message(embed=embed)
 
 def setup(bot):
     bot.add_cog(Game(bot))
