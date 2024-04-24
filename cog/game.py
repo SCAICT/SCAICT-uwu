@@ -37,7 +37,7 @@ class game(commands.Cog):
             end(CONNECTION,CURSOR)
             return
         botChoice = random.choice(["✊", "🤚", "✌️"])
-        print(botChoice)
+        # print(botChoice)
         game_outcomes = {
             ("✌️", "✊"): 5,
             ("✌️", "🤚"): -5,
