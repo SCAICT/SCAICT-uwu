@@ -15,8 +15,8 @@ from cog.core.sql import end # 用來結束和SQL資料庫的會話
 from cog.core.sql import link_sql
 
 import random
-def insert_user(user_id, table, cursor): # 初始化（新增）傳入該ID的資料表
-    cursor.execute(f"INSERT INTO {table} (uid) VALUE({user_id})") # 其他屬性在新增時MySQL會給預設值
+def insert_user(userId, TABLE, CURSOR): # 初始化（新增）傳入該ID的資料表
+    CURSOR.execute(f"INSERT INTO {TABLE} (uid) VALUE({userId})") # 其他屬性在新增時MySQL會給預設值
 
 def get_channels(): # 要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
     # os.chdir("./")
@@ -46,13 +46,13 @@ def reward(message,CURSOR):
         point += 2
         next_reward += times ** 2
         times += 1
-        write(user_id, "point", point, cursor)
-        write(user_id, "next_reward", next_reward, cursor, table = "CommentPoints")
-        write(user_id, "times", times, cursor, table = "CommentPoints")
+        write(userId, "point", point, CURSOR)
+        write(userId, "next_reward", next_reward, CURSOR, TABLE = "CommentPoints")
+        write(userId, "times", times, CURSOR, TABLE = "CommentPoints")
 
         # 紀錄log
-        print(f"{user_id},{nickname} Get 2 point by comment {datetime.now()}")
-    write(user_id, "today_comments", today_comments, cursor)
+        print(f"{userId},{nickName} Get 2 point by comment {datetime.now()}")
+    write(userId, "today_comments", today_comments, CURSOR)
 # 每月更新的數數
 
 class Comment(commands.Cog):
@@ -64,8 +64,8 @@ class Comment(commands.Cog):
     # 數數判定
     @commands.Cog.listener()
     async def on_message(self, message):
-        user_id = message.author.id
-        connection, cursor = link_sql() # SQL 會話
+        userId = message.author.id
+        CONNECTion, CURSOR = link_sql() # SQL 會話
 
         if message.content.startswith("!set"):
             # 狀態指令
@@ -75,56 +75,55 @@ class Comment(commands.Cog):
                 url = f"{arg[2]}"
                 # , details = f"{arg[1]}"
             ))
-        if user_id != self.bot.user.id:
+        if userId != self.bot.user.id:
             # 機器人會想給自己記錄電電點，必須排除
             if message.channel.id == self.sp_channel["countChannel"]:
             # 數數回應
                 await Comment.count(message)
-            elif message.channel.id == self.spChannel["colorChannel"]:
+            elif message.channel.id == self.sp_channel["colorChannel"]:
             #猜色碼回應
-                await comment.niceColor(message)
+                await Comment.niceColor(message)
             return
         if message.channel.id not in self.sp_channel["exclude_point"]:
             # 列表中頻道不算發言次數
-            Comment.today_comment(user_id, message, cursor)
-        end(connection, cursor)
+            Comment.today_comment(userId, message, CURSOR)
+        end(CONNECTion, CURSOR)
 
     @staticmethod
-    def today_comment(user_id, message, cursor):
+    def today_comment(userId, message, CURSOR):
         # 新增該user的資料表
-        if not user_id_exists(user_id, "USER", cursor): # 該 uesr id 不在USER資料表內，插入該筆使用者資料
-            insert_user(user_id, "USER", cursor)
-        if not user_id_exists(user_id, "CommentPoints", cursor):
-            insert_user(user_id, "CommentPoints", cursor)
+        if not user_id_exists(userId, "USER", CURSOR): # 該 uesr id 不在USER資料表內，插入該筆使用者資料
+            insert_user(userId, "USER", CURSOR)
+        if not user_id_exists(userId, "CommentPoints", CURSOR):
+            insert_user(userId, "CommentPoints", CURSOR)
         now = date.today()
         delta = timedelta(days = 1)
-        last_comment = read(user_id, "last_comment", cursor) # SQL回傳型態：<class 'datetime.date'>
+        last_comment = read(userId, "last_comment", CURSOR) # SQL回傳型態：<class 'datetime.date'>
         # 今天第一次發言，重設發言次數
         if now - last_comment >= delta:
-            reset(message, now, cursor)
+            reset(message, now, CURSOR)
         # 變更今天發言狀態
-        reward(message, cursor)
+        reward(message, CURSOR)
 
     @staticmethod
     async def count(message):
-        connect, cursor = link_sql()
+        CONNECT, CURSOR = link_sql()
         try:
             bin_string = message.content
             #若bin_string轉換失敗，會直接跳到except
             decimal_number = int(bin_string, 2)
-            connect, cursor = link_sql()
-            cursor.execute("select seq from game")
-            now_seq = cursor.fetchone()[0]
-            cursor.execute("select lastID from game")
-            latest_user = cursor.fetchone()[0]
+            CURSOR.execute("select seq from game")
+            now_seq = CURSOR.fetchone()[0]
+            CURSOR.execute("select lastID from game")
+            latest_user = CURSOR.fetchone()[0]
             if message.author.id == latest_user:
                 # 同人疊數數
                 await message.add_reaction("🔄")
             elif decimal_number == now_seq + 1:
                 # 數數成立
-                cursor.execute("UPDATE game SET seq = seq+1")
+                CURSOR.execute("UPDATE game SET seq = seq+1")
                 print(message.author.id)
-                cursor.execute(f"UPDATE game SET lastID = {message.author.id}")
+                CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
                 # add a check emoji to the message
                 await message.add_reaction("✅")
             else:
@@ -138,7 +137,7 @@ class Comment(commands.Cog):
     
     @staticmethod
     async def niceColor(message):
-        CONNECT,CURSOR=linkSQL()
+        CONNECT,CURSOR=link_sql()
         # try:
                 # if message.content is three letter
         if len(message.content) != 3:
@@ -146,7 +145,7 @@ class Comment(commands.Cog):
             await message.channel.send("請輸入三位 HEX 碼顏色")
             return
         # to upper case before check
-        CONNECT,CURSOR=linkSQL()
+        CONNECT,CURSOR=link_sql()
         CURSOR.execute("select niceColor from game")
         niceColor=CURSOR.fetchone()[0]
         niceColor = ''.join([c*2 for c in niceColor])#格式化成六位數
