@@ -87,6 +87,9 @@ class Charge(commands.Cog):
         else:
             combo = 1 if (now - last_charge).days > 1 else combo + 1
             point += 5
+            if combo % 7 == 0:
+                ticket=read(user_id, 'ticket', cursor)
+                write(user_id, 'ticket', ticket + 4, cursor)
             write(user_id, 'last_charge', now, cursor)
             write(user_id, 'charge_combo', combo, cursor)
             write(user_id, 'point', point, cursor)
