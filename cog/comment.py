@@ -122,7 +122,6 @@ class Comment(commands.Cog):
             elif decimal_number == now_seq + 1:
                 # 數數成立
                 CURSOR.execute("UPDATE game SET seq = seq+1")
-                print(message.author.id)
                 CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
                 # add a check emoji to the message
                 await message.add_reaction("✅")
