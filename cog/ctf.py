@@ -17,9 +17,7 @@ from cog.core.sql import link_sql
 from datetime import datetime
 from build.build import Build
 
-# def getCTFFile():
-#     with open(f"{os.getcwd()}/DataBase/ctf.json", "r") as file:
-#         return json.load(file)
+
 def getCTFmakers():
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)
@@ -218,19 +216,7 @@ class ctf(Build):
         ({newId},'{flag}',{score},'{limit}',{messageId},{case},'{start}',{end},\'{title}\',{0});")
         #CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
         endSQL(CONNECTION,CURSOR)
-        # ctfFile[newId] = {"flag": flag, 
-        #                   "score": score, 
-        #                   "limit": limit, 
-        #                   "messageId": messageId,
-        #                   "case": case,
-        #                   "start": str(start), 
-        #                   "end": str(end), 
-        #                   "title": title,
-        #                   "solved":[],
-        #                   "tried": 0,
-        #                   "history": {}}
-        # with open(f"{os.getcwd()}/DataBase/ctf.json", "w") as outfile:
-        #     json.dump(ctfFile, outfile)
+
         
 #刪除題目，等等寫
     # @ctf_commands.command(name="delete", description="刪除題目")
