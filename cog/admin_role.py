@@ -2,12 +2,12 @@
 import discord
 from discord.ext import commands
 # Local imports
-from build.build import build
-from cog.core.sql import linkSQL
+from build.build import Build
+from cog.core.sql import link_sql
 from cog.core.sql import read
 from cog.core.sql import write
 from cog.core.sql import end
-class AdminRole(build):
+class AdminRole(Build):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(self.Gift())
@@ -46,7 +46,7 @@ class AdminRole(build):
         #發送獎勵
         @staticmethod
         def __reward(uid,userName,type,bouns):
-            CONNECT, CURSOR = linkSQL()
+            CONNECT, CURSOR = link_sql()
             nowPoint=read(uid,type, CURSOR)
             write(uid, type, nowPoint+bouns, CURSOR)
             end(CONNECT, CURSOR)

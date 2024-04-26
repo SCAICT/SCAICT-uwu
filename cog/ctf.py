@@ -10,16 +10,14 @@ from discord.commands import Option
 import json
 import random
 import os
-from cog.core.SQL import read
-from cog.core.SQL import write
-from cog.core.SQL import end as endSQL    #用來結束和SQL資料庫的會話，平常都用end()，但和 Discord 指令變數名稱衝突，所以這裡改名
-from cog.core.SQL import linkSQL
+from cog.core.sql import read
+from cog.core.sql import write
+from cog.core.sql import end as endSQL    #用來結束和SQL資料庫的會話，平常都用end()，但和 Discord 指令變數名稱衝突，所以這裡改名
+from cog.core.sql import link_sql
 from datetime import datetime
+from build.build import Build
 
 
-# def getCTFFile():
-#     with open(f"{os.getcwd()}/DataBase/ctf.json", "r") as file:
-#         return json.load(file)
 def getCTFmakers():
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:
         return json.load(file)
@@ -27,7 +25,7 @@ def getCTFmakers():
 # By EM
 def generateCTFId():
     return str(random.randint(100000000000000000, 999999999999999999))
-class ctf(build):
+class ctf(Build):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(self.CTFView())
@@ -47,7 +45,7 @@ class ctf(build):
                         discord.ui.InputText(label = "Flag", placeholder = "Flag", required = True))
 
                 async def callback(self, interaction: discord.Interaction):
-                    CONNECTION,CURSOR=linkSQL()#SQL 會話
+                    CONNECTION,CURSOR=link_sql()#SQL 會話
                     CURSOR.execute(f"USE CTF;")
                     question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
                     #startTime
@@ -171,7 +169,7 @@ class ctf(build):
             return
         # ctfFile = getCTFFile()
         
-        CONNECTION,CURSOR=linkSQL()#SQL 會話
+        CONNECTION,CURSOR=link_sql()#SQL 會話
         CURSOR.execute("USE CTF;")
         while (1):
             newId = generateCTFId()
@@ -218,19 +216,7 @@ class ctf(build):
         ({newId},'{flag}',{score},'{limit}',{messageId},{case},'{start}',{end},\'{title}\',{0});")
         #CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
         endSQL(CONNECTION,CURSOR)
-        # ctfFile[newId] = {"flag": flag, 
-        #                   "score": score, 
-        #                   "limit": limit, 
-        #                   "messageId": messageId,
-        #                   "case": case,
-        #                   "start": str(start), 
-        #                   "end": str(end), 
-        #                   "title": title,
-        #                   "solved":[],
-        #                   "tried": 0,
-        #                   "history": {}}
-        # with open(f"{os.getcwd()}/DataBase/ctf.json", "w") as outfile:
-        #     json.dump(ctfFile, outfile)
+
         
 #刪除題目，等等寫
     # @ctf_commands.command(name="delete", description="刪除題目")
@@ -254,5 +240,5 @@ class ctf(build):
     #     self.bot.add_application_command(ctf_commands)
 
 def setup(bot):
-    bot.add_cog(CTF(bot))
+    bot.add_cog(ctf(bot))
 

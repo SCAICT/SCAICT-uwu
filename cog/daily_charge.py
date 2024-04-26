@@ -50,16 +50,6 @@ class Charge(commands.Cog):
         self.embed.set_footer(text = f"{interaction.user.name}充電成功！")
         await interaction.response.send_message(embed = self.embed)
 
-<<<<<<< HEAD
-        self.embed.add_field(name="",
-                             value=f":battery:+5{stickers['logo']}={point}{stickers['logo']}", inline=False)
-        self.embed.add_field(name="連續登入獎勵: "+str(combo)+"/" +
-                             str(combo + 7- combo % 7), value='\n', inline=False)
-        self.embed.set_footer(text=f"{interaction.user.name}充電成功!")
-        await interaction.response.send_message(embed=self.embed)
-        
-=======
->>>>>>> main
     async def already_charge(self, interaction):
         self.embed = discord.Embed(color = 0xff0000)
         if interaction.user.avatar is not None: # 預設頭像沒有這個
@@ -97,6 +87,9 @@ class Charge(commands.Cog):
         else:
             combo = 1 if (now - last_charge).days > 1 else combo + 1
             point += 5
+            if combo % 7 == 0:
+                ticket=read(user_id, 'ticket', cursor)
+                write(user_id, 'ticket', ticket + 4, cursor)
             write(user_id, 'last_charge', now, cursor)
             write(user_id, 'charge_combo', combo, cursor)
             write(user_id, 'point', point, cursor)
