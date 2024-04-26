@@ -125,6 +125,12 @@ class Comment(commands.Cog):
                 CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
                 # add a check emoji to the message
                 await message.add_reaction("✅")
+                # 隨機產生 1~100 的數字。若介於 1~3 之間，則給予 5 點電電點
+                if random.randint(1, 100) <= 3:
+                    point = read(message.author.id, "point", CURSOR) + 5
+                    write(message.author.id, "point", point, CURSOR)
+                    print(f"{message.author.id},{message.author} Get 5 point by count reward {datetime.now()}")
+                    await message.add_reaction(":moneybag:")
             else:
                 # 不同人數數，但數字不對
                 await message.add_reaction("❌")
