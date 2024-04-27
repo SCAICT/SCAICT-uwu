@@ -7,16 +7,12 @@ import random
 import discord
 from discord.ext import commands
 from discord.commands import Option
-import json
-import random
-import os
+# Local imports
+from build.build import Build
 from cog.core.sql import read
 from cog.core.sql import write
-from cog.core.sql import end as endSQL    #用來結束和SQL資料庫的會話，平常都用end()，但和 Discord 指令變數名稱衝突，所以這裡改名
+from cog.core.sql import end as endSQL # 用來結束和SQL資料庫的會話，平常都用end()，但和 Discord 指令變數名稱衝突，所以這裡改名
 from cog.core.sql import link_sql
-from datetime import datetime
-from build.build import Build
-
 
 def getCTFmakers():
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r") as file:

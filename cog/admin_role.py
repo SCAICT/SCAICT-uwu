@@ -7,6 +7,7 @@ from cog.core.sql import link_sql
 from cog.core.sql import read
 from cog.core.sql import write
 from cog.core.sql import end
+
 class AdminRole(Build):
     @commands.Cog.listener()
     async def on_ready(self):
