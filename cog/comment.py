@@ -177,8 +177,11 @@ class Comment(commands.Cog):
             write(message.author.id,"point",point,CURSOR)
         else:
             CURSOR.execute("UPDATE game SET niceColorRound = niceColorRound+1;")
-            # 計算顏色有多相近。計算三個數字分別與答案相差多少的平均值除以16*100%
-            diff = sum([abs(int(hexColor[i], 16) - int(niceColor[i], 16)) for i in range(3)]) / 48 * 100
+            # 計算顏色有多相近。計算歐式距離
+            diff = sum([(int(hexColor[i], 16) - int(niceColor[i], 16))**2 for i in range(0,6,2)]) # 正確、猜測 RGB 相減後平方，距離公式
+            # 求和距離的正確率
+            # 441.67 是 3*255 的平方根 (sqrt(3*(255-0)^2))
+            diff = max(0, 1 - diff / 441.67) * 100
             # reply with embled. background color is hexColor
             embed = discord.Embed(title=f"#{hexColor}\n{diff:.2f}%", color=discord.Colour(int(hexColor, 16)))
             await message.channel.send(embed=embed)
