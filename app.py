@@ -27,6 +27,10 @@ github_client_secret = token_data["github_client_secret"]
 github_redirect_uri = token_data["github_redirect_uri"]
 github_discord_redirect_uri = token_data["github_discord_redirect_uri"]
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
 @app.route("/login")
 def login():
     # pylint: disable-next = line-too-long
