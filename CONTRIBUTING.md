@@ -128,7 +128,25 @@ for further information.
 
 #### Database
 
-ALWAYS use `snake_case` for database, table, column, trigger names.
+* ALWAYS and ONLY capitalize SQL reserved words in SQL queries.
+  * See the official documentations of SQL and the
+  [complete list on English Wikipedia](https://en.wikipedia.org/wiki/List_of_SQL_reserved_words)
+  as references.
+* ALWAYS use `snake_case` for database, table, column, trigger names.
+  * Table names and column names may NOT be case-sensitive in SQLite.
+  * Database, table, and trigger names may NOT be case-sensitive in
+  MySQL/MariaDB.
+* Column names should be unique, i.e., same column name should not exist in
+  different tables.
+* Column names should be prefixed with table names or abbrieviations.
+  * For example, `user_id` in `user`, `ug_user` in `user_groups`.
 
-* Table names and column names may NOT be case-sensitive in SQLite.
-* Database, table, and trigger names may NOT be case-sensitive in MySQL/MariaDB.
+Examples:
+
+```sql
+INSERT INTO user (uid) VALUE (6856)
+```
+
+```sql
+UPDATE game SET game_seq = game_seq + 1
+```
