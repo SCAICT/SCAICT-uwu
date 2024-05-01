@@ -4,7 +4,6 @@ from datetime import date
 from datetime import timedelta
 import json
 import os
-from math import sqrt
 # Third-party imports
 import discord
 from discord.ext import commands
