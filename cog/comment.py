@@ -4,6 +4,7 @@ from datetime import date
 from datetime import timedelta
 import json
 import os
+from math import sqrt
 # Third-party imports
 import discord
 from discord.ext import commands
@@ -158,7 +159,7 @@ class Comment(commands.Cog):
         hexColor = ''.join([c*2 for c in hexColor])#格式化成六位數
         
         CURSOR.execute("select `niceColorRound` from game")
-        round=CURSOR.fetchone()[0]
+        round=CURSOR.fetchone()[0]+1
         if(hexColor == niceColor):
             # use embled to send message. Set embled color to hexColor
             embed = discord.Embed(title=f"猜了 {round}次後答對了!", description=f"#{hexColor}\n恭喜 {message.author.mention} 獲得 2{stickers['logo']}", color=discord.Colour(int(niceColor,16)))
@@ -181,7 +182,7 @@ class Comment(commands.Cog):
             diff = sum([(int(hexColor[i], 16) - int(niceColor[i], 16))**2 for i in range(0,6,2)]) # 正確、猜測 RGB 相減後平方，距離公式
             # 求和距離的正確率
             # 441.67 是 3*255 的平方根 (sqrt(3*(255-0)^2))
-            diff = max(0, 1 - diff / 441.67) * 100
+            diff = max(0, 1 - diff / sqrt(3*(255-0)**2)) * 100
             # reply with embled. background color is hexColor
             embed = discord.Embed(title=f"#{hexColor}\n{diff:.2f}%", color=discord.Colour(int(hexColor, 16)))
             await message.channel.send(embed=embed)
