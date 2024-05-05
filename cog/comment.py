@@ -108,7 +108,7 @@ class Comment(commands.Cog):
         CONNECT, CURSOR = link_sql()
         try:
             raw_content = message.content
-            counting_base = 2
+            counting_base = 9
 
             # Allow both plain and monospace formatting
             based_number = re.sub("^`([^\n]+)`$", "\\1", raw_content)
@@ -148,7 +148,7 @@ class Comment(commands.Cog):
             now_seq = CURSOR.fetchone()[0]
             CURSOR.execute("select lastID from game")
             latest_user = CURSOR.fetchone()[0]
-            if message.author.id != latest_user:
+            if message.author.id == latest_user:
                 # 同人疊數數
                 await message.add_reaction("🔄")
             elif decimal_number == now_seq + 1:
