@@ -76,17 +76,14 @@ class Comment(commands.Cog):
                 url = f"{arg[2]}"
                 # , details = f"{arg[1]}"
             ))
-        if userId != self.bot.user.id:
-            # 機器人會想給自己記錄電電點，必須排除
-            if message.channel.id == self.sp_channel["countChannel"]:
-            # 數數回應
-                await Comment.count(message)
-            elif message.channel.id == self.sp_channel["colorChannel"]:
-            #猜色碼回應
-                await Comment.niceColor(message)
-            return
-        if message.channel.id not in self.sp_channel["exclude_point"]:
-            # 列表中頻道不算發言次數
+        if message.channel.id == self.sp_channel["countChannel"]:
+        # 數數回應
+            await Comment.count(message)
+        elif message.channel.id == self.sp_channel["colorChannel"]:
+        #猜色碼回應
+            await Comment.niceColor(message)
+        if message.channel.id not in self.sp_channel["exclude_point"] and userId != self.bot.user.id:
+            # 列表中頻道不算發言次數 # 機器人會想給自己記錄電電點，必須排除
             Comment.today_comment(userId, message, CURSOR)
         end(CONNECTion, CURSOR)
 
@@ -151,7 +148,7 @@ class Comment(commands.Cog):
             now_seq = CURSOR.fetchone()[0]
             CURSOR.execute("select lastID from game")
             latest_user = CURSOR.fetchone()[0]
-            if message.author.id == latest_user:
+            if message.author.id != latest_user:
                 # 同人疊數數
                 await message.add_reaction("🔄")
             elif decimal_number == now_seq + 1:
@@ -160,12 +157,13 @@ class Comment(commands.Cog):
                 CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
                 # add a check emoji to the message
                 await message.add_reaction("✅")
-                # 隨機產生 1~100 的數字。若介於 1~3 之間，則給予 5 點電電點
-                if random.randint(1, 100) <= 3:
+                # 隨機產生 1~100 的數字。若模 11=10 ，九個數字符合，分布於 1~100 ，發生機率 9%。給予 5 點電電點
+                rand = random.randint(1, 100)
+                if rand%11 == 10:
                     point = read(message.author.id, "point", CURSOR) + 5
                     write(message.author.id, "point", point, CURSOR)
                     print(f"{message.author.id},{message.author} Get 5 point by count reward {datetime.now()}")
-                    await message.add_reaction(":moneybag:")
+                    await message.add_reaction("💸")
             else:
                 # 不同人數數，但數字不對
                 await message.add_reaction("❌")
