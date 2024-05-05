@@ -4,6 +4,7 @@ from datetime import date
 from datetime import timedelta
 import json
 import os
+import re
 # Third-party imports
 import discord
 from discord.ext import commands
@@ -109,9 +110,43 @@ class Comment(commands.Cog):
     async def count(message):
         CONNECT, CURSOR = link_sql()
         try:
-            bin_string = message.content
-            #若bin_string轉換失敗，會直接跳到except
-            decimal_number = int(bin_string, 2)
+            raw_content = message.content
+            counting_base = 2
+
+            # Allow both plain and monospace formatting
+            based_number = re.sub("^`([^\n]+)`$", "\\1", raw_content)
+
+            # If is valid 4-digit whitespace delimeter format
+            # (with/without base), then strip whitespace characters.
+            #
+            # Test cases:
+            # - "0"
+            # - "0000"
+            # - "000000"
+            # - "00 0000"
+            # - "0b0"
+            # - "0b0000"
+            # - "0b 0000"
+            # - "0b0 0000"
+            # - "0b 0 0000"
+            # - "0 b 0000"
+            # - "0 b 0 0000"
+            if re.match(
+                "^(0[bdox]|0[bdox] |0 [bdox] |)" +
+                    "([0-9A-Fa-f]{1,4})" +
+                    "(([0-9A-Fa-f]{4})*|( [0-9A-Fa-f]{4})*)$",
+                based_number
+            ):
+                based_number = based_number.replace(" ", "")
+            # If is valid 3-digit comma delimeter format
+            # (10-based, without base)
+            elif (
+                counting_base == 10 and
+                re.match("^([0-9]{1,3}(,[0-9]{3})*)$", based_number)
+            ):
+                based_number = based_number.replace(",", "")
+            # 若based_number字串轉換至整數失敗，會直接跳到except
+            decimal_number = int(based_number, counting_base)
             CURSOR.execute("select seq from game")
             now_seq = CURSOR.fetchone()[0]
             CURSOR.execute("select lastID from game")
