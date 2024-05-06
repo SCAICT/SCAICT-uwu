@@ -6,7 +6,9 @@
             "pointCount": 1206549021355810816,
             "everyDayCharge": 1206549724530999356,
             "commandChannel": 1206550021353242654,
-            "countChannel": 1220130492821667973
+            "countChannel": 1220130492821667973,
+            "colorChannel": 1225850293762134036,
+            "exclude_point":[1220130492821667973,1225850293762134036]
         },
         "SP-role": {
             "CTF_Maker": 1210935361467977738

@@ -4,6 +4,7 @@ from datetime import date
 from datetime import timedelta
 import json
 import os
+import re
 # Third-party imports
 import discord
 from discord.ext import commands
@@ -75,17 +76,14 @@ class Comment(commands.Cog):
                 url = f"{arg[2]}"
                 # , details = f"{arg[1]}"
             ))
-        if userId != self.bot.user.id:
-            # 機器人會想給自己記錄電電點，必須排除
-            if message.channel.id == self.sp_channel["countChannel"]:
-            # 數數回應
-                await Comment.count(message)
-            elif message.channel.id == self.sp_channel["colorChannel"]:
-            #猜色碼回應
-                await Comment.niceColor(message)
-            return
-        if message.channel.id not in self.sp_channel["exclude_point"]:
-            # 列表中頻道不算發言次數
+        if message.channel.id == self.sp_channel["countChannel"]:
+        # 數數回應
+            await Comment.count(message)
+        elif message.channel.id == self.sp_channel["colorChannel"]:
+        #猜色碼回應
+            await Comment.niceColor(message)
+        if message.channel.id not in self.sp_channel["exclude_point"] and userId != self.bot.user.id:
+            # 列表中頻道不算發言次數 # 機器人會想給自己記錄電電點，必須排除
             Comment.today_comment(userId, message, CURSOR)
         end(CONNECTion, CURSOR)
 
@@ -109,9 +107,43 @@ class Comment(commands.Cog):
     async def count(message):
         CONNECT, CURSOR = link_sql()
         try:
-            bin_string = message.content
-            #若bin_string轉換失敗，會直接跳到except
-            decimal_number = int(bin_string, 2)
+            raw_content = message.content
+            counting_base = 9
+
+            # Allow both plain and monospace formatting
+            based_number = re.sub("^`([^\n]+)`$", "\\1", raw_content)
+
+            # If is valid 4-digit whitespace delimeter format
+            # (with/without base), then strip whitespace characters.
+            #
+            # Test cases:
+            # - "0"
+            # - "0000"
+            # - "000000"
+            # - "00 0000"
+            # - "0b0"
+            # - "0b0000"
+            # - "0b 0000"
+            # - "0b0 0000"
+            # - "0b 0 0000"
+            # - "0 b 0000"
+            # - "0 b 0 0000"
+            if re.match(
+                "^(0[bdox]|0[bdox] |0 [bdox] |)" +
+                    "([0-9A-Fa-f]{1,4})" +
+                    "(([0-9A-Fa-f]{4})*|( [0-9A-Fa-f]{4})*)$",
+                based_number
+            ):
+                based_number = based_number.replace(" ", "")
+            # If is valid 3-digit comma delimeter format
+            # (10-based, without base)
+            elif (
+                counting_base == 10 and
+                re.match("^([0-9]{1,3}(,[0-9]{3})*)$", based_number)
+            ):
+                based_number = based_number.replace(",", "")
+            # 若based_number字串轉換至整數失敗，會直接跳到except
+            decimal_number = int(based_number, counting_base)
             CURSOR.execute("select seq from game")
             now_seq = CURSOR.fetchone()[0]
             CURSOR.execute("select lastID from game")
@@ -125,12 +157,13 @@ class Comment(commands.Cog):
                 CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
                 # add a check emoji to the message
                 await message.add_reaction("✅")
-                # 隨機產生 1~100 的數字。若介於 1~3 之間，則給予 5 點電電點
-                if random.randint(1, 100) <= 3:
+                # 隨機產生 1~100 的數字。若模 11=10 ，九個數字符合，分布於 1~100 ，發生機率 9%。給予 5 點電電點
+                rand = random.randint(1, 100)
+                if rand%11 == 10:
                     point = read(message.author.id, "point", CURSOR) + 5
                     write(message.author.id, "point", point, CURSOR)
                     print(f"{message.author.id},{message.author} Get 5 point by count reward {datetime.now()}")
-                    await message.add_reaction(":moneybag:")
+                    await message.add_reaction("💸")
             else:
                 # 不同人數數，但數字不對
                 await message.add_reaction("❌")
