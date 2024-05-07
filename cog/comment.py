@@ -76,15 +76,16 @@ class Comment(commands.Cog):
                 url = f"{arg[2]}"
                 # , details = f"{arg[1]}"
             ))
-        if message.channel.id == self.sp_channel["countChannel"]:
-        # 數數回應
-            await Comment.count(message)
-        elif message.channel.id == self.sp_channel["colorChannel"]:
-        #猜色碼回應
-            await Comment.niceColor(message)
-        if message.channel.id not in self.sp_channel["exclude_point"] and userId != self.bot.user.id:
-            # 列表中頻道不算發言次數 # 機器人會想給自己記錄電電點，必須排除
-            Comment.today_comment(userId, message, CURSOR)
+        if userId != self.bot.user.id: # 機器人發言不可當成觸發條件，必須排除
+            if message.channel.id == self.sp_channel["countChannel"]:
+            # 數數回應
+                await Comment.count(message)
+            elif message.channel.id == self.sp_channel["colorChannel"]:
+            #猜色碼回應
+                await Comment.niceColor(message)
+            if message.channel.id not in self.sp_channel["exclude_point"]:
+                # 平方發言加電電點，列表中頻道不算發言次數
+                Comment.today_comment(userId, message, CURSOR)
         end(CONNECTion, CURSOR)
 
     @staticmethod
