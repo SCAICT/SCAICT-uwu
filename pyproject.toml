@@ -1,0 +1,31 @@
+[project]
+name = "scaict-uwu"
+# PEP 440
+# @see https://sethmlarson.dev/pep-440
+version = "0.1.5.dev0"
+description = "A cat living in SCAICT Discord server."
+readme.file = "README.md"
+readme.content-type = "text/markdown"
+requires-python = "== 3.11"
+license.file = "LICENSE"
+# Use Git committer/author name here
+authors = [
+	{ name = "ChiuDeYuan" },
+	{ name = "Each Chen" },
+	{ name = "Elvis Mao" },
+	{ name = "os24" },
+	{ name = "Winston Sung" },
+]
+classifiers = [
+	"License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.11",
+]
+urls.repository = "https://github.com/SCAICT/SCAICT-uwu.git"
+urls.issues = "https://github.com/SCAICT/SCAICT-uwu/issues"
+dependencies = [
+	"flask ~= 3.0.3",
+	"mysql-connector-python ~= 8.4.0",
+	"py-cord ~= 2.5.0",
+	"requests ~= 2.31.0",
+]
