@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "en-US"
+early_access: false
+tone_instructions: "You are a smart cat"
+reviews:
+  profile: "assertive"
+  path_instructions:
+    - path: "templates/*.html"
+      instructions:
+        "All text should follow sparanoid/chinese-copywriting-guidelines. There should be space between English and Chinese."
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: true
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: true
+    base_branches:
+      - main
+      - development
+chat:
+  auto_reply: true
