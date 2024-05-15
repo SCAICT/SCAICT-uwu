@@ -1,14 +1,15 @@
-from SQL import linkSQL
-from SQL import end
-#初始化資料庫程式，從創建表格開始
+# Local imports
+from .sql import link_sql
+from .sql import end
 
-def CreateCtf():
-    connection,cursor=linkSQL()
-    cursor.execute(f"USE CTF")#必須先去CREATE DATABASE CTF
-    
+# 初始化資料庫程式，從新增資料表開始
+
+def create_ctf():
+    connection, cursor = link_sql()
+    cursor.execute("USE CTF") # 必須先去CREATE DATABASE CTF
+
     cursor.execute('\
-        CREATE TABLE \
-            data (\
+        CREATE TABLE data (\
             id BIGINT PRIMARY KEY,\
             flags VARCHAR(255),\
             score INT,\
@@ -18,14 +19,16 @@ def CreateCtf():
             start_time DATETIME,\
             end_time VARCHAR(255),\
             title VARCHAR(255),\
-            tried INT);\
+            tried INT\
+        );\
 \
         CREATE TABLE history (\
             data_id BIGINT,\
             uid BIGINT,\
             count INT,\
             solved TINYINT(1) NOT NULL DEFFALT 0,\
-            FOREIGN KEY (data_id) REFERENCES data(id) ON DELETE CASCADE);')
-    end(connection,cursor)
+            FOREIGN KEY (data_id) REFERENCES data(id) ON DELETE CASCADE\
+        );\
+    ')
 
-
+    end(connection, cursor)
