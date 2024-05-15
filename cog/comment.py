@@ -18,48 +18,78 @@ from cog.core.sql import user_id_exists
 from cog.core.sql import end # 用於結束和SQL資料庫的會話
 from cog.core.sql import link_sql
 
-with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
-    stickers = json.load(file)["SCAICT-alpha"]["stickers"]
+try:
+    with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
+        stickers = json.load(file)["SCAICT-alpha"]["stickers"]
+except FileNotFoundError:
+    print("Configuration file not found.")
+    stickers = {}
+except json.JSONDecodeError:
+    print("Error decoding JSON.")
+    stickers = {}
 
-def insert_user(user_id, table, cursor): # 初始化（新增）傳入該ID的資料表
-    cursor.execute(f"INSERT INTO {table} (uid) VALUE({user_id})") # 其他屬性在新增時MySQL會給預設值
+def insert_user(user_id, table, cursor):
+    """
+    初始化（新增）傳入該ID的資料表
+    """
+    try:
+        cursor.execute(f"INSERT INTO {table} (uid) VALUE({user_id})") # 其他屬性在新增時MySQL會給預設值
+    # pylint: disable-next = broad-exception-caught
+    except Exception as exception:
+        print(f"Error inserting user {user_id} into {table}: {exception}")
 
 def get_channels(): # 要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
     # os.chdir("./")
-    with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as config_file:
-        return json.load(config_file)["SCAICT-alpha"]["channel"]
+    try:
+        with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as config_file:
+            return json.load(config_file)["SCAICT-alpha"]["channel"]
+    except FileNotFoundError:
+        print("Configuration file not found.")
+        return {}
+    except json.JSONDecodeError:
+        print("Error decoding JSON.")
+        return {}
+    except KeyError as exception:
+        print(f"Key error in configuration file: {exception}")
 
 def reset(message, now, cursor):
     user_id = message.author.id
-    write(user_id, "today_comments", 0, cursor) # 歸零發言次數
-    write(user_id, "last_comment", str(now), cursor)
-    write(user_id, "times", 2, cursor, table = "CommentPoints") # 初始化達標後能獲得的電電點
-    write(user_id, "next_reward", 1, cursor, table = "CommentPoints")
+    try:
+        write(user_id, "today_comments", 0, cursor) # 歸零發言次數
+        write(user_id, "last_comment", str(now), cursor)
+        write(user_id, "times", 2, cursor, table = "CommentPoints") # 初始化達標後能獲得的電電點
+        write(user_id, "next_reward", 1, cursor, table = "CommentPoints")
+    # pylint: disable-next = broad-exception-caught
+    except Exception as exception:
+        print(f"Error resetting user {user_id}: {exception}")
 
 def reward(message, cursor):
-    # 讀USER資料表的東西
     user_id = message.author.id
-    nickname = message.author
-    today_comments = read(user_id, "today_comments", cursor)
-    point = read(user_id, "point", cursor)
-    # 讀CommentPoints 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
-    next_reward = read(user_id, "next_reward", cursor, table = "CommentPoints")
-    times = read(user_id, "times", cursor, table = "CommentPoints")
+    user_display_name = message.author
+    try:
+        # 讀USER資料表的東西
+        today_comments = read(user_id, "today_comments", cursor)
+        point = read(user_id, "point", cursor)
+        # 讀CommentPoints 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
+        next_reward = read(user_id, "next_reward", cursor, table = "CommentPoints")
+        times = read(user_id, "times", cursor, table = "CommentPoints")
 
-    today_comments += 1
+        today_comments += 1
 
-    if today_comments == next_reward:
-        point += 2
-        next_reward += times ** 2
-        times += 1
-        write(user_id, "point", point, cursor)
-        write(user_id, "next_reward", next_reward, cursor, table = "CommentPoints")
-        write(user_id, "times", times, cursor, table = "CommentPoints")
+        if today_comments == next_reward:
+            point += 2
+            next_reward += times ** 2
+            times += 1
+            write(user_id, "point", point, cursor)
+            write(user_id, "next_reward", next_reward, cursor, table = "CommentPoints")
+            write(user_id, "times", times, cursor, table = "CommentPoints")
 
-        # 紀錄log
-        print(f"{user_id}, {nickname} Get 2 point by comment {datetime.now()}")
-    write(user_id, "today_comments", today_comments, cursor)
-# 每月更新的數數
+            # 紀錄log
+            print(f"{user_id}, {user_display_name} Get 2 point by comment {datetime.now()}")
+        write(user_id, "today_comments", today_comments, cursor)
+    # pylint: disable-next = broad-exception-caught
+    except Exception as exception:
+        print(f"Error rewarding user {user_id}: {exception}")
 
 class Comment(commands.Cog):
 
@@ -85,27 +115,32 @@ class Comment(commands.Cog):
             if user_id != self.bot.user.id: # 機器人發言不可當成觸發條件，必須排除
                 if message.channel.id == self.sp_channel["countChannel"]:
                 # 數數回應
-                    await Comment.count(message)
+                    await self.count(message)
                 elif message.channel.id == self.sp_channel["colorChannel"]:
                 # 猜色碼回應
-                    await Comment.nice_color(message)
+                    await self.nice_color(message)
                 if message.channel.id not in self.sp_channel["exclude_point"]:
                     # 平方發言加電電點，列表中頻道不算發言次數
-                    Comment.today_comment(user_id, message, cursor)
+                    self.today_comment(user_id, message, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
-            print(f"Error: {exception}")
+            print(f"Error in today_comment for user {user_id}: {exception}")
 
         end(connection, cursor)
 
     @staticmethod
     def today_comment(user_id, message, cursor):
-        # 新增該user的資料表
-        if not user_id_exists(user_id, "USER", cursor):
-            # 該 uesr id 不在USER資料表內，插入該筆使用者資料
-            insert_user(user_id, "USER", cursor)
-        if not user_id_exists(user_id, "CommentPoints", cursor):
-            insert_user(user_id, "CommentPoints", cursor)
+        try:
+            # 新增該user的資料表
+            if not user_id_exists(user_id, "USER", cursor):
+                # 該 uesr id 不在USER資料表內，插入該筆使用者資料
+                insert_user(user_id, "USER", cursor)
+            if not user_id_exists(user_id, "CommentPoints", cursor):
+                insert_user(user_id, "CommentPoints", cursor)
+        # pylint: disable-next = broad-exception-caught
+        except Exception as exception:
+            print(f"Error: {exception}")
+
         now = date.today()
         delta = timedelta(days = 1)
         # SQL回傳型態：<class 'datetime.date'>
@@ -120,72 +155,73 @@ class Comment(commands.Cog):
     async def count(message):
         try:
             connection, cursor = link_sql()
-            try:
-                raw_content = message.content
-                counting_base = 9
 
-                # Allow both plain and monospace formatting
-                based_number = re.sub("^`([^\n]+)`$", "\\1", raw_content)
+            raw_content = message.content
+            # 每月更新的數數
+            counting_base = 9
 
-                # If is valid 4-digit whitespace delimeter format
-                # (with/without base), then strip whitespace characters.
-                #
-                # Test cases:
-                # - "0"
-                # - "0000"
-                # - "000000"
-                # - "00 0000"
-                # - "0b0"
-                # - "0b0000"
-                # - "0b 0000"
-                # - "0b0 0000"
-                # - "0b 0 0000"
-                # - "0 b 0000"
-                # - "0 b 0 0000"
-                if re.match(
-                    "^(0[bdox]|0[bdox] |0 [bdox] |)" +
-                        "([0-9A-Fa-f]{1,4})" +
-                        "(([0-9A-Fa-f]{4})*|( [0-9A-Fa-f]{4})*)$",
-                    based_number
-                ):
-                    based_number = based_number.replace(" ", "")
-                # If is valid 3-digit comma delimeter format
-                # (10-based, without base)
-                elif (
-                    counting_base == 10 and
-                    re.match("^([0-9]{1,3}(,[0-9]{3})*)$", based_number)
-                ):
-                    based_number = based_number.replace(",", "")
-                # 若based_number字串轉換至整數失敗，會直接跳到except
-                decimal_number = int(based_number, counting_base)
-                cursor.execute("select seq from game")
-                now_seq = cursor.fetchone()[0]
-                cursor.execute("select lastID from game")
-                latest_user = cursor.fetchone()[0]
-                if message.author.id == latest_user:
-                    # 同人疊數數
-                    await message.add_reaction("🔄")
-                elif decimal_number == now_seq + 1:
-                    # 數數成立
-                    cursor.execute("UPDATE game SET seq = seq+1")
-                    cursor.execute(f"UPDATE game SET lastID = {message.author.id}")
-                    # add a check emoji to the message
-                    await message.add_reaction("✅")
-                    # 隨機產生 1~100 的數字。若模 11=10 ，九個數字符合，分布於 1~100 ，發生機率 9%。給予 5 點電電點
-                    rand = random.randint(1, 100)
-                    if rand % 11 == 10:
-                        point = read(message.author.id, "point", cursor) + 5
-                        write(message.author.id, "point", point, cursor)
-                        # pylint: disable-next = line-too-long
-                        print(f"{message.author.id}, {message.author} Get 5 point by count reward {datetime.now()}")
-                        await message.add_reaction("💸")
-                else:
-                    # 不同人數數，但數字不對
-                    await message.add_reaction("❌")
-                    await message.add_reaction("❓")
-            except (TypeError, ValueError):
-                # 在decimal_number賦值因為不是數字（可能聊天或其他文字）產生錯誤產生問號emoji回應
-                await message.add_reaction("❔")
+            # Allow both plain and monospace formatting
+            based_number = re.sub("^`([^\n]+)`$", "\\1", raw_content)
+
+            # If is valid 4-digit whitespace delimeter format
+            # (with/without base), then strip whitespace characters.
+            #
+            # Test cases:
+            # - "0"
+            # - "0000"
+            # - "000000"
+            # - "00 0000"
+            # - "0b0"
+            # - "0b0000"
+            # - "0b 0000"
+            # - "0b0 0000"
+            # - "0b 0 0000"
+            # - "0 b 0000"
+            # - "0 b 0 0000"
+            if re.match(
+                "^(0[bdox]|0[bdox] |0 [bdox] |)" +
+                    "([0-9A-Fa-f]{1,4})" +
+                    "(([0-9A-Fa-f]{4})*|( [0-9A-Fa-f]{4})*)$",
+                based_number
+            ):
+                based_number = based_number.replace(" ", "")
+            # If is valid 3-digit comma delimeter format
+            # (10-based, without base)
+            elif (
+                counting_base == 10 and
+                re.match("^([0-9]{1,3}(,[0-9]{3})*)$", based_number)
+            ):
+                based_number = based_number.replace(",", "")
+            # 若based_number字串轉換至整數失敗，會直接跳到except
+            decimal_number = int(based_number, counting_base)
+            cursor.execute("select seq from game")
+            now_seq = cursor.fetchone()[0]
+            cursor.execute("select lastID from game")
+            latest_user = cursor.fetchone()[0]
+            if message.author.id == latest_user:
+                # 同人疊數數
+                await message.add_reaction("🔄")
+            elif decimal_number == now_seq + 1:
+                # 數數成立
+                cursor.execute("UPDATE game SET seq = seq+1")
+                cursor.execute(f"UPDATE game SET lastID = {message.author.id}")
+                # add a check emoji to the message
+                await message.add_reaction("✅")
+                # 隨機產生 1~100 的數字。若模 11=10 ，九個數字符合，分布於 1~100 ，發生機率 9%。給予 5 點電電點
+                rand = random.randint(1, 100)
+                if rand % 11 == 10:
+                    point = read(message.author.id, "point", cursor) + 5
+                    write(message.author.id, "point", point, cursor)
+                    # pylint: disable-next = line-too-long
+                    print(f"{message.author.id}, {message.author} Get 5 point by count reward {datetime.now()}")
+                    await message.add_reaction("💸")
+            else:
+                # 不同人數數，但數字不對
+                await message.add_reaction("❌")
+                await message.add_reaction("❓")
+        except (TypeError, ValueError):
+            # 在decimal_number賦值因為不是數字（可能聊天或其他文字）產生錯誤產生問號emoji回應
+            await message.add_reaction("❔")
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error: {exception}")
