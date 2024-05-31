@@ -3,6 +3,9 @@
 A cat living in SCAICT Discord server.
 
 [![Sync issues to Notion](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml/badge.svg?event=issues)](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml)
+[![Website](https://img.shields.io/website?label=官方網站&style=flat-square&url=https%3A%2F%2Fscaict.org%2F)](https://scaict.org/)
+[![Discord](https://img.shields.io/discord/959823904266944562?label=Discord&logo=discord&style=flat-square)](https://dc.scaict.org)
+[![Instagram Follow](https://img.shields.io/badge/follow-%40scaict.tw-pink?style=flat-square&logo=instagram)](https://www.instagram.com/scaict.tw/)
 
 ![中電喵 SCAICT uwu](thumbnail.png)
 
