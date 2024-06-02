@@ -150,7 +150,7 @@ class CTF(Build):
                             cursor.execute(f"UPDATE history SET solved=1 WHERE data_id={question_id} AND uid={user_id};")
                             cursor.execute(f"SELECT score FROM data WHERE id={question_id};")
                             reward = int(cursor.fetchone()[0])
-                            cursor.execute("USE DCSQLtest;") # 換資料庫存取電電點
+                            cursor.execute("USE CTF;") # 換資料庫存取電電點
                             current_point = read(user_id, "point", cursor)
                             new_point = current_point + reward
                             # 更新使用者電電點
