@@ -286,21 +286,19 @@ class CTF(Build):
     # async def delete_ctf(self, ctx, question_id: str):
     #     role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
     # @ctf_commands.command(description = "列出所有題目")
-    # async def list_all(self, ctx):
-    #     question_list = ["**CTF 題目列表:**"]
-    #     ctf_file = get_ctf_file()
-    #     for question_id, question_data in ctf_file.items():
-    #         question_list.append(
-    #             f"* **{question_data['title']}** - {question_data['score']} :zap: *({question_id})*")
-    #     question_text = "\n".join(question_list)
-    #     await ctx.respond(question_text)
-
-    # def __init__(self, bot):
-    #     super().__init__(bot)
-    #     self.bot = bot
-
-    # def setup(self):
-    #     self.bot.add_application_command(ctf_commands)
+    @ctf_commands.command(description="列出所有題目")
+    async def list_all(self, ctx):
+        question_list = ["# **CTF 題目列表:**"]
+        connection, cursor=link_sql()
+        cursor.execute("use CTF;")
+        cursor.execute("SELECT title,score,id FROM data")
+        ctfinfo=cursor.fetchall()
+        for title,score,qID in ctfinfo:
+            question_list.append(
+                f"* **{title}** - {score} :zap: *({qID})*")
+        question_text = "\n".join(question_list)
+        await ctx.respond(question_text)
+        end_sql(connection, cursor)
 
 def setup(bot):
     bot.add_cog(CTF(bot))
