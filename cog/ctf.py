@@ -76,7 +76,7 @@ class CTF(Build):
                             await interaction.response.send_message("答題時間尚未開始！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
-                        if end != "None" and datetime.strptime(end, '%y/%m/%d %H:%M:%S') < current_time:
+                        if end != "None" and datetime.strptime(end, '%Y-%m-%d %H:%M:%S') < current_time:
                             await interaction.response.send_message("目前不在作答時間內！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
