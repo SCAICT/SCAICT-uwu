@@ -6,7 +6,7 @@ import random
 
 # Third-party imports
 import discord
-from discord import commands
+from discord.ext import commands
 from discord.commands import Option
 
 # Local imports
