@@ -76,7 +76,7 @@ class CTF(Build):
                             await interaction.response.send_message("答題時間尚未開始！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
-                        if end != "None" and datetime.strptime(end, '%y/%m/%d %H:%M:%S') < current_time:
+                        if end != "None" and datetime.strptime(end, '%Y-%m-%d %H:%M:%S') < current_time:
                             await interaction.response.send_message("目前不在作答時間內！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
@@ -150,7 +150,7 @@ class CTF(Build):
                             cursor.execute(f"UPDATE history SET solved=1 WHERE data_id={question_id} AND uid={user_id};")
                             cursor.execute(f"SELECT score FROM data WHERE id={question_id};")
                             reward = int(cursor.fetchone()[0])
-                            cursor.execute("USE Discord;") # 換資料庫存取電電點
+                            cursor.execute("USE DCSQLtest;") # 換資料庫存取電電點
                             current_point = read(user_id, "point", cursor)
                             new_point = current_point + reward
                             # 更新使用者電電點
