@@ -108,8 +108,24 @@ class Comment(commands.Cog):
     async def count(message):
         CONNECT, CURSOR = link_sql()
         try:
+
             raw_content = message.content
-            counting_base = 9
+            # emoji 數數(把emoji轉換成binary)
+            elements = raw_content.split()
+            unique_elements = set(elements)
+            if len(unique_elements) > 2:
+                await message.add_reaction("❔")
+                return
+
+            # 轉換元素為0和1
+            element_map = {element: idx for idx, element in enumerate(unique_elements)}
+            transformed_elements = [str(element_map[element]) for element in elements]
+
+            # 將轉換後的元素拼接成字串
+            raw_content= ''.join(transformed_elements)
+            
+            # emoji 數數(把emoji轉換成binary)
+            counting_base = 2
 
             # Allow both plain and monospace formatting
             based_number = re.sub("^`([^\n]+)`$", "\\1", raw_content)
@@ -145,6 +161,8 @@ class Comment(commands.Cog):
                 based_number = based_number.replace(",", "")
             # 若based_number字串轉換至整數失敗，會直接跳到except
             decimal_number = int(based_number, counting_base)
+            #補數
+            decimal_complement = ~decimal_number & ((1 << len(based_number)) - 1)
             CURSOR.execute("select seq from game")
             now_seq = CURSOR.fetchone()[0]
             CURSOR.execute("select lastID from game")
@@ -152,7 +170,7 @@ class Comment(commands.Cog):
             if message.author.id == latest_user:
                 # 同人疊數數
                 await message.add_reaction("🔄")
-            elif decimal_number == now_seq + 1:
+            elif decimal_number == now_seq + 1 or decimal_complement == now_seq + 1:
                 # 數數成立
                 CURSOR.execute("UPDATE game SET seq = seq+1")
                 CURSOR.execute(f"UPDATE game SET lastID = {message.author.id}")
@@ -168,6 +186,7 @@ class Comment(commands.Cog):
             else:
                 # 不同人數數，但數字不對
                 await message.add_reaction("❌")
+                
                 await message.add_reaction("❓")
         except (TypeError, ValueError):
             # 在decimal_number賦值因為不是數字（可能聊天或其他文字）產生錯誤產生問號emoji回應
