@@ -150,7 +150,7 @@ class CTF(Build):
                             cursor.execute(f"UPDATE history SET solved=1 WHERE data_id={question_id} AND uid={user_id};")
                             cursor.execute(f"SELECT score FROM data WHERE id={question_id};")
                             reward = int(cursor.fetchone()[0])
-                            cursor.execute("USE CTF;") # 換資料庫存取電電點
+                            cursor.execute("USE Discord;") # 換資料庫存取電電點
                             current_point = read(user_id, "point", cursor)
                             new_point = current_point + reward
                             # 更新使用者電電點
@@ -235,12 +235,12 @@ class CTF(Build):
                 id_exist = cursor.fetchone()
                 if id_exist is None:
                     break
-            # 轉型成SQL datetime格式 %Y-%m-%d %H:%M:%S
+            # 轉型成SQL datetime格式 '%Y-%m-%d %H:%M:%S'
             start = (
                 datetime.strptime(start, '%Y-%m-%d %H:%M:%S') if start != "" else
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             )
-            end = f"'{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}'" if end != "" else "NULL"
+            end = f"{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}" if end != "" else "NULL"
             # limit若沒有填寫，設為可嘗試無限次
             limit = "∞" if limit == "" else limit
             embed = discord.Embed(
@@ -267,13 +267,14 @@ class CTF(Build):
             response = await ctx.send(embed = embed, view = self.CTFView())
             message_id = response.id
 
+            # 先傳創建成功的訊息，再對資料庫進行操作，因為資料庫要存 response.id
             # 在CTF資料庫中的data資料表新增一筆CTF資料
             # print(f"INSERT INTO `data`\
             # (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
-            # ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}',{end},\'{title}\',{0});")
+            # ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
             cursor.execute(f"INSERT INTO `data`\
             (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
-            ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}',{end},\'{title}\',{0});")
+            ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
             # CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
