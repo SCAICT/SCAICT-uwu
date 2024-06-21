@@ -206,9 +206,9 @@ class CTF(Build):
         limit: Option(int, "限制回答次數", required = False, default = ''),
         case: Option(bool, "大小寫忽略", required = False, default = False),
         # pylint: disable-next = line-too-long
-        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required = False, default = ""), # 時間格式
+        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = ""), # 時間格式
         # pylint: disable-next = line-too-long
-        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required = False, default = "")):
+        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = "")):
         # SQL沒有布林值，所以要將T/F轉換成0或1
         case = 1 if case else 0
         # get ctf maker role's ID
