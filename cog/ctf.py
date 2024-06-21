@@ -76,7 +76,7 @@ class CTF(Build):
                             await interaction.response.send_message("答題時間尚未開始！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
-                        if end != "None" and datetime.strptime(end, '%y/%m/%d %H:%M:%S') < current_time:
+                        if end != "None" and datetime.strptime(end, '%Y-%m-%d %H:%M:%S') < current_time:
                             await interaction.response.send_message("目前不在作答時間內！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
@@ -206,9 +206,9 @@ class CTF(Build):
         limit: Option(int, "限制回答次數", required = False, default = ''),
         case: Option(bool, "大小寫忽略", required = False, default = False),
         # pylint: disable-next = line-too-long
-        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required = False, default = ""), # 時間格式
+        start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = ""), # 時間格式
         # pylint: disable-next = line-too-long
-        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y/%m/%d %H:%M:%S')})", required = False, default = "")):
+        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = "")):
         # SQL沒有布林值，所以要將T/F轉換成0或1
         case = 1 if case else 0
         # get ctf maker role's ID
@@ -235,12 +235,12 @@ class CTF(Build):
                 id_exist = cursor.fetchone()
                 if id_exist is None:
                     break
-            # 轉型成SQL datetime格式 %Y-%m-%d %H:%M:%S
+            # 轉型成SQL datetime格式 '%Y-%m-%d %H:%M:%S'
             start = (
                 datetime.strptime(start, '%Y-%m-%d %H:%M:%S') if start != "" else
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             )
-            end = f"'{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}'" if end != "" else "NULL"
+            end = f"{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}" if end != "" else "NULL"
             # limit若沒有填寫，設為可嘗試無限次
             limit = "∞" if limit == "" else limit
             embed = discord.Embed(
@@ -267,13 +267,14 @@ class CTF(Build):
             response = await ctx.send(embed = embed, view = self.CTFView())
             message_id = response.id
 
+            # 先傳創建成功的訊息，再對資料庫進行操作，因為資料庫要存 response.id
             # 在CTF資料庫中的data資料表新增一筆CTF資料
             # print(f"INSERT INTO `data`\
             # (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
-            # ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}',{end},\'{title}\',{0});")
+            # ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
             cursor.execute(f"INSERT INTO `data`\
             (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
-            ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}',{end},\'{title}\',{0});")
+            ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
             # CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
