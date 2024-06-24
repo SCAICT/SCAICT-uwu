@@ -291,7 +291,7 @@ class CTF(Build):
         question_list = ["# **CTF 題目列表:**"]
         connection, cursor=link_sql()
         # cursor.execute("use CTF;")
-        cursor.execute("SELECT title,score,id FROM data")
+        cursor.execute("SELECT title,score,id FROM ctf_data")
         ctfinfo=cursor.fetchall()
         for title,score,qID in ctfinfo:
             question_list.append(
