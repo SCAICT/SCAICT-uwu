@@ -64,10 +64,10 @@ class CTF(Build):
                         # cursor.execute("USE CTF;")
                         question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
                         # startTime
-                        cursor.execute(f"SELECT start_time FROM ctf_data WHERE id={question_id};")
+                        cursor.execute("SELECT start_time FROM ctf_data WHERE id=%s;", (question_id,))
                         start_time = str(cursor.fetchone()[0])
                         # endTime
-                        cursor.execute(f"SELECT end_time FROM ctf_data WHERE id={question_id};")
+                        cursor.execute("SELECT end_time FROM ctf_data WHERE id=%s;", (question_id,))
                         end = str(cursor.fetchone()[0])
 
                         # 判斷是否在作答時間內
@@ -85,7 +85,7 @@ class CTF(Build):
                         nickname = interaction.user
                         # 判斷題目可作答次數
                         # pylint: disable-next = line-too-long
-                        cursor.execute(f"SELECT count FROM ctf_history WHERE data_id={question_id} AND uid={user_id};")
+                        cursor.execute("SELECT count FROM ctf_history WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                         # return None or tuple.like (1,)
                         answer_count = cursor.fetchone() # 使用者回答次數
                         # 第一次作答flag
@@ -94,11 +94,11 @@ class CTF(Build):
                         if not_exist:
                             # 初始化作答次數
                             # pylint: disable-next = line-too-long
-                            cursor.execute(f"INSERT INTO ctf_history (data_id,uid,count) VALUES ({question_id},{user_id},0);")
+                            cursor.execute("INSERT INTO ctf_history (data_id,uid,count) VALUES (%s,%s,0);", (question_id, user_id))
                             answer_count = 0
                         else:
                             answer_count = answer_count[0]
-                        cursor.execute(f"SELECT restrictions FROM ctf_data WHERE id={question_id};")
+                        cursor.execute("SELECT restrictions FROM ctf_data WHERE id=%s;", (question_id,))
                         restrictions = str(cursor.fetchone()[0]) # 最大作答次數
 
                         # 無限沒辦法比大小，不用判斷有沒有超過限制
@@ -112,26 +112,26 @@ class CTF(Build):
 
                         # 更新作答次數，包括總表和個人表
                         # pylint: disable-next = line-too-long
-                        cursor.execute(f"UPDATE ctf_history SET count=count+1 WHERE data_id={question_id} AND uid={user_id};")
+                        cursor.execute("UPDATE ctf_history SET count=count+1 WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                         answer_count += 1 # SQL和變數同步，變數之後還要用
-                        cursor.execute(f"UPDATE ctf_data SET tried=tried+1 WHERE id={question_id};")
+                        cursor.execute("UPDATE ctf_data SET tried=tried+1 WHERE id=%s;", (question_id,))
 
                         # 製造 embed 前置作業-取得必要數值
-                        cursor.execute(f"SELECT tried FROM ctf_data WHERE id={question_id};")
+                        cursor.execute("SELECT tried FROM ctf_data WHERE id=%s;", (question_id,))
                         total_tried = int(cursor.fetchone()[0]) # 該題總共嘗試次數
                         # pylint: disable-next = line-too-long
-                        cursor.execute(f"SELECT COUNT(*) FROM ctf_history WHERE data_id={question_id} AND solved=1;")
+                        cursor.execute("SELECT COUNT(*) FROM ctf_history WHERE data_id=%s AND solved=1;", (question_id,))
                         total_solved = int(cursor.fetchone()[0]) # 該題完成人數
 
                         # 取得使用者輸入的 flag
                         response_flag = self.children[0].value
-                        cursor.execute(f"SELECT flags FROM ctf_data WHERE id={question_id};")
+                        cursor.execute("SELECT flags FROM ctf_data WHERE id=%s;", (question_id,))
                         answer = str(cursor.fetchone()[0])
                         # 輸入內容為正確答案
                         if response_flag == answer:
                             # 判斷是否重複回答
                             # pylint: disable-next = line-too-long
-                            cursor.execute(f"SELECT solved FROM ctf_history WHERE data_id={question_id} AND uid={user_id};")
+                            cursor.execute("SELECT solved FROM ctf_history WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                             is_solved = int(cursor.fetchone()[0])
                             if is_solved:
                                 embed = discord.Embed(title = "答題成功!")
@@ -146,8 +146,8 @@ class CTF(Build):
                                 return
                             # else 未曾回答過，送獎勵
                             # pylint: disable-next = line-too-long
-                            cursor.execute(f"UPDATE ctf_history SET solved=1 WHERE data_id={question_id} AND uid={user_id};")
-                            cursor.execute(f"SELECT score FROM ctf_data WHERE id={question_id};")
+                            cursor.execute("UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;", (question_id, user_id))
+                            cursor.execute("SELECT score FROM ctf_data WHERE id=%s;", (question_id,))
                             reward = int(cursor.fetchone()[0])
                             # cursor.execute("USE Discord;") # 換資料庫存取電電點
                             current_point = read(user_id, "point", cursor)
@@ -229,8 +229,7 @@ class CTF(Build):
             while True:
                 new_id = generate_ctf_id()
                 # 找尋是否有重複的ID，若無則跳出迴圈
-                cursor.execute(
-                    f"select id from ctf_data WHERE EXISTS(select id from ctf_data WHERE id={new_id});")
+                cursor.execute("select id from ctf_data WHERE EXISTS(select id from ctf_data WHERE id=%s);", (new_id,))
                 id_exist = cursor.fetchone()
                 if id_exist is None:
                     break
@@ -270,9 +269,8 @@ class CTF(Build):
             # print(f"INSERT INTO `ctf_data`\
             # (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
             # ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
-            cursor.execute(f"INSERT INTO `ctf_data`\
-            (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
-            ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
+            cursor.execute("INSERT INTO `ctf_data` (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) \
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (new_id, flag, score, limit, message_id, case, start, end, title, 0))
             await ctx.respond("已成功建立題目！", ephemeral = True)
             # CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
         # pylint: disable-next = broad-exception-caught
