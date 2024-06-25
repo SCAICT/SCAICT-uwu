@@ -243,7 +243,7 @@ class CTF(Build):
             limit = "∞" if limit == "" else limit
             embed = discord.Embed(
                 title = title,
-                description = "+" + str(score) + "⚡",
+                description = "+" + str(score) + ":zap:",
                 color = 0xff24cf,
             )
             embed.set_author(

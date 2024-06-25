@@ -7,8 +7,12 @@ from discord.ext import commands
 from build.build import Build
 
 # 建立動態語音頻道
-
 class VoiceChat(Build):
+    async def check_and_delete_empty_channel(self, voice_channel):
+        while(voice_channel.members):
+            # 持續 loop 直到沒有人在頻道裡
+            await asyncio.sleep(20)
+        await voice_channel.delete()
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -26,15 +30,10 @@ class VoiceChat(Build):
 
             await member.move_to(new_channel)
 
-            await self.check_and_delete_empty_channel(new_channel)
+            # await self.check_and_delete_empty_channel(new_channel)
+            self.bot.loop.create_task(self.check_and_delete_empty_channel(new_channel))
 
-    async def check_and_delete_empty_channel(self, voice_channel):
-        await asyncio.sleep(20)
 
-        members = voice_channel.members
-
-        if not members:
-            await voice_channel.delete()
 
 def setup(bot):
     bot.add_cog(VoiceChat(bot))
