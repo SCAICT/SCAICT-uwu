@@ -2,6 +2,8 @@
 import asyncio
 import json
 import os
+import discord
+from random import choice
 # Local imports
 from cog.core.sql import link_sql
 from cog.core.sql import end
@@ -41,3 +43,10 @@ async def update_channel(bot):
         await member_channel.edit(name = f"👥電池數：{total_members}")
         await point_channel.edit(name = f"🔋總電量：{points}")
         await asyncio.sleep(600)
+async def changeStatus(bot):
+    await bot.wait_until_ready()
+    announcements = ["SCAICT.org","今天 /charge 了嗎？","0703~04 幹訓報名中","要不要一起猜拳？","debug",]
+    while not bot.is_closed():
+        status=choice(announcements)
+        await bot.change_presence(activity = discord.Game(name =status))
+        await asyncio.sleep(10)
