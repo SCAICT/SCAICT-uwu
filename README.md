@@ -1,4 +1,3 @@
-
 <div align="center">
 <img src=uwu.png width=200px alt="中電喵 SCAICT uwu">
 
@@ -14,7 +13,7 @@
 
 </div>
 
-> 這個項目目前處於開發階段，並且可能會有一些問題。如果您發現了任何問題或有任何建議，請透過提交問題來通知我們。
+> 這個專案目前處於開發階段，並且可能會有一些問題。如果您發現了任何問題或有任何建議，請透過提交問題來通知我們。
 
 ## 如何部署？
 
@@ -26,17 +25,17 @@
    pip install flask py-cord mysql-connector-python requests
    ```
 
-4. 在 `DataBase/server.config.json` 中設置頻道。
+4. 在 `DataBase/server.config.json` 中設定頻道。
 5. 啟動 SQL 伺服器。
 6. 在 Breadcrumbs SCAICT-uwu 的 `cog/core/sql_acc.py` 中設置 SQL 伺服器。
 
-7. 啟動 Flask。
+7. 執行 Flask。
 
    ```bash
    flask run
    ```
 
-8. 運行 main.py。
+8. 執行 main.py。
 
    ```bash
    python main.py
@@ -46,8 +45,8 @@
 
 * `main.py`：中電喵。
 * `app.py`：中電商店。
-* `generate_secrets.py`：為 `app.py` 生成密鑰，運行後保存在 `token.json` 中。
-* 數據庫 MySQL：使用外部服務器，相關設置在 `cog/core/secret.py` 中。
+* `generate_secrets.py`：為 `app.py` 生成密鑰，執行後儲存在 `token.json` 中。
+* 資料庫 MySQL：使用外部伺服器，相關設定在 `cog/core/secret.py` 中。
 * `token.json`：
 
   ```json
@@ -76,4 +75,4 @@
 
 ## 鳴謝
 
-中電喵是由中電會和 [貢獻者們](https://github.com/SCAICT/SCAICT-uwu/graphs/contributors) 共同開發和維護的項目。角色設計由 [毛哥EM](https://elvismao.com/) 和 [瑞樹](https://www.facebook.com/ruishuowo) 創作，而部分圖示則選用了來自 [Freepik - Flaticon](https://www.flaticon.com/free-icons/slot-machine) 的設計素材。
+中電喵是由中電會和 [貢獻者們](https://github.com/SCAICT/SCAICT-uwu/graphs/contributors) 共同開發和維護的專案。角色設計由 [毛哥EM](https://elvismao.com/) 和 [瑞樹](https://www.facebook.com/ruishuowo) 創作，而部分圖示則選用了來自 [Freepik - Flaticon](https://www.flaticon.com/free-icons/slot-machine) 的設計素材。
