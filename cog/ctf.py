@@ -291,9 +291,9 @@ class CTF(Build):
         # cursor.execute("use CTF;")
         cursor.execute("SELECT title,score,id FROM ctf_data")
         ctfinfo=cursor.fetchall()
-        for title,score,qID in ctfinfo:
+        for title, score, qid in ctfinfo:
             question_list.append(
-                f"* **{title}** - {score} :zap: *({qID})*")
+                f"* **{title}** - {score} :zap: *({qid})*")
         question_text = "\n".join(question_list)
         await ctx.respond(question_text)
         end_sql(connection, cursor)
