@@ -1,5 +1,5 @@
 <div align="center">
-<img src=uwu.png width=200px alt="中電喵 SCAICT uwu">
+<img src="uwu.png" width="200px" alt="中電喵 SCAICT uwu">
 
 # 中電喵 SCAICT uwu
 
