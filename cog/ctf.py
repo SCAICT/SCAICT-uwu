@@ -137,7 +137,7 @@ class CTF(Build):
                                 embed = discord.Embed(title = "答題成功!")
                                 embed.add_field(
                                     name = "",
-                                    value = "但你已經解答過了所以沒有 :zap: 喔！",
+                                    value = "但你已經解答過了所以沒有 :zap~1:  喔！",
                                     inline = False
                                 )
                                 await interaction.response.send_message(
@@ -160,7 +160,7 @@ class CTF(Build):
 
                             embed = discord.Embed(title = "答題成功!")
                             embed.add_field(
-                                name = "+" + str(reward) + ":zap:",
+                                name = "+" + str(reward) + ":zap~1: ",
                                 value = "=" + str(new_point),
                                 inline = False
                             )
@@ -327,7 +327,7 @@ class CTF(Build):
         ctfinfo=cursor.fetchall()
         for title, score, qid in ctfinfo:
             question_list.append(
-                f"* **{title}** - {score} :zap: *({qid})*")
+                f"* **{title}** - {score} :zap~1:  *({qid})*")
         question_text = "\n".join(question_list)
         await ctx.respond(question_text)
         end_sql(connection, cursor)
