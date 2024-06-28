@@ -70,11 +70,11 @@ class AdminRole(Build):
             await ctx.response.edit_message(view = self)
 
     @discord.slash_command(name = "發送禮物", description = "dm_gift")
-    async def senddm(
+    async def send_dm_gift(
         self,
         ctx,
         target: discord.Option(str, "發送對象", required = True),
-        type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎卷" ]),
+        gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ]),
         # DM gift
         count: discord.Option(int, "數量")
     ):
@@ -86,13 +86,13 @@ class AdminRole(Build):
             manager = ctx.author
             target = await self.bot.fetch_user(target)
             # 管理者介面提示
-            await ctx.respond(f"{manager} 已發送 {count} {type} 給 {target}")
+            await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {target}")
             # 產生按鈕物件
             view = self.Gift()
-            view.type = type
+            view.type = gift_type
             view.count = count
             embed = discord.Embed(
-                title = f"你收到了 {count} {type}！",
+                title = f"你收到了 {count} {gift_type}！",
                 description = ":gift:",
                 color = discord.Color.blurple()
             )
