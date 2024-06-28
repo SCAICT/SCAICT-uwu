@@ -2,7 +2,7 @@ def analyze_string(s):
     elements = s.split()
     print(elements)
     unique_elements = set(elements)
-    
+
     if len(unique_elements) > 2:
         print("超過兩種不同的元素，程式結束")
         return
@@ -17,6 +17,6 @@ def analyze_string(s):
     print(int(transformed_string, 2))
 
 # 字串範例
-s = "1 0 3"
+se = "1 0 3"
 
-analyze_string(s)
+analyze_string(se)

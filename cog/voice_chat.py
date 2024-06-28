@@ -9,7 +9,7 @@ from build.build import Build
 # 建立動態語音頻道
 class VoiceChat(Build):
     async def check_and_delete_empty_channel(self, voice_channel):
-        while(voice_channel.members):
+        while voice_channel.members:
             # 持續 loop 直到沒有人在頻道裡
             await asyncio.sleep(20)
         await voice_channel.delete()
@@ -32,8 +32,6 @@ class VoiceChat(Build):
 
             # await self.check_and_delete_empty_channel(new_channel)
             self.bot.loop.create_task(self.check_and_delete_empty_channel(new_channel))
-
-
 
 def setup(bot):
     bot.add_cog(VoiceChat(bot))
