@@ -241,6 +241,9 @@ class CTF(Build):
             end = f"{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}" if end != "" else "NULL"
             # limit若沒有填寫，設為可嘗試無限次
             limit = "∞" if limit == "" else limit
+            if limit == 0:
+                await ctx.respond("限制回答次數不可為0！", ephemeral = True)
+                return
             embed = discord.Embed(
                 title = title,
                 description = "+" + str(score) + ":zap~1: ",
@@ -295,12 +298,13 @@ class CTF(Build):
             return
         try:
             connection, cursor=link_sql()
-            cursor.execute("SELECT message_id FROM ctf_data WHERE id=%s and flags=%s;", (qid,key,))
+            cursor.execute("SELECT message_id,title FROM ctf_data WHERE id=%s and flags=%s;", (qid,key,))
             #取得題目的 embed 訊息 ID
             msgID = cursor.fetchall()
             if len(msgID) == 0: # 返回空 list 代表沒有這個題目
                 await ctx.respond("沒有這個題目喔，請檢查輸入的 qid 和 flag！", ephemeral = True)
                 return
+            title =msgID[0][1]
             msgID = msgID[0][0]
             #取得題目的貼文頻道
             channel = self.bot.get_channel(int(channelid))# id 太長不能以 int 型態傳入，而 get_channel 只接受 int 型態
@@ -311,7 +315,7 @@ class CTF(Build):
                 return
             cursor.execute("DELETE FROM ctf_data WHERE id=%s and flags=%s;", (qid,key))
             await message.delete()
-            await ctx.respond("題目刪除成功")
+            await ctx.respond(f"{ctx.author} 成功刪除題目 | **{title}**")
         except Exception as exception:
             await ctx.respond(f"出了一點小問題，請聯絡管理員\n{exception}", ephemeral = True)
             print(f"Error: {exception}")
