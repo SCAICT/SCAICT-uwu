@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import os
 import random
-
+import traceback
 # Third-party imports
 import discord
 from discord.ext import commands
@@ -68,15 +68,15 @@ class CTF(Build):
                         start_time = str(cursor.fetchone()[0])
                         # endTime
                         cursor.execute("SELECT end_time FROM ctf_data WHERE id=%s;", (question_id,))
-                        end = str(cursor.fetchone()[0])
-
+                        end = str(cursor.fetchone()[0])#若沒有設定結束時間，則為 None
+                        end = "None" if end == "NULL" else end #有些版本的 mysql-connector-python 會回傳NULL，統一轉成None
                         # 判斷是否在作答時間內
                         current_time = datetime.now()
                         if datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S') > current_time:
                             await interaction.response.send_message("答題時間尚未開始！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
-                        if end != "NULL" and datetime.strptime(end, '%Y-%m-%d %H:%M:%S') < current_time:
+                        if end != "None" and datetime.strptime(end, '%Y-%m-%d %H:%M:%S') < current_time:
                             await interaction.response.send_message("目前不在作答時間內！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
@@ -188,7 +188,8 @@ class CTF(Build):
                         await interaction.message.edit(embed = embed)
                     # pylint: disable-next = broad-exception-caught
                     except Exception as exception:
-                        print(f"Error: {exception}")
+                        traceback_str = ''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))
+                        print(f"Error: {exception}\n{traceback_str}")
 
                     end_sql(connection, cursor) # 結束SQL會話
 
@@ -254,7 +255,7 @@ class CTF(Build):
                 icon_url = "https://cdn-icons-png.flaticon.com/128/14929/14929899.png"
             )
             embed.set_thumbnail(
-                url="https://cdn-icons-png.flaticon.com/128/14929/14929899.png")
+                url = "https://cdn-icons-png.flaticon.com/128/14929/14929899.png")
             embed.add_field(name = "已完成", value = "0", inline = True)
             embed.add_field(name = "已嘗試", value = "0", inline = True)
             embed.add_field(name = "回答次數限制", value = f"0/{limit}", inline = True)
@@ -284,31 +285,33 @@ class CTF(Build):
 
     # 刪除題目
     @ctf_commands.command(name = "delete", description = "刪除題目")
-    async def delete_ctf(self,ctx, 
-                        qid:discord.Option(str, "欲刪除的題目", required = True),
-                        channelid:discord.Option(str, "題目所在的貼文頻道", required = True),
-                        #防呆
-                        key:discord.Option(str, "輸入該題題目解答", required = True, default = '')
-                         ):
-        
+    async def delete_ctf(
+        self,
+        ctx,
+        qid: discord.Option(str, "欲刪除的題目", required = True),
+        channel_id: discord.Option(str, "題目所在的貼文頻道", required = True),
+        # 防呆
+        key: discord.Option(str, "輸入該題題目解答", required = True, default = '')
+    ):
         role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
         role = discord.utils.get(ctx.guild.roles, id = role_id)
         if role not in ctx.author.roles:
             await ctx.respond("你沒有權限刪除題目！", ephemeral = True)
             return
         try:
-            connection, cursor=link_sql()
-            cursor.execute("SELECT message_id,title FROM ctf_data WHERE id=%s and flags=%s;", (qid,key,))
-            #取得題目的 embed 訊息 ID
-            msgID = cursor.fetchall()
-            if len(msgID) == 0: # 返回空 list 代表沒有這個題目
+            connection, cursor = link_sql()
+            cursor.execute("SELECT message_id, title FROM ctf_data WHERE id=%s and flags=%s;", (qid, key,))
+            # 取得題目的 embed 訊息 ID
+            msg_id = cursor.fetchall()
+            if len(msg_id) == 0: # 返回空 list 代表沒有這個題目
                 await ctx.respond("沒有這個題目喔，請檢查輸入的 qid 和 flag！", ephemeral = True)
                 return
-            title =msgID[0][1]
-            msgID = msgID[0][0]
-            #取得題目的貼文頻道
-            channel = self.bot.get_channel(int(channelid))# id 太長不能以 int 型態傳入，而 get_channel 只接受 int 型態
-            message = await channel.fetch_message(msgID)
+            title = msg_id[0][1]
+            msg_id = msg_id[0][0]
+            # 取得題目的貼文頻道
+            # id 太長不能以 int 型態傳入，而 get_channel 只接受 int 型態
+            channel = self.bot.get_channel(int(channel_id))
+            message = await channel.fetch_message(msg_id)
             if message is None:
                 await ctx.send("Message not found.")
                 await ctx.respond("找不到題目訊息，請檢查欲刪除題目所在的討論串頻道是否和輸入的一致！", ephemeral = True)
@@ -321,15 +324,15 @@ class CTF(Build):
             print(f"Error: {exception}")
             # 删除消息
         end_sql(connection, cursor)
-        
-    @ctf_commands.command(name="list",description="列出所有題目")
+
+    @ctf_commands.command(name = "list", description = "列出所有題目")
     async def list_all(self, ctx):
         question_list = ["# **CTF 題目列表:**"]
         connection, cursor=link_sql()
         # cursor.execute("use CTF;")
-        cursor.execute("SELECT title,score,id FROM ctf_data")
-        ctfinfo=cursor.fetchall()
-        for title, score, qid in ctfinfo:
+        cursor.execute("SELECT title, score, id FROM ctf_data")
+        ctf_info = cursor.fetchall()
+        for title, score, qid in ctf_info:
             question_list.append(
                 f"* **{title}** - {score} :zap~1:  *({qid})*")
         question_text = "\n".join(question_list)
