@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import os
 import random
-
+import traceback
 # Third-party imports
 import discord
 from discord.ext import commands
@@ -68,15 +68,15 @@ class CTF(Build):
                         start_time = str(cursor.fetchone()[0])
                         # endTime
                         cursor.execute("SELECT end_time FROM ctf_data WHERE id=%s;", (question_id,))
-                        end = str(cursor.fetchone()[0])
-
+                        end = str(cursor.fetchone()[0])#若沒有設定結束時間，則為 None
+                        end = "None" if end == "NULL" else end #有些版本的 mysql-connector-python 會回傳NULL，統一轉成None
                         # 判斷是否在作答時間內
                         current_time = datetime.now()
                         if datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S') > current_time:
                             await interaction.response.send_message("答題時間尚未開始！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
-                        if end != "NULL" and datetime.strptime(end, '%Y-%m-%d %H:%M:%S') < current_time:
+                        if end != "None" and datetime.strptime(end, '%Y-%m-%d %H:%M:%S') < current_time:
                             await interaction.response.send_message("目前不在作答時間內！", ephemeral = True)
                             end_sql(connection, cursor)
                             return
@@ -188,7 +188,8 @@ class CTF(Build):
                         await interaction.message.edit(embed = embed)
                     # pylint: disable-next = broad-exception-caught
                     except Exception as exception:
-                        print(f"Error: {exception}")
+                        traceback_str = ''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))
+                        print(f"Error: {exception}\n{traceback_str}")
 
                     end_sql(connection, cursor) # 結束SQL會話
 
