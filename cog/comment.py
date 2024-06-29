@@ -45,12 +45,12 @@ def get_channels(): # 要特殊用途頻道的列表，這裡會用來判斷是�
             return json.load(config_file)["SCAICT-alpha"]["channel"]
     except FileNotFoundError:
         print("Configuration file not found.")
-        return {}
     except json.JSONDecodeError:
         print("Error decoding JSON.")
-        return {}
     except KeyError as exception:
         print(f"Key error in configuration file: {exception}")
+
+    return {}
 
 def reset(message, now, cursor):
     user_id = message.author.id
@@ -171,8 +171,8 @@ class Comment(commands.Cog):
             transformed_elements = [str(element_map[element]) for element in elements]
 
             # 將轉換後的元素拼接成字串
-            raw_content= ''.join(transformed_elements)
-            
+            raw_content = ''.join(transformed_elements)
+
             # emoji 數數(把emoji轉換成binary)
             counting_base = 2
 
@@ -236,7 +236,6 @@ class Comment(commands.Cog):
             else:
                 # 不同人數數，但數字不對
                 await message.add_reaction("❌")
-                
                 await message.add_reaction("❓")
         except (TypeError, ValueError):
             # 在decimal_number賦值因為不是數字（可能聊天或其他文字）產生錯誤產生問號emoji回應

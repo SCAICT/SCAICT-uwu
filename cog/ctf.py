@@ -137,7 +137,7 @@ class CTF(Build):
                                 embed = discord.Embed(title = "答題成功!")
                                 embed.add_field(
                                     name = "",
-                                    value = "但你已經解答過了所以沒有 :zap: 喔！",
+                                    value = "但你已經解答過了所以沒有 :zap~1:  喔！",
                                     inline = False
                                 )
                                 await interaction.response.send_message(
@@ -160,7 +160,7 @@ class CTF(Build):
 
                             embed = discord.Embed(title = "答題成功!")
                             embed.add_field(
-                                name = "+" + str(reward) + ":zap:",
+                                name = "+" + str(reward) + ":zap~1: ",
                                 value = "=" + str(new_point),
                                 inline = False
                             )
@@ -241,9 +241,12 @@ class CTF(Build):
             end = f"{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}" if end != "" else "NULL"
             # limit若沒有填寫，設為可嘗試無限次
             limit = "∞" if limit == "" else limit
+            if limit == 0:
+                await ctx.respond("限制回答次數不可為0！", ephemeral = True)
+                return
             embed = discord.Embed(
                 title = title,
-                description = "+" + str(score) + ":zap:",
+                description = "+" + str(score) + ":zap~1: ",
                 color = 0xff24cf,
             )
             embed.set_author(
@@ -279,21 +282,56 @@ class CTF(Build):
 
         end_sql(connection, cursor)
 
-# 刪除題目，等等寫
-    # @ctf_commands.command(name = "delete", description = "刪除題目")
-    # async def delete_ctf(self, ctx, question_id: str):
-    #     role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
-    # @ctf_commands.command(description = "列出所有題目")
-    @ctf_commands.command(description="列出所有題目")
+    # 刪除題目
+    @ctf_commands.command(name = "delete", description = "刪除題目")
+    async def delete_ctf(self,ctx, 
+                        qid:discord.Option(str, "欲刪除的題目", required = True),
+                        channelid:discord.Option(str, "題目所在的貼文頻道", required = True),
+                        #防呆
+                        key:discord.Option(str, "輸入該題題目解答", required = True, default = '')
+                         ):
+        
+        role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
+        role = discord.utils.get(ctx.guild.roles, id = role_id)
+        if role not in ctx.author.roles:
+            await ctx.respond("你沒有權限刪除題目！", ephemeral = True)
+            return
+        try:
+            connection, cursor=link_sql()
+            cursor.execute("SELECT message_id,title FROM ctf_data WHERE id=%s and flags=%s;", (qid,key,))
+            #取得題目的 embed 訊息 ID
+            msgID = cursor.fetchall()
+            if len(msgID) == 0: # 返回空 list 代表沒有這個題目
+                await ctx.respond("沒有這個題目喔，請檢查輸入的 qid 和 flag！", ephemeral = True)
+                return
+            title =msgID[0][1]
+            msgID = msgID[0][0]
+            #取得題目的貼文頻道
+            channel = self.bot.get_channel(int(channelid))# id 太長不能以 int 型態傳入，而 get_channel 只接受 int 型態
+            message = await channel.fetch_message(msgID)
+            if message is None:
+                await ctx.send("Message not found.")
+                await ctx.respond("找不到題目訊息，請檢查欲刪除題目所在的討論串頻道是否和輸入的一致！", ephemeral = True)
+                return
+            cursor.execute("DELETE FROM ctf_data WHERE id=%s and flags=%s;", (qid,key))
+            await message.delete()
+            await ctx.respond(f"{ctx.author} 成功刪除題目 | **{title}**")
+        except Exception as exception:
+            await ctx.respond(f"出了一點小問題，請聯絡管理員\n{exception}", ephemeral = True)
+            print(f"Error: {exception}")
+            # 删除消息
+        end_sql(connection, cursor)
+        
+    @ctf_commands.command(name="list",description="列出所有題目")
     async def list_all(self, ctx):
         question_list = ["# **CTF 題目列表:**"]
         connection, cursor=link_sql()
         # cursor.execute("use CTF;")
         cursor.execute("SELECT title,score,id FROM ctf_data")
         ctfinfo=cursor.fetchall()
-        for title,score,qID in ctfinfo:
+        for title, score, qid in ctfinfo:
             question_list.append(
-                f"* **{title}** - {score} :zap: *({qID})*")
+                f"* **{title}** - {score} :zap~1:  *({qid})*")
         question_text = "\n".join(question_list)
         await ctx.respond(question_text)
         end_sql(connection, cursor)
