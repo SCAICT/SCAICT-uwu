@@ -22,7 +22,7 @@
 3. 安裝依賴套件。
 
    ```bash
-   pip install flask py-cord mysql-connector-python requests
+   pip install -r requirements.txt
    ```
 
 4. 在 `DataBase/server.config.json` 中設定頻道。
