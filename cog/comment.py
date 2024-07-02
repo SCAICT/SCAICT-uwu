@@ -96,10 +96,10 @@ class Comment(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.sp_channel = get_channels() # 特殊用途的channel
-        
-        self.sp_channel_handler={
+
+        self.sp_channel_handler = {
             self.sp_channel["countChannel"]:self.count,
-            self.sp_channel["colorChannel"]:self.nice_color
+            self.sp_channel["colorChannel"]:self.nice_color,
         }
 
     # 數數判定
