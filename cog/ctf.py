@@ -57,6 +57,8 @@ class CTF(Build):
                     super().__init__(*args, **kwargs)
                     self.add_item(
                         discord.ui.InputText(label = "Flag", placeholder = "Flag", required = True))
+                    with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
+                        self.stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 
                 async def callback(self, interaction: discord.Interaction):
                     try:
@@ -137,7 +139,7 @@ class CTF(Build):
                                 embed = discord.Embed(title = "答題成功!")
                                 embed.add_field(
                                     name = "",
-                                    value = "但你已經解答過了所以沒有 :thunder:  喔！",
+                                    value = f"但你已經解答過了所以沒有 {self.stickers['zap']}  喔！",
                                     inline = False
                                 )
                                 await interaction.response.send_message(
@@ -160,7 +162,7 @@ class CTF(Build):
 
                             embed = discord.Embed(title = "答題成功!")
                             embed.add_field(
-                                name = "+" + str(reward) + " :thunder: ",
+                                name = "+" + str(reward) + f" {self.stickers['zap']} ",
                                 value = "=" + str(new_point),
                                 inline = False
                             )
@@ -247,7 +249,7 @@ class CTF(Build):
                 return
             embed = discord.Embed(
                 title = title,
-                description = "+" + str(score) + ":thunder: ",
+                description = "+" + str(score) + f"{self.stickers['zap']} ",
                 color = 0xff24cf,
             )
             embed.set_author(
@@ -334,7 +336,7 @@ class CTF(Build):
         ctf_info = cursor.fetchall()
         for title, score, qid in ctf_info:
             question_list.append(
-                f"* **{title}** - {score} :thunder:  *({qid})*")
+                f"* **{title}** - {score} {self.stickers['zap']}  *({qid})*")
         question_text = "\n".join(question_list)
         await ctx.respond(question_text)
         end_sql(connection, cursor)
