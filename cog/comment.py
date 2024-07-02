@@ -97,36 +97,30 @@ class Comment(commands.Cog):
         self.bot = bot
         self.sp_channel = get_channels() # 特殊用途的channel
 
+        self.sp_channel_handler = {
+            self.sp_channel["countChannel"]:self.count,
+            self.sp_channel["colorChannel"]:self.nice_color,
+        }
+
     # 數數判定
     @commands.Cog.listener()
     async def on_message(self, message):
         user_id = message.author.id
         try:
-            connection, cursor = link_sql() # SQL 會話
-
-            if message.content.startswith("!set"):
-                # 狀態指令
-                arg = message.content.split(" ")
-                await self.bot.change_presence(activity = discord.Streaming(
-                    name = "YouTube",
-                    url = f"{arg[2]}"
-                    # , details = f"{arg[1]}"
-                ))
             if user_id != self.bot.user.id: # 機器人發言不可當成觸發條件，必須排除
-                if message.channel.id == self.sp_channel["countChannel"]:
-                # 數數回應
-                    await self.count(message)
-                elif message.channel.id == self.sp_channel["colorChannel"]:
-                # 猜色碼回應
-                    await self.nice_color(message)
+                handler = self.sp_channel_handler.get(message.channel.id)
+                #根據訊息頻道 ID 切換要呼叫的函數
+                if handler:
+                    await handler(message)
                 if message.channel.id not in self.sp_channel["exclude_point"]:
                     # 平方發言加電電點，列表中頻道不算發言次數
+                    connection, cursor = link_sql() # SQL 會話
                     self.today_comment(user_id, message, cursor)
+                    end(connection, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
-            print(f"Error in today_comment for user {user_id}: {exception}")
+            print(f"Error in comment for user {user_id}: {exception}")
 
-        end(connection, cursor)
 
     @staticmethod
     def today_comment(user_id, message, cursor):
