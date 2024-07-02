@@ -39,7 +39,7 @@ class Charge(commands.Cog):
 
         self.embed.add_field(
             name = "",
-            value = ":battery:+5:zap:= " + str(point) + f"{stickers['logo']}",
+            value = f":battery:+5{stickers['zap']}= " + str(point) + f"{stickers['zap']}",
             inline = False
         )
         self.embed.add_field(

@@ -25,7 +25,7 @@ def get_channels():
         print("Error decoding JSON.")
         return {}
 
-stickers = get_channels()["stickers"]['logo']
+stickers = get_channels()["stickers"]['zap']
 
 class Game(commands.Cog):
     # User can use this command to play ✊-🤚-✌️ with the bot in the command channel
