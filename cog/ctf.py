@@ -31,12 +31,12 @@ def get_ctf_makers():
 # By EM
 def generate_ctf_id():
     return str(random.randint(100000000000000000, 999999999999999999))
-
+with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
+    stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 class CTF(Build):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(self.CTFView())
-
     ctf_commands = discord.SlashCommandGroup("ctf", "CTF 指令")
 
     class CTFView(discord.ui.View):
@@ -57,13 +57,10 @@ class CTF(Build):
                     super().__init__(*args, **kwargs)
                     self.add_item(
                         discord.ui.InputText(label = "Flag", placeholder = "Flag", required = True))
-                    with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
-                        self.stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 
                 async def callback(self, interaction: discord.Interaction):
                     try:
                         connection, cursor = link_sql() # SQL 會話
-                        # cursor.execute("USE CTF;")
                         question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
                         # startTime
                         cursor.execute("SELECT start_time FROM ctf_data WHERE id=%s;", (question_id,))
@@ -139,7 +136,7 @@ class CTF(Build):
                                 embed = discord.Embed(title = "答題成功!")
                                 embed.add_field(
                                     name = "",
-                                    value = f"但你已經解答過了所以沒有 {self.stickers['zap']}  喔！",
+                                    value = f"但你已經解答過了所以沒有 {stickers['zap']}  喔！",
                                     inline = False
                                 )
                                 await interaction.response.send_message(
@@ -162,7 +159,7 @@ class CTF(Build):
 
                             embed = discord.Embed(title = "答題成功!")
                             embed.add_field(
-                                name = "+" + str(reward) + f" {self.stickers['zap']} ",
+                                name = "+" + str(reward) + f" {stickers['zap']} ",
                                 value = "=" + str(new_point),
                                 inline = False
                             )
@@ -249,7 +246,7 @@ class CTF(Build):
                 return
             embed = discord.Embed(
                 title = title,
-                description = "+" + str(score) + f"{self.stickers['zap']} ",
+                description = "+" + str(score) + f"{stickers['zap']} ",
                 color = 0xff24cf,
             )
             embed.set_author(
@@ -275,13 +272,18 @@ class CTF(Build):
             # print(f"INSERT INTO `ctf_data`\
             # (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
             # ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
-            cursor.execute("INSERT INTO `ctf_data` (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) \
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (new_id, flag, score, limit, message_id, case, start, end, title, 0))
+            if end == "NULL":
+                cursor.execute("INSERT INTO `ctf_data` (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) \
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,NULL,%s,%s);", (new_id, flag, score, limit, message_id, case, start, title, 0))
+            else:
+                cursor.execute("INSERT INTO `ctf_data` (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) \
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (new_id, flag, score, limit, message_id, case, start, end, title, 0))
             await ctx.respond("已成功建立題目！", ephemeral = True)
             # CTFID,flag,score,可嘗試次數,message_id,大小寫限制,作答開始時間,作答結束時間,題目標題,已嘗試人數
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
-            print(f"Error: {exception}")
+            traceback_str = ''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))
+            print(f"Error: {exception}\n{traceback_str}")
 
         end_sql(connection, cursor)
 
@@ -336,7 +338,7 @@ class CTF(Build):
         ctf_info = cursor.fetchall()
         for title, score, qid in ctf_info:
             question_list.append(
-                f"* **{title}** - {score} {self.stickers['zap']}  *({qid})*")
+                f"* **{title}** - {score} {stickers['zap']}  *({qid})*")
         question_text = "\n".join(question_list)
         await ctx.respond(question_text)
         end_sql(connection, cursor)
