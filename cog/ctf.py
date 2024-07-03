@@ -4,6 +4,7 @@ import json
 import os
 import random
 import traceback
+
 # Third-party imports
 import discord
 from discord.ext import commands
@@ -17,7 +18,10 @@ from cog.core.sql import write
 from cog.core.sql import end as end_sql
 from cog.core.sql import link_sql
 
-def get_ctf_makers():
+with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as server_config:
+    stickers = json.load(server_config)["SCAICT-alpha"]["stickers"]
+
+def get_ctf_makers() -> dict:
     try:
         with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
             return json.load(file)
@@ -29,14 +33,14 @@ def get_ctf_makers():
         return {}
 
 # By EM
-def generate_ctf_id():
+def generate_ctf_id() -> str:
     return str(random.randint(100000000000000000, 999999999999999999))
-with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
-    stickers = json.load(file)["SCAICT-alpha"]["stickers"]
+
 class CTF(Build):
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         self.bot.add_view(self.CTFView())
+
     ctf_commands = discord.SlashCommandGroup("ctf", "CTF 指令")
 
     class CTFView(discord.ui.View):
@@ -51,7 +55,7 @@ class CTF(Build):
         )
         # user送出flag
         # pylint: disable-next = unused-argument
-        async def button_callback_1(self, button, interaction):
+        async def button_callback_1(self, button, interaction) -> None:
             class SubmitModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
                     super().__init__(*args, **kwargs)
@@ -124,12 +128,13 @@ class CTF(Build):
 
                         # 取得使用者輸入的 flag
                         response_flag = self.children[0].value
-                        cursor.execute("SELECT flags FROM ctf_data WHERE id=%s;", (question_id,))
-                        answer = str(cursor.fetchone()[0])
+                        cursor.execute("SELECT flags,case_status FROM ctf_data WHERE id=%s;", (question_id,))
+                        answer,case = cursor.fetchall()[0]
                         # 輸入內容為正確答案
-                        if response_flag == answer:
+                        if response_flag == answer or (case == 1 and response_flag.lower() == answer.lower()):
                             # 判斷是否重複回答
                             # pylint: disable-next = line-too-long
+                            cursor.execute("UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                             cursor.execute("SELECT solved FROM ctf_history WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                             is_solved = int(cursor.fetchone()[0])
                             if is_solved:
@@ -145,7 +150,6 @@ class CTF(Build):
                                 return
                             # else 未曾回答過，送獎勵
                             # pylint: disable-next = line-too-long
-                            cursor.execute("UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                             cursor.execute("SELECT score FROM ctf_data WHERE id=%s;", (question_id,))
                             reward = int(cursor.fetchone()[0])
                             # cursor.execute("USE Discord;") # 換資料庫存取電電點
@@ -199,15 +203,16 @@ class CTF(Build):
     async def create(
         self,
         ctx,
-        title: Option(str, "題目標題", required = True, default = ''),
-        flag: Option(str, "輸入 flag 解答", required = True, default = ''),
+        title: Option(str, "題目標題", required = True),
+        flag: Option(str, "輸入 flag 解答", required = True),
         score: Option(int, "分數", required = True, default = '20'),
-        limit: Option(int, "限制回答次數", required = False, default = ''),
-        case: Option(bool, "大小寫忽略", required = False, default = False),
+        limit: Option(int, "限制回答次數", required = False, default = '∞'),
+        case: Option(bool, "大小寫忽略", required = False, default = False),#True:忽略大小寫
         # pylint: disable-next = line-too-long
         start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = ""), # 時間格式
         # pylint: disable-next = line-too-long
-        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = "")):
+        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = "")
+    ) -> None:
         # SQL沒有布林值，所以要將T/F轉換成0或1
         case = 1 if case else 0
         # get ctf maker role's ID
@@ -217,12 +222,6 @@ class CTF(Build):
         if role not in ctx.author.roles:
             await ctx.respond("你沒有權限建立題目喔！", ephemeral = True)
             return
-        # 確認是否有填寫 title 和 flag
-        if title == '' or flag == '':
-            await ctx.respond("請填寫題目標題和 flag", ephemeral = True)
-            return
-        # ctfFile = get_ctf_file()
-
         try:
             connection, cursor = link_sql() # SQL 會話
             # cursor.execute("USE CTF;")
@@ -295,8 +294,8 @@ class CTF(Build):
         qid: discord.Option(str, "欲刪除的題目", required = True),
         channel_id: discord.Option(str, "題目所在的貼文頻道", required = True),
         # 防呆
-        key: discord.Option(str, "輸入該題題目解答", required = True, default = '')
-    ):
+        key: discord.Option(str, "輸入該題題目解答", required = True)
+    ) -> None:
         role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
         role = discord.utils.get(ctx.guild.roles, id = role_id)
         if role not in ctx.author.roles:
@@ -330,7 +329,7 @@ class CTF(Build):
         end_sql(connection, cursor)
 
     @ctf_commands.command(name = "list", description = "列出所有題目")
-    async def list_all(self, ctx):
+    async def list_all(self, ctx) -> None:
         question_list = ["# **CTF 題目列表:**"]
         connection, cursor=link_sql()
         # cursor.execute("use CTF;")
