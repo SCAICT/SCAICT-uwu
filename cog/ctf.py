@@ -4,6 +4,7 @@ import json
 import os
 import random
 import traceback
+
 # Third-party imports
 import discord
 from discord.ext import commands
@@ -17,7 +18,10 @@ from cog.core.sql import write
 from cog.core.sql import end as end_sql
 from cog.core.sql import link_sql
 
-def get_ctf_makers():
+with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as server_config:
+    stickers = json.load(server_config)["SCAICT-alpha"]["stickers"]
+
+def get_ctf_makers() -> dict:
     try:
         with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
             return json.load(file)
@@ -29,14 +33,14 @@ def get_ctf_makers():
         return {}
 
 # By EM
-def generate_ctf_id():
+def generate_ctf_id() -> str:
     return str(random.randint(100000000000000000, 999999999999999999))
-with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
-    stickers = json.load(file)["SCAICT-alpha"]["stickers"]
+
 class CTF(Build):
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         self.bot.add_view(self.CTFView())
+
     ctf_commands = discord.SlashCommandGroup("ctf", "CTF 指令")
 
     class CTFView(discord.ui.View):
@@ -51,7 +55,7 @@ class CTF(Build):
         )
         # user送出flag
         # pylint: disable-next = unused-argument
-        async def button_callback_1(self, button, interaction):
+        async def button_callback_1(self, button, interaction) -> None:
             class SubmitModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
                     super().__init__(*args, **kwargs)
@@ -207,7 +211,8 @@ class CTF(Build):
         # pylint: disable-next = line-too-long
         start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = ""), # 時間格式
         # pylint: disable-next = line-too-long
-        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = "")):
+        end: Option(str, f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = "")
+    ) -> None:
         # SQL沒有布林值，所以要將T/F轉換成0或1
         case = 1 if case else 0
         # get ctf maker role's ID
@@ -290,7 +295,7 @@ class CTF(Build):
         channel_id: discord.Option(str, "題目所在的貼文頻道", required = True),
         # 防呆
         key: discord.Option(str, "輸入該題題目解答", required = True)
-    ):
+    ) -> None:
         role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
         role = discord.utils.get(ctx.guild.roles, id = role_id)
         if role not in ctx.author.roles:
@@ -324,7 +329,7 @@ class CTF(Build):
         end_sql(connection, cursor)
 
     @ctf_commands.command(name = "list", description = "列出所有題目")
-    async def list_all(self, ctx):
+    async def list_all(self, ctx) -> None:
         question_list = ["# **CTF 題目列表:**"]
         connection, cursor=link_sql()
         # cursor.execute("use CTF;")
