@@ -124,10 +124,10 @@ class CTF(Build):
 
                         # 取得使用者輸入的 flag
                         response_flag = self.children[0].value
-                        cursor.execute("SELECT flags FROM ctf_data WHERE id=%s;", (question_id,))
-                        answer = str(cursor.fetchone()[0])
+                        cursor.execute("SELECT flags,case_status FROM ctf_data WHERE id=%s;", (question_id,))
+                        answer,case = cursor.fetchall()[0]
                         # 輸入內容為正確答案
-                        if response_flag == answer:
+                        if response_flag == answer or (case == 1 and response_flag.lower() == answer.lower()):
                             # 判斷是否重複回答
                             # pylint: disable-next = line-too-long
                             cursor.execute("UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;", (question_id, user_id))
@@ -203,7 +203,7 @@ class CTF(Build):
         flag: Option(str, "輸入 flag 解答", required = True),
         score: Option(int, "分數", required = True, default = '20'),
         limit: Option(int, "限制回答次數", required = False, default = '∞'),
-        case: Option(bool, "大小寫忽略", required = False, default = False),
+        case: Option(bool, "大小寫忽略", required = False, default = False),#True:忽略大小寫
         # pylint: disable-next = line-too-long
         start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = ""), # 時間格式
         # pylint: disable-next = line-too-long
