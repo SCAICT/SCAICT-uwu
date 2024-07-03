@@ -130,6 +130,7 @@ class CTF(Build):
                         if response_flag == answer:
                             # 判斷是否重複回答
                             # pylint: disable-next = line-too-long
+                            cursor.execute("UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                             cursor.execute("SELECT solved FROM ctf_history WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                             is_solved = int(cursor.fetchone()[0])
                             if is_solved:
@@ -145,7 +146,6 @@ class CTF(Build):
                                 return
                             # else 未曾回答過，送獎勵
                             # pylint: disable-next = line-too-long
-                            cursor.execute("UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;", (question_id, user_id))
                             cursor.execute("SELECT score FROM ctf_data WHERE id=%s;", (question_id,))
                             reward = int(cursor.fetchone()[0])
                             # cursor.execute("USE Discord;") # 換資料庫存取電電點
@@ -295,7 +295,7 @@ class CTF(Build):
         qid: discord.Option(str, "欲刪除的題目", required = True),
         channel_id: discord.Option(str, "題目所在的貼文頻道", required = True),
         # 防呆
-        key: discord.Option(str, "輸入該題題目解答", required = True, default = '')
+        key: discord.Option(str, "輸入該題題目解答", required = True)
     ):
         role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
         role = discord.utils.get(ctx.guild.roles, id = role_id)
