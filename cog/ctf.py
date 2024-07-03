@@ -199,10 +199,10 @@ class CTF(Build):
     async def create(
         self,
         ctx,
-        title: Option(str, "題目標題", required = True, default = ''),
-        flag: Option(str, "輸入 flag 解答", required = True, default = ''),
+        title: Option(str, "題目標題", required = True),
+        flag: Option(str, "輸入 flag 解答", required = True),
         score: Option(int, "分數", required = True, default = '20'),
-        limit: Option(int, "限制回答次數", required = False, default = ''),
+        limit: Option(int, "限制回答次數", required = False, default = '∞'),
         case: Option(bool, "大小寫忽略", required = False, default = False),
         # pylint: disable-next = line-too-long
         start: Option(str, f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})", required = False, default = ""), # 時間格式
@@ -217,12 +217,6 @@ class CTF(Build):
         if role not in ctx.author.roles:
             await ctx.respond("你沒有權限建立題目喔！", ephemeral = True)
             return
-        # 確認是否有填寫 title 和 flag
-        if title == '' or flag == '':
-            await ctx.respond("請填寫題目標題和 flag", ephemeral = True)
-            return
-        # ctfFile = get_ctf_file()
-
         try:
             connection, cursor = link_sql() # SQL 會話
             # cursor.execute("USE CTF;")
