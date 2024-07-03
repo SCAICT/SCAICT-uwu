@@ -73,20 +73,29 @@ class AdminRole(Build):
     async def send_dm_gift(
         self,
         ctx,
-        target: discord.Option(str, "發送對象", required = True),
-        gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ]),
-        # DM gift
+        target: discord.Option(str, "發送對象（用半形逗號分隔多個 ID）", required=True),
+        gift_type: discord.Option(str, "送禮內容", choices=["電電點", "抽獎券"]),
         count: discord.Option(int, "數量")
     ):
         if ctx.author.guild_permissions.administrator:
+            await ctx.defer()  # 確保機器人請求不會超時
             # 不能發送負數
             if count <= 0:
                 await ctx.respond("不能發送 0 以下個禮物！", ephemeral = True)
                 return
             manager = ctx.author
-            target = await self.bot.fetch_user(target)
+            target_ids = target.split(',')
+            target_users = []
+
+            for target_id in target_ids:
+                try:
+                    user = await self.bot.fetch_user(int(target_id.strip()))
+                    target_users.append(user)
+                except discord.NotFound:
+                    await ctx.respond(f"找不到用戶 ID: {target_id.strip()}", ephemeral=True)
+                    return
             # 管理者介面提示
-            await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {target}")
+            await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
             # 產生按鈕物件
             view = self.Gift()
             view.type = gift_type
@@ -97,8 +106,12 @@ class AdminRole(Build):
                 color = discord.Color.blurple()
             )
             # DM 一個 Embed 和領取按鈕
-            await target.send(embed = embed)
-            await target.send(view = view)
+            for target in target_users:
+                try:
+                    await target.send(embed=embed)
+                    await target.send(view=view)
+                except discord.Forbidden:
+                    await ctx.respond(f"無法向用戶 {target.name} 發送消息，可能是因為他們關閉了 DM。", ephemeral=True)
         else:
             await ctx.respond("你沒有權限使用這個指令！", ephemeral = True)
             return
