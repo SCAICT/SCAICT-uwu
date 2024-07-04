@@ -1,6 +1,7 @@
 # Third-party imports
 import discord
 from discord.ext import commands
+
 # Local imports
 from build.build import Build
 from cog.core.sql import link_sql
@@ -10,7 +11,7 @@ from cog.core.sql import end
 
 class AdminRole(Build):
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         self.bot.add_view(self.Gift())
 
     # 成員身分組
@@ -25,13 +26,13 @@ class AdminRole(Build):
             custom_id = "take_the_role"
         )
         # pylint: disable-next = unused-argument
-        async def button_callback_1(self, button, interaction):
+        async def button_callback_1(self, button, interaction) -> None:
             role = discord.utils.get(interaction.guild.roles, name = "ADMIN")
             await interaction.user.add_roles(role)
             await interaction.response.send_message("已領取身分組 `ヾ(≧▽≦*)o`", ephemeral = True)
 
     @discord.slash_command()
-    async def create_role_button(self, ctx):
+    async def create_role_button(self, ctx) -> None:
         if ctx.author.guild_permissions.administrator:
             embed = discord.Embed(color = 0x16b0fe)
             # pylint: disable-next = line-too-long
@@ -61,7 +62,7 @@ class AdminRole(Build):
             style = discord.ButtonStyle.success,
             custom_id = "get_gift"
         )
-        async def get_gift(self, button: discord.ui.Button,ctx):
+        async def get_gift(self, button: discord.ui.Button, ctx) -> None:
             self.type = "point" if self.type == "電電點" else "ticket"
             self.__reward(ctx.user.id, ctx.user, self.type, self.count)
             # log
@@ -73,34 +74,33 @@ class AdminRole(Build):
     async def send_dm_gift(
         self,
         ctx,
-        target: discord.Option(str, "發送對象（用半形逗號分隔多個使用者名稱）", required = True),
+        target_str: discord.Option(str, "發送對象（用半形逗號分隔多個使用者名稱）", required = True),
         gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ] ),
         count: discord.Option(int, "數量")
-    )-> None:
+    ) -> None:
         if ctx.author.guild_permissions.administrator:
-            await ctx.defer()  # 確保機器人請求不會超時
+            await ctx.defer() # 確保機器人請求不會超時
             # 不能發送負數
             if count <= 0:
                 await ctx.respond("不能發送 0 以下個禮物！", ephemeral = True)
                 return
             manager = ctx.author
-            target_names = target.split(',')
+            target_usernames = target_str.split(',')
             target_users = []
+
             async def fetch_user_by_name(name):
                 user_obj = discord.utils.find(lambda u: u.name == name, self.bot.users)
                 if user_obj:
                     return await self.bot.fetch_user(user_obj.id)
-            for name in target_names:
-                name = name.strip()
+            for username in target_usernames:
+                username = username.strip()
                 try:
-                    user = await fetch_user_by_name(name)
+                    user = await fetch_user_by_name(username)
                     target_users.append(user)
-                except ValueError as e:
-                    await ctx.respond(f"找不到使用者 ： {name}{e}", ephemeral=True)
+                except (ValueError, Exception) as e:
+                    await ctx.respond(f"找不到使用者 ： {username}{e}", ephemeral = True)
                     return
-                except Exception as e:
-                    await ctx.respond(f"找不到使用者 ： {name}{e}", ephemeral=True)
-                    return
+
             # 管理者介面提示
             await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
             # 產生按鈕物件
@@ -112,6 +112,7 @@ class AdminRole(Build):
                 description = ":gift:",
                 color = discord.Color.blurple()
             )
+
             # DM 一個 Embed 和領取按鈕
             for target_user in target_users:
                 try:
