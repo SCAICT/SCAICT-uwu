@@ -262,7 +262,7 @@ class Comment(commands.Cog):
                 nice_color = ''.join([ c * 2 for c in nice_color ]) # 格式化成六位數
                 embed = discord.Embed(
                     title = f"猜了 {guess_round}次後答對了！",
-                    description = f"#{hex_color}\n恭喜 {message.author.mention} 獲得 2{stickers['logo']}",
+                    description = f"#{hex_color}\n恭喜 {message.author.mention} 獲得 2{stickers['zap']}",
                     color = discord.Colour(int(nice_color,16))
                 )
                 await message.channel.send(embed = embed)
