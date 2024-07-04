@@ -90,8 +90,6 @@ class AdminRole(Build):
                 user_obj = discord.utils.find(lambda u: u.name == name, self.bot.users)
                 if user_obj:
                     return await self.bot.fetch_user(user_obj.id)
-                else:
-                    raise ValueError(f"找不到使用者： {name}")
             for name in target_names:
                 name = name.strip()
                 try:
