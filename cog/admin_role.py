@@ -73,7 +73,7 @@ class AdminRole(Build):
     async def send_dm_gift(
         self,
         ctx,
-        target: discord.Option(str, "發送對象（用半形逗號分隔多個使用者 ID）", required = True),
+        target: discord.Option(str, "發送對象（用半形逗號分隔多個使用者名稱）", required = True),
         gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ] ),
         count: discord.Option(int, "數量")
     ):
@@ -84,15 +84,16 @@ class AdminRole(Build):
                 await ctx.respond("不能發送 0 以下個禮物！", ephemeral = True)
                 return
             manager = ctx.author
-            target_ids = target.split(',')
+            target_names = target.split(',')
             target_users = []
 
-            for target_id in target_ids:
+            for name in target_names:
                 try:
-                    user = await self.bot.fetch_user(int(target_id.strip()))
+                    uid = discord.utils.find(lambda u: u.name == name, self.bot.users).id
+                    user = await self.bot.fetch_user(uid)
                     target_users.append(user)
-                except discord.NotFound:
-                    await ctx.respond(f"找不到使用者 ID： {target_id.strip()}", ephemeral=True)
+                except:
+                    await ctx.respond(f"找不到使用者 ： {name}", ephemeral=True)
                     return
             # 管理者介面提示
             await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
