@@ -76,7 +76,7 @@ class AdminRole(Build):
         target: discord.Option(str, "發送對象（用半形逗號分隔多個使用者名稱）", required = True),
         gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ] ),
         count: discord.Option(int, "數量")
-    ):
+    )-> None:
         if ctx.author.guild_permissions.administrator:
             await ctx.defer()  # 確保機器人請求不會超時
             # 不能發送負數
