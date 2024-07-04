@@ -62,7 +62,7 @@ class CTF(Build):
                     self.add_item(
                         discord.ui.InputText(label = "Flag", placeholder = "Flag", required = True))
 
-                async def callback(self, interaction: discord.Interaction):
+                async def callback(self, interaction: discord.Interaction)-> None:
                     try:
                         await interaction.defer()  # 確保機器人請求不會超時
                         connection, cursor = link_sql() # SQL 會話
