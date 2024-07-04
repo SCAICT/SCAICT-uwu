@@ -64,7 +64,7 @@ class CTF(Build):
 
                 async def callback(self, interaction: discord.Interaction):
                     try:
-                        await ctx.defer()  # 確保機器人請求不會超時
+                        await interaction.defer()  # 確保機器人請求不會超時
                         connection, cursor = link_sql() # SQL 會話
                         question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
                         # startTime
