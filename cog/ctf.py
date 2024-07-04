@@ -62,7 +62,7 @@ class CTF(Build):
                     self.add_item(
                         discord.ui.InputText(label = "Flag", placeholder = "Flag", required = True))
 
-                async def callback(self, interaction: discord.Interaction)-> None:
+                async def callback(self, interaction: discord.Interaction) -> None:
                     try:
                         await interaction.defer()  # 確保機器人請求不會超時
                         connection, cursor = link_sql() # SQL 會話
@@ -130,7 +130,7 @@ class CTF(Build):
                         # 取得使用者輸入的 flag
                         response_flag = self.children[0].value
                         cursor.execute("SELECT flags,case_status FROM ctf_data WHERE id=%s;", (question_id,))
-                        answer,case = cursor.fetchall()[0]
+                        answer, case = cursor.fetchall()[0]
                         # 輸入內容為正確答案
                         if response_flag == answer or (case == 1 and response_flag.lower() == answer.lower()):
                             # 判斷是否重複回答
