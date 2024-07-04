@@ -64,6 +64,7 @@ class CTF(Build):
 
                 async def callback(self, interaction: discord.Interaction):
                     try:
+                        await ctx.defer()  # 確保機器人請求不會超時
                         connection, cursor = link_sql() # SQL 會話
                         question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
                         # startTime
@@ -223,6 +224,7 @@ class CTF(Build):
             await ctx.respond("你沒有權限建立題目喔！", ephemeral = True)
             return
         try:
+            await ctx.defer()  # 確保機器人請求不會超時
             connection, cursor = link_sql() # SQL 會話
             # cursor.execute("USE CTF;")
             while True:
