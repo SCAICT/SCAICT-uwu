@@ -90,8 +90,9 @@ class AdminRole(Build):
             for name in target_names:
                 try:
                     uid = discord.utils.find(lambda u: u.name == name, self.bot.users).id
-                    user = await self.bot.fetch_user(uid)
-                    target_users.append(user)
+                    if uid:
+                        user = await self.bot.fetch_user(uid)
+                        target_users.append(user)
                 except:
                     await ctx.respond(f"找不到使用者 ： {name}", ephemeral=True)
                     return
