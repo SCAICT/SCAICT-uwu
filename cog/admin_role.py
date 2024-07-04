@@ -93,8 +93,11 @@ class AdminRole(Build):
                     if uid:
                         user = await self.bot.fetch_user(uid)
                         target_users.append(user)
-                except:
-                    await ctx.respond(f"找不到使用者 ： {name}", ephemeral=True)
+                except ValueError as e:
+                    await ctx.respond(f"找不到使用者 ： {name}{e}", ephemeral=True)
+                    return
+                except Exception as e:
+                    await ctx.respond(f"找不到使用者 ： {name}{e}", ephemeral=True)
                     return
             # 管理者介面提示
             await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
