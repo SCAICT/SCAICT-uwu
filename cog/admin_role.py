@@ -86,13 +86,17 @@ class AdminRole(Build):
             manager = ctx.author
             target_names = target.split(',')
             target_users = []
-
+            async def fetch_user_by_name(name):
+                user_obj = discord.utils.find(lambda u: u.name == name, self.bot.users)
+                if user_obj:
+                    return await self.bot.fetch_user(user_obj.id)
+                else:
+                    raise ValueError(f"找不到使用者： {name}")
             for name in target_names:
+                name = name.strip()
                 try:
-                    uid = discord.utils.find(lambda u: u.name == name, self.bot.users).id
-                    if uid:
-                        user = await self.bot.fetch_user(uid)
-                        target_users.append(user)
+                    user = await fetch_user_by_name(name)
+                    target_users.append(user)
                 except ValueError as e:
                     await ctx.respond(f"找不到使用者 ： {name}{e}", ephemeral=True)
                     return
