@@ -44,7 +44,7 @@ class AdminRole(Build):
     class Gift(discord.ui.View):
         def __init__(self):
             super().__init__(timeout = None) # timeout of the view must be set to None
-            self.type = None # 存放這個按鈕是送電電點還是抽獎卷
+            self.type = None # 存放這個按鈕是送電電點還是抽獎卷，預設 None ，在創建按鈕時會設定 see view.type = gift_type
             self.count = 0 # 存放這個按鈕是送多少電電點/抽獎卷
 
         # 發送獎勵
@@ -55,7 +55,14 @@ class AdminRole(Build):
             write(uid, bouns_type, current_point + bouns, cursor)
             end(connection, cursor)
             print(f"{uid} {user_name} get {bouns} {bouns_type} by Gift")
-
+        # 存資料庫存取按鈕屬性(包括獎勵類型、數量)
+        def __readDB(self, btnid):
+            connection, cursor = link_sql()
+            cursor.execute(f"SELECT type,count FROM `gift` WHERE `btnID`={btnid}")
+            ret = cursor.fetchall()
+            cursor.execute(f"DELETE FROM `gift` WHERE `btnID`={btnid}")
+            end(connection, cursor)
+            return ret[0][0],ret[0][1]#type,count
         # 點擊後會觸發的動作
         @discord.ui.button(
             label = "領取獎勵",
@@ -63,6 +70,7 @@ class AdminRole(Build):
             custom_id = "get_gift"
         )
         async def get_gift(self, button: discord.ui.Button, ctx) -> None:
+            self.type,self.count=self.__readDB(ctx.message.id)#傳入按鈕的訊息 ID
             self.type = "point" if self.type == "電電點" else "ticket"
             self.__reward(ctx.user.id, ctx.user, self.type, self.count)
             # log
@@ -113,11 +121,16 @@ class AdminRole(Build):
                 color = discord.Color.blurple()
             )
 
+            async def recordDB(btnid, type, count,recipient):
+                connection, cursor = link_sql()
+                cursor.execute(f"INSERT INTO `gift`(`btnID`, `type`, `count`,`recipient`) VALUES (%s,%s,%s,%s)", (btnid, type, count,recipient))
+                end(connection, cursor)
             # DM 一個 Embed 和領取按鈕
             for target_user in target_users:
                 try:
                     await target_user.send(embed = embed)
-                    await target_user.send(view = view)
+                    msg=await target_user.send(view = view)
+                    await recordDB(msg.id, gift_type, count,target_user.name)
                 except discord.Forbidden:
                     await ctx.respond(f"無法向使用者 {target_user.name} 傳送訊息，可能是因為他們關閉了 DM。", ephemeral = True)
         else:
