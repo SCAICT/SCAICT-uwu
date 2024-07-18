@@ -12,3 +12,4 @@ read.txt
 nohup.out
 pointLog.out
 flakLog.out
+.env
