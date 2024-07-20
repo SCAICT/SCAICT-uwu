@@ -13,7 +13,7 @@ PWD = os.getenv('MYSQL_PASSWORD')
 def connect():
     connection = mysql.connector.connect(host=HOSTIP,
                                         port=PORT,
-                                        user=DBUSER,  
+                                        user=DBUSER,
                                         passwd=PWD,
                                         database=DBNAME
     )

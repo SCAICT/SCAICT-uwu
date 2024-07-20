@@ -7,7 +7,7 @@ import discord
 from channel_check import update_channel # update_channel程式從core目錄底下引入
 from channel_check import change_status # update_channel程式從core目錄底下引入
 intt=discord.Intents.default()
-intt.members = True 
+intt.members = True
 intt.message_content = True
 bot = discord.Bot(intents = intt)
 # 變更目前位置到專案根目錄（SCAICT-DISCORD-BOT 資料夾），再找檔案
