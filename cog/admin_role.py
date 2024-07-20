@@ -39,8 +39,8 @@ class AdminRole(Build):
     class Gift(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)  # timeout of the view must be set to None
-            self.__type = None  # 存放這個按鈕是送電電點還是抽獎卷，預設 None ，在創建按鈕時會設定 see view.type = gift_type
-            self.__count = 0  # 存放這個按鈕是送多少電電點/抽獎卷
+            self.type = None  # 存放這個按鈕是送電電點還是抽獎卷，預設 None ，在創建按鈕時會設定 see view.type = gift_type
+            self.count = 0  # 存放這個按鈕是送多少電電點/抽獎卷
 
         # 發送獎勵
         @staticmethod
@@ -67,9 +67,9 @@ class AdminRole(Build):
             custom_id="get_gift"
         )
         async def get_gift(self, button: discord.ui.Button, ctx) -> None:
-            self.__type, self.__count = self.__read_db(ctx.message.id)  # 傳入按鈕的訊息 ID
-            self.__type = "point" if self.__type == "電電點" else "ticket"
-            self.__reward(ctx.user.id, ctx.user, self.__type, self.__count)
+            self.type, self.count = self.__read_db(ctx.message.id)  # 傳入按鈕的訊息 ID
+            self.type = "point" if self.type == "電電點" else "ticket"
+            self.__reward(ctx.user.id, ctx.user, self.type, self.count)
             # log
             button.label = "已領取"  # change the button's label to "已領取"
             button.disabled = True  # 關閉按鈕，避免重複點擊
@@ -111,8 +111,8 @@ class AdminRole(Build):
             await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
             # 產生按鈕物件
             view = self.Gift()
-            view.__type = gift_type
-            view.__count = count
+            view.type = gift_type
+            view.count = count
             embed = discord.Embed(
                 title=f"你收到了 {count} {gift_type}！",
                 description=":gift:",
@@ -121,7 +121,7 @@ class AdminRole(Build):
 
             async def record_db(btn_id, gift_type, count, recipient):
                 connection, cursor = link_sql()
-                cursor.execute(f"INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`) VALUES (%s, %s, %s, %s)", (btn_id, gift_type, count, recipient))
+                cursor.execute("INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`) VALUES (%s, %s, %s, %s)", (btn_id, gift_type, count, recipient))
                 end(connection, cursor)
 
             # DM 一個 Embed 和領取按鈕
