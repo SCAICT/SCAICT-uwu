@@ -14,7 +14,7 @@ class AdminRole(Build):
     # 成員身分組
     class RoleView(discord.ui.View):
         def __init__(self):
-            super().__init__(timeout = None) # Timeout of the view must be set to None
+            super().__init__(timeout=None) # Timeout of the view must be set to None
 
         @discord.ui.button(
             label = "領取身分組",
@@ -38,7 +38,7 @@ class AdminRole(Build):
     # 禮物按鈕
     class Gift(discord.ui.View):
         def __init__(self):
-            super().__init__(timeout = None) # Timeout of the view must be set to None
+            super().__init__(timeout=None) # Timeout of the view must be set to None
             self.type = None # 存放這個按鈕是送電電點還是抽獎券，預設 None ，在建立按鈕時會設定 see view.type = gift_type
             self.count = 0 # 存放這個按鈕是送多少電電點/抽獎券
 
