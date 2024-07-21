@@ -1,9 +1,9 @@
 # Standard imports
-import mysql.connector
 import os
 
 # Third-party imports
 from dotenv import load_dotenv
+import mysql.connector
 
 load_dotenv(f'{os.getcwd()}/.env')
 
