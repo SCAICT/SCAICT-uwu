@@ -14,7 +14,7 @@ class AdminRole(Build):
     # 成員身分組
     class RoleView(discord.ui.View):
         def __init__(self):
-            super().__init__(timeout=None) # Timeout of the view must be set to None
+            super().__init__(timeout = None) # Timeout of the view must be set to None
 
         @discord.ui.button(
             label = "領取身分組",
@@ -38,7 +38,7 @@ class AdminRole(Build):
     # 禮物按鈕
     class Gift(discord.ui.View):
         def __init__(self):
-            super().__init__(timeout=None) # Timeout of the view must be set to None
+            super().__init__(timeout = None) # Timeout of the view must be set to None
             self.type = None # 存放這個按鈕是送電電點還是抽獎券，預設 None ，在建立按鈕時會設定 see view.type = gift_type
             self.count = 0 # 存放這個按鈕是送多少電電點/抽獎券
 
@@ -127,13 +127,13 @@ class AdminRole(Build):
             # DM 一個 Embed 和領取按鈕
             for target_user in target_users:
                 try:
-                    await target_user.send(embed=embed)
+                    await target_user.send(embed = embed)
                     msg = await target_user.send(view=view)
                     await record_db(msg.id, gift_type, count, target_user.name)
                 except discord.Forbidden:
-                    await ctx.respond(f"無法向使用者 {target_user.name} 傳送訊息，可能是因為他們關閉了 DM。", ephemeral=True)
+                    await ctx.respond(f"無法向使用者 {target_user.name} 傳送訊息，可能是因為他們關閉了 DM。", ephemeral = True)
         else:
-            await ctx.respond("你沒有權限使用這個指令！", ephemeral=True)
+            await ctx.respond("你沒有權限使用這個指令！", ephemeral = True)
             return
 
 def setup(bot):
