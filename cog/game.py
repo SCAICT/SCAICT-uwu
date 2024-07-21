@@ -2,9 +2,11 @@
 import json
 import os
 import random
+
 # Third-party imports
 import discord
 from discord.ext import commands
+
 # Local imports
 from cog.core.sql import write
 from cog.core.sql import read

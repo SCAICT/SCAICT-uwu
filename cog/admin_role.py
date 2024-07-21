@@ -14,80 +14,80 @@ class AdminRole(Build):
     # 成員身分組
     class RoleView(discord.ui.View):
         def __init__(self):
-            super().__init__(timeout=None)  # timeout of the view must be set to None
+            super().__init__(timeout = None) # Timeout of the view must be set to None
 
         @discord.ui.button(
-            label="領取身分組",
-            style=discord.ButtonStyle.blurple,
-            emoji="🥇",
-            custom_id="take_the_role"
+            label = "領取身分組",
+            style = discord.ButtonStyle.blurple,
+            emoji = "🥇",
+            custom_id = "take_the_role"
         )
         async def button_callback_1(self, button, interaction) -> None:
-            role = discord.utils.get(interaction.guild.roles, name="ADMIN")
+            role = discord.utils.get(interaction.guild.roles, name = "ADMIN")
             await interaction.user.add_roles(role)
-            await interaction.response.send_message("已領取身分組 `ヾ(≧▽≦*)o`", ephemeral=True)
+            await interaction.response.send_message("已領取身分組 `ヾ(≧▽≦*)o`", ephemeral = True)
 
     @discord.slash_command()
     async def create_role_button(self, ctx) -> None:
         if ctx.author.guild_permissions.administrator:
-            embed = discord.Embed(color=0x16b0fe)
-            embed.set_thumbnail(url="https://emojiisland.com/cdn/shop/products/Nerd_with_Glasses_Emoji_2a8485bc-f136-4156-9af6-297d8522d8d1_large.png?v=1571606036")
-            embed.add_field(name="哈囉 點一下", value="  ", inline=False)
-            await ctx.respond(embed=embed, view=self.RoleView())
+            embed = discord.Embed(color = 0x16b0fe)
+            embed.set_thumbnail(url = "https://emojiisland.com/cdn/shop/products/Nerd_with_Glasses_Emoji_2a8485bc-f136-4156-9af6-297d8522d8d1_large.png?v=1571606036")
+            embed.add_field(name = "哈囉 點一下", value = "  ", inline = False)
+            await ctx.respond(embed = embed, view = self.RoleView())
 
     # 禮物按鈕
     class Gift(discord.ui.View):
         def __init__(self):
-            super().__init__(timeout=None)  # timeout of the view must be set to None
-            self.type = None  # 存放這個按鈕是送電電點還是抽獎卷，預設 None ，在創建按鈕時會設定 see view.type = gift_type
-            self.count = 0  # 存放這個按鈕是送多少電電點/抽獎卷
+            super().__init__(timeout = None) # Timeout of the view must be set to None
+            self.type = None # 存放這個按鈕是送電電點還是抽獎券，預設 None ，在建立按鈕時會設定 see view.type = gift_type
+            self.count = 0 # 存放這個按鈕是送多少電電點/抽獎券
 
         # 發送獎勵
         @staticmethod
-        def __reward(uid, user_name, bonus_type, bonus):
+        def __reward(uid: int, username: str, bonus_type: str, bonus: int) -> None:
             connection, cursor = link_sql()
             current_point = read(uid, bonus_type, cursor)
             write(uid, bonus_type, current_point + bonus, cursor)
             end(connection, cursor)
-            print(f"{uid} {user_name} get {bonus} {bonus_type} by Gift")
+            print(f"{uid} {username} get {bonus} {bonus_type} by Gift")
 
         # 存資料庫存取按鈕屬性(包括獎勵類型、數量)
-        def __read_db(self, btn_id):
+        def __read_db(self, btn_id: int):
             connection, cursor = link_sql()
             cursor.execute(f"SELECT type, count FROM `gift` WHERE `btnID`={btn_id}")
             ret = cursor.fetchall()
             cursor.execute(f"DELETE FROM `gift` WHERE `btnID`={btn_id}")
             end(connection, cursor)
-            return ret[0][0], ret[0][1]  # type, count
+            return ret[0][0], ret[0][1] # type, count
 
         # 點擊後會觸發的動作
         @discord.ui.button(
-            label="領取獎勵",
-            style=discord.ButtonStyle.success,
-            custom_id="get_gift"
+            label = "領取獎勵",
+            style = discord.ButtonStyle.success,
+            custom_id = "get_gift"
         )
         async def get_gift(self, button: discord.ui.Button, ctx) -> None:
-            self.type, self.count = self.__read_db(ctx.message.id)  # 傳入按鈕的訊息 ID
+            self.type, self.count = self.__read_db(ctx.message.id) # 傳入按鈕的訊息 ID
             self.type = "point" if self.type == "電電點" else "ticket"
             self.__reward(ctx.user.id, ctx.user, self.type, self.count)
             # log
-            button.label = "已領取"  # change the button's label to "已領取"
-            button.disabled = True  # 關閉按鈕，避免重複點擊
-            await ctx.response.edit_message(view=self)
+            button.label = "已領取" # Change the button's label to "已領取"
+            button.disabled = True # 關閉按鈕，避免重複點擊
+            await ctx.response.edit_message(view = self)
 
-    @discord.slash_command(name="發送禮物", description="dm_gift")
+    @discord.slash_command(name = "發送禮物", description = "dm_gift")
     async def send_dm_gift(
         self,
         ctx,
-        target_str: discord.Option(str, "發送對象（用半形逗號分隔多個使用者名稱）", required=True),
-        gift_type: discord.Option(str, "送禮內容", choices=["電電點", "抽獎券"]),
+        target_str: discord.Option(str, "發送對象（用半形逗號分隔多個使用者名稱）", required = True),
+        gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ] ),
         count: discord.Option(int, "數量")
     ) -> None:
         if ctx.author.guild_permissions.administrator:
-            await ctx.defer()  # 確保機器人請求不會超時
+            await ctx.defer() # 確保機器人請求不會超時
             # 不能發送負數
             if count <= 0:
-                await ctx.respond("不能發送 0 以下個禮物！", ephemeral=True)
+                await ctx.respond("不能發送 0 以下個禮物！", ephemeral = True)
                 return
             manager = ctx.author
             target_usernames = target_str.split(',')
@@ -104,7 +104,7 @@ class AdminRole(Build):
                     user = await fetch_user_by_name(username)
                     target_users.append(user)
                 except (ValueError, Exception) as e:
-                    await ctx.respond(f"找不到使用者 ： {username}{e}", ephemeral=True)
+                    await ctx.respond(f"找不到使用者 ： {username}{e}", ephemeral = True)
                     return
 
             # 管理者介面提示
@@ -114,12 +114,12 @@ class AdminRole(Build):
             view.type = gift_type
             view.count = count
             embed = discord.Embed(
-                title=f"你收到了 {count} {gift_type}！",
-                description=":gift:",
-                color=discord.Color.blurple()
+                title = f"你收到了 {count} {gift_type}！",
+                description = ":gift:",
+                color = discord.Color.blurple()
             )
 
-            async def record_db(btn_id, gift_type, count, recipient):
+            async def record_db(btn_id: int, gift_type: str, count: int, recipient: str) -> None:
                 connection, cursor = link_sql()
                 cursor.execute("INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`) VALUES (%s, %s, %s, %s)", (btn_id, gift_type, count, recipient))
                 end(connection, cursor)

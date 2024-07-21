@@ -3,9 +3,11 @@
 from datetime import datetime
 import json
 import os
+
 # Third-party imports
 import discord
 from discord.ext import commands
+
 # Local imports
 from cog.core.sql import write
 from cog.core.sql import read
@@ -13,12 +15,10 @@ from cog.core.sql import link_sql
 from cog.core.sql import end
 
 def get_channels(): # 取得特殊用途頻道的清單，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
-
     with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
         return json.load(file)["SCAICT-alpha"]["channel"]
 
 class Charge(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
         self.embed = None

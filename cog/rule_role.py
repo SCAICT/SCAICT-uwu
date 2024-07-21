@@ -1,11 +1,11 @@
 # Third-party imports
 import discord
 from discord.ext import commands
+
 # Local imports
 from build.build import Build
 
 class RuleRoles(Build):
-
     # 當使用者按下表情符號 -> 領取身分組
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):

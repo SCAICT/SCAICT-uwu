@@ -1,15 +1,15 @@
 # Standard imports
 import asyncio
+
 # Third-party imports
 import discord
 from discord.ext import commands
+
 # Local imports
 from build.build import Build
 
 # ticket 頻道
-
 class Ticket(Build):
-
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(self.TicketView())

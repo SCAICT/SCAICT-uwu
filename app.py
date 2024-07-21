@@ -2,9 +2,11 @@
 import json
 import os
 import random
-# Third-party libraries
+
+# Third-party imports
 from flask import Flask, redirect, request, session, url_for, render_template, send_from_directory
 import requests
+
 # Local imports
 from cog.core.sql import write
 from cog.core.sql import read

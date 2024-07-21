@@ -52,7 +52,7 @@ async def change_status(bot):
     announcements = [
         "SCAICT.org",
         "今天 /charge 了嗎？",
-        "要不要一起猜顏色"
+        "要不要一起猜顏色",
         "要不要一起猜拳？",
         "debug",
     ]

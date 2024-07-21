@@ -3,7 +3,6 @@ from .sql import link_sql
 from .sql import end
 
 # 初始化資料庫程式，從新增資料表開始
-
 def create_ctf():
     connection, cursor = link_sql()
     cursor.execute("USE CTF") # 必須先去CREATE DATABASE CTF
