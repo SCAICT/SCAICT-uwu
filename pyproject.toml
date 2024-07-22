@@ -2,7 +2,7 @@
 name = "scaict-uwu"
 # PEP 440
 # @see https://sethmlarson.dev/pep-440
-version = "0.1.7.dev0"
+version = "0.1.7"
 description = "A cat living in SCAICT Discord server."
 readme.file = "README.md"
 readme.content-type = "text/markdown"
