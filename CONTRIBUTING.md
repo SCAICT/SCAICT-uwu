@@ -12,6 +12,9 @@ requests in the correct branch.
 
 #### Indentation
 
+For TOML files, lines should be indented with 1 tab character per indenting
+level.
+
 For JSON and Python files, lines should be indented with 4 whitespace characters
 per indenting level.
 
