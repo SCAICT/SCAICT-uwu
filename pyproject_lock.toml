@@ -6,7 +6,7 @@ version = "0.1.8.dev0"
 description = "A cat living in SCAICT Discord server."
 readme.file = "README.md"
 readme.content-type = "text/markdown"
-requires-python = "== 3.11"
+requires-python = "== 3.11.*"
 license.file = "LICENSE"
 # Use Git committer/author name here
 authors = [
