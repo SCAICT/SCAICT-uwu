@@ -30,3 +30,7 @@ dependencies = [
 	"python-dotenv == 1.0.1",
 	"requests == 2.32.3",
 ]
+optional-dependencies.dev = [
+	"pylint == 3.2.6",
+	"pytest == 8.3.1",
+]
