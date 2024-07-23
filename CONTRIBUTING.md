@@ -116,7 +116,13 @@ python_module.py
 CONST = 1
 
 class ClassName:
+    """
+    Class docstring.
+    """
     def method_name(self, arg_name: int) -> int:
+        """
+        Method docstring.
+        """
         print(arg_name)
 
         return arg_name
@@ -150,3 +156,16 @@ INSERT INTO user (uid) VALUE (6856)
 ```sql
 UPDATE game SET game_seq = game_seq + 1
 ```
+
+## Documentation of external packages
+
+* flask: <https://flask.palletsprojects.com>
+* mysql-connector-python: <https://dev.mysql.com/doc/connector-python/en/>
+* py-cord: <https://docs.pycord.dev>
+* python-dotenv: <https://saurabh-kumar.com/python-dotenv/>
+* requests: <https://requests.readthedocs.io>
+
+### Development dependencies
+
+* pylint: <https://pylint.readthedocs.io>
+* pytest: <https://docs.pytest.org>
