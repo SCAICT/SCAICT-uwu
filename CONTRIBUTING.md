@@ -116,6 +116,12 @@ python_module.py
 ```
 
 ```py
+"""
+Summary of module.
+
+Extended description.
+"""
+
 # Standard imports
 import standard_import
 
