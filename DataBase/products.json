@@ -1,22 +1,62 @@
 {
     "products": [
         {
+            "name": "中電會貼紙",
+            "id": "KawaiiSticker",
+            "description": "可愛版中電會 Logo",
+            "price": 50,
+            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/KawaiiLogo.webp",
+            "stock": 500,
+            "category": "\u5be6\u9ad4\u5468\u908a",
+            "pay": "point"
+        },
+        {
+            "name": "中電喵貼紙",
+            "id": "uwuSticker",
+            "description": "uwu",
+            "price": 50,
+            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/scaict-uwu.webp",
+            "stock": 500,
+            "category": "\u5be6\u9ad4\u5468\u908a",
+            "pay": "point"
+        },
+        {
+            "name": "中電喵雷射貼模貼紙",
+            "id": "uwuLazerSticker",
+            "description": "閃亮的中電喵",
+            "price": 333,
+            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/scaict-uwu.webp",
+            "stock": 36,
+            "category": "\u5be6\u9ad4\u5468\u908a",
+            "pay": "point"
+        },
+        {
             "name": "中電喵便利貼",
             "id": "stickNotes",
             "description": "中電喵便利貼",
-            "price": 1500,
-            "image": "https://emtech.cc/notes_137680874794255200.png",
-            "stock": 10,
+            "price": 500,
+            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/sticknote.webp",
+            "stock": 20,
+            "category": "\u5be6\u9ad4\u5468\u908a",
+            "pay": "point"
+        },
+        {
+            "name": "中電會筆記本",
+            "id": "notebook",
+            "description": "16 頁牛皮紙筆記本",
+            "price": 500,
+            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/notebook.webp",
+            "stock": 100,
             "category": "\u5be6\u9ad4\u5468\u908a",
             "pay": "point"
         },
         {
             "name": "8GB USB",
             "id": "usb",
-            "description": "8GB \u7684 USB",
+            "description": "插件。插進去就會發光",
             "price": 2000,
-            "image": "https://cdn-icons-png.flaticon.com/128/2014/2014999.png",
-            "stock": 5,
+            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/usb.webp",
+            "stock": 9,
             "category": "\u5be6\u9ad4\u5468\u908a",
             "pay": "point"
         },
