@@ -1,4 +1,7 @@
 [project]
+# Only use lowercase letters and hyphens here
+# @see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#name
+# @see https://packaging.python.org/en/latest/specifications/name-normalization/
 name = "scaict-uwu"
 # PEP 440
 # @see https://sethmlarson.dev/pep-440
