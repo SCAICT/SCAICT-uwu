@@ -1,6 +1,6 @@
 /** @format */
 
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap");
+@import url(https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap);
 
 * {
     margin: 0;
@@ -12,8 +12,15 @@ body {
     font-optical-sizing: auto;
     position: relative;
     background: #000;
-    color: #fff;
     min-height: 100svh;
+}
+a,
+body {
+    color: #fff;
+}
+.avatar,
+.info {
+    background: #fff;
 }
 .logo {
     height: 3rem;
@@ -25,8 +32,8 @@ h1 + p {
     margin-bottom: 2rem;
     font-size: 1.3rem;
 }
-nav,
-footer {
+footer,
+nav {
     display: flex;
     align-items: center;
     position: fixed;
@@ -39,6 +46,10 @@ nav {
     border-radius: 0 0 0 3rem;
     font-size: 1.25rem;
     padding: 1.5rem 1.5rem 1.5rem 4rem;
+}
+.info h3,
+footer {
+    font-size: 1.5rem;
 }
 nav a {
     margin-right: 4rem;
@@ -55,27 +66,26 @@ footer {
     border-radius: 0 3rem 0 0;
     flex-direction: column;
     gap: 2rem;
-    font-size: 1.5rem;
     padding-block: 4rem;
 }
-nav a,
-footer a {
+footer a,
+nav a {
     transition: transform 0.3s ease-out;
 }
-nav a:hover,
-footer a:hover {
+.product-button:hover,
+button:hover,
+footer a:hover,
+nav a:hover {
     transform: scale(1.1);
 }
 .avatar {
     border-radius: 50%;
     height: 3.5rem;
     width: 3.5rem;
-    background: #fff;
     color: transparent;
     margin-inline: 1rem;
 }
 a {
-    color: #fff;
     text-decoration: none;
 }
 .welcome {
@@ -103,13 +113,18 @@ article {
     border-radius: 2rem;
     padding: 0.5rem;
 }
-.product-img {
-    width: 100%;
+.product-button,
+.product-img,
+button {
     display: flex;
     justify-content: center;
+}
+.product-img {
+    width: 100%;
     align-items: center;
     padding: 2rem;
     flex-grow: 1;
+    height: 1rem;
 }
 .product-img img {
     width: calc(100% - 4rem);
@@ -117,37 +132,40 @@ article {
     object-fit: contain;
 }
 .info {
-    background: #fff;
     color: #000;
     border-radius: 1.5rem;
     padding: 1.5rem;
 }
-.info h3 {
-    font-size: 1.5rem;
-}
 .info p {
     font-size: 1rem;
     margin-bottom: 0.8rem;
+}
+.confirm-select button,
+.product-button,
+button {
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    height: 3rem;
+    padding: 0 1rem;
+    transition: transform 0.3s ease-out;
 }
 .info div {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
 }
-button,
-.product-button {
+.product-button,
+button {
     background: #e9aa11;
-    color: #fff;
     border: none;
     border-radius: 1.5rem;
-    font-size: 1.25rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    height: 3rem;
-    padding: 0 1rem;
-    transition: transform 0.3s ease-out;
+}
+.confirm,
+.confirm-select {
+    justify-content: center;
+    display: flex;
 }
 .confirm {
     position: fixed;
@@ -156,12 +174,9 @@ button,
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0);
-    /* display: none; */
-    justify-content: center;
     align-items: center;
     transition: background-color 0.3s ease-out;
     pointer-events: none;
-    display: flex;
 }
 .confirm.active {
     background-color: rgba(0, 0, 0, 0.5);
@@ -173,65 +188,55 @@ button,
     border-radius: 1rem;
     text-align: center;
     scale: 0;
-    transition: scale 0.3s ease;
+    transition: scale 0.3s;
 }
 .confirm.active .content {
     scale: 1;
 }
 .warning {
-    color: #f00;
+    color: red;
 }
 .content span {
-    font-weight: bold;
+    font-weight: 700;
 }
 .confirm-select {
-    display: flex;
-    justify-content: center;
     gap: 1rem;
     margin-top: 2rem;
 }
 .confirm-select button {
     background: #189f49;
-    color: #fff;
     border: none;
     border-radius: 1rem;
-    font-size: 1.25rem;
-    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 3rem;
-    padding: 0 1rem;
-    transition: transform 0.3s ease-out;
 }
 .confirm-select button:first-child {
-    background: rgb(116, 116, 116);
-}
-button:hover,
-.product-button:hover {
-    transform: scale(1.1);
+    background: #747474;
 }
 .outStock {
-    background: rgb(123, 123, 123);
+    background: #7b7b7b;
     cursor: not-allowed;
 }
 .footer {
     margin-top: 4rem;
     text-align: center;
 }
-
-.zap{
+.zap {
     width: 1em;
     vertical-align: middle;
 }
-
 @media (max-width: 40em) {
+    footer,
+    section {
+        gap: 1rem;
+    }
     h1 {
         font-size: 2.5rem;
     }
     footer {
-        padding: 2rem  1rem;
-        gap: 1rem;border-radius: 0 1.5rem 0 0 ;
+        padding: 2rem 1rem;
+        border-radius: 0 1.5rem 0 0;
     }
     nav a {
         margin-right: 2rem;
@@ -244,15 +249,11 @@ button:hover,
     nav > :last-child {
         margin-right: 0;
     }
-
     .welcome {
         font-size: 1.5rem;
     }
     main {
         padding: 5rem 2rem 2rem;
-    }
-    section {
-        gap: 1rem;
     }
     article {
         width: 15rem;
@@ -268,17 +269,14 @@ button:hover,
         flex-direction: column;
         align-items: flex-start;
     }
-    button,
-    .product-button {
+    .confirm-select button,
+    .product-button,
+    button {
         font-size: 1rem;
         height: 2.5rem;
     }
     .confirm .content {
         padding: 1rem;
-    }
-    .confirm-select button {
-        font-size: 1rem;
-        height: 2.5rem;
     }
     .footer {
         margin-top: 2rem;
