@@ -12,6 +12,9 @@ requests in the correct branch.
 
 #### Indentation
 
+For TOML files, lines should be indented with 1 tab character per indenting
+level.
+
 For JSON and Python files, lines should be indented with 4 whitespace characters
 per indenting level.
 
@@ -113,13 +116,61 @@ python_module.py
 ```
 
 ```py
-CONST = 1
+"""
+Summary of module.
+
+Extended description.
+"""
+
+# Standard imports
+import standard_import
+
+# Third-party imports
+import third_party_import
+
+# Local imports
+import local_import
 
 class ClassName:
-    def method_name(self, arg_name: int) -> int:
-        print(arg_name)
+    """
+    Summary of class.
 
-        return arg_name
+    Extended description.
+
+    Attributes:
+        CONST_NAME (int): Description of constant.
+        attr_name (int): Description of attribute.
+    """
+
+    CONST_NAME = 1
+    """
+    CONST_NAME (int): Description of constant.
+    """
+
+    attr_name = 1
+    """
+    attr_name (int): Description of attribute.
+    """
+
+    def method_name(self, param_name: int) -> int:
+        """
+        Summary of method.
+
+        Extended description.
+
+        Parameters:
+            param_name (int): Description of parameter.
+
+        Returns:
+            int: Description of return value.
+
+        Raises:
+            KeyError: Raises an exception.
+        """
+
+        print(param_name)
+
+        return param_name
 ```
 
 See
@@ -150,3 +201,16 @@ INSERT INTO user (uid) VALUE (6856)
 ```sql
 UPDATE game SET game_seq = game_seq + 1
 ```
+
+## Documentation of external packages
+
+* flask: <https://flask.palletsprojects.com>
+* mysql-connector-python: <https://dev.mysql.com/doc/connector-python/en/>
+* py-cord: <https://docs.pycord.dev>
+* python-dotenv: <https://saurabh-kumar.com/python-dotenv/>
+* requests: <https://requests.readthedocs.io>
+
+### Development dependencies
+
+* pylint: <https://pylint.readthedocs.io>
+* pytest: <https://docs.pytest.org>

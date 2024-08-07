@@ -1,12 +1,15 @@
 [project]
+# Only use lowercase letters and hyphens here
+# @see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#name
+# @see https://packaging.python.org/en/latest/specifications/name-normalization/
 name = "scaict-uwu"
 # PEP 440
 # @see https://sethmlarson.dev/pep-440
-version = "0.1.7"
+version = "0.1.8"
 description = "A cat living in SCAICT Discord server."
 readme.file = "README.md"
 readme.content-type = "text/markdown"
-requires-python = "== 3.11"
+requires-python = "== 3.11.*"
 license.file = "LICENSE"
 # Use Git committer/author name here
 authors = [
@@ -23,10 +26,16 @@ classifiers = [
 ]
 urls.repository = "https://github.com/SCAICT/SCAICT-uwu.git"
 urls.issues = "https://github.com/SCAICT/SCAICT-uwu/issues"
+# Lock file: requirements.txt
 dependencies = [
 	"flask == 3.0.3",
-	"mysql-connector-python == 8.4.0",
-	"py-cord == 2.5.0",
+	"mysql-connector-python == 9.0.0",
+	"py-cord == 2.6.0",
 	"python-dotenv == 1.0.1",
 	"requests == 2.32.3",
+]
+# Lock file: requirements_dev.txt
+optional-dependencies.dev = [
+	"pylint == 3.2.6",
+	"pytest == 8.3.2",
 ]

@@ -1,15 +1,41 @@
-# Ignore token
-# 如果你的token.json已經被追蹤可以執行:
-# 1. git rm --cached token.json
-# 2. git update-index --assume-unchanged token.json
-# 這兩個指令
-token.json
-read.txt
+# Editors
+*~
+\#*#
+.#*
+.*.swp
+.project
+*.orig
+## Visual Studio Code
+*.vscode/
 
-/.vscode
+# Install & usage
+## Python
 **/__pycache__
-**/test.py
+*.egg-info/
+## Linux
+flakLog.out
 nohup.out
 pointLog.out
-flakLog.out
+## Configuration files
 .env
+### Ignore token
+### 如果你的token.json已經被追蹤可以執行:
+### 1. git rm --cached token.json
+### 2. git update-index --assume-unchanged token.json
+### 這兩個指令
+token.json
+
+# Testing
+**/test.py
+
+# Operating systems
+## Mac OS X
+.DS_Store
+## Windows
+Thumbs.db
+
+# Misc
+read.txt
+
+# Docker
+docker-compose.override.yml
