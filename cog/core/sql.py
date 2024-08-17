@@ -18,7 +18,7 @@ def link_sql():
     # cursor.execute(f"UPDATE {table} SET {user_prop} = {user_prop}{op} ;")
     # end(connection.cursor)
 
-def write(user_id, user_prop: str, value, cursor, table = "USER"):
+def write(user_id, user_prop: str, value, cursor, table = "user"):
     """
     欲變更的使用者、屬性、修改值、欲修改資料表（預設USER,option）
     """
