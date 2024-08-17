@@ -1,7 +1,7 @@
 [
 	{
 		"name": "user",
-		"comment": "",
+		"comment": "The user table contains basic user information, user properties, etc.",
 		"columns": [
 			{
 				"name": "uid",
