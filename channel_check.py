@@ -20,7 +20,7 @@ def open_json():
 
 def get_total_points():
     connection, cursor = link_sql()
-    cursor.execute("SELECT SUM(point) FROM `USER`")
+    cursor.execute("SELECT SUM(point) FROM `user`")
     points = cursor.fetchone()[0]
     end(connection, cursor)
     return points

@@ -29,12 +29,12 @@ cursor.execute("\
 ")
 
 cursor.execute("\
-    CREATE TABLE `commentpoints` (\
+    CREATE TABLE `comment_points` (\
         seq INT AUTO_INCREMENT PRIMARY KEY,\
         uid BIGINT NOT NULL,\
         times INT NOT NULL DEFAULT 2,\
         next_reward INT NOT NULL DEFAULT 1,\
-        FOREIGN KEY (`uid`) REFERENCES USER(`uid`) ON DELETE CASCADE\
+        FOREIGN KEY (`uid`) REFERENCES user (`uid`) ON DELETE CASCADE\
     )\
 ")
 
@@ -50,7 +50,6 @@ cursor.execute("\
 ")
 
 cursor.execute("\
-    USE ctf;\
     CREATE TABLE `data` (\
         id INT NOT NULL,\
         flags VARCHAR(255) NOT NULL,\
@@ -62,7 +61,7 @@ cursor.execute("\
         end_time DATETIME NOT NULL,\
         title VARCHAR(255) NOT NULL,\
         tried int NOT NULL DEFAULT 0,\
-        PRIMARY KEY(`id`)\
+        PRIMARY KEY (`id`)\
     )\
     CREATE TABLE `history` (\
         data_id BIGINT,\
@@ -70,7 +69,7 @@ cursor.execute("\
         count INT NOT NULL DEFAULT 0,\
         soived TINYINT(1) NOT NULL DEFAULT 0\
     )\
-    FOREIGN KEY (data_id) REFERENCES data(id)\
+    FOREIGN KEY (data_id) REFERENCES data (id)\
     );\
 ")
 

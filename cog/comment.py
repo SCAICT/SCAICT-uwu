@@ -57,8 +57,8 @@ def reset(message, now, cursor):
     try:
         write(user_id, "today_comments", 0, cursor) # 歸零發言次數
         write(user_id, "last_comment", str(now), cursor)
-        write(user_id, "times", 2, cursor, table = "commentpoints") # 初始化達標後能獲得的電電點
-        write(user_id, "next_reward", 1, cursor, table = "commentpoints")
+        write(user_id, "times", 2, cursor, table = "comment_points") # 初始化達標後能獲得的電電點
+        write(user_id, "next_reward", 1, cursor, table = "comment_points")
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
         print(f"Error resetting user {user_id}: {exception}")
@@ -67,12 +67,12 @@ def reward(message, cursor):
     user_id = message.author.id
     user_display_name = message.author
     try:
-        # 讀USER資料表的東西
+        # 讀user資料表的東西
         today_comments = read(user_id, "today_comments", cursor)
         point = read(user_id, "point", cursor)
-        # 讀CommentPoints 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
-        next_reward = read(user_id, "next_reward", cursor, table = "commentpoints")
-        times = read(user_id, "times", cursor, table = "commentpoints")
+        # 讀comment_points 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
+        next_reward = read(user_id, "next_reward", cursor, table = "comment_points")
+        times = read(user_id, "times", cursor, table = "comment_points")
 
         today_comments += 1
 
@@ -81,8 +81,8 @@ def reward(message, cursor):
             next_reward += times ** 2
             times += 1
             write(user_id, "point", point, cursor)
-            write(user_id, "next_reward", next_reward, cursor, table = "commentpoints")
-            write(user_id, "times", times, cursor, table = "commentpoints")
+            write(user_id, "next_reward", next_reward, cursor, table = "comment_points")
+            write(user_id, "times", times, cursor, table = "comment_points")
 
             # 紀錄log
             print(f"{user_id}, {user_display_name} Get 2 point by comment {datetime.now()}")
@@ -127,10 +127,10 @@ class Comment(commands.Cog):
         try:
             # 新增該user的資料表
             if not user_id_exists(user_id, "user", cursor):
-                # 該 uesr id 不在USER資料表內，插入該筆使用者資料
+                # 該 uesr id 不在user資料表內，插入該筆使用者資料
                 insert_user(user_id, "user", cursor)
-            if not user_id_exists(user_id, "commentpoints", cursor):
-                insert_user(user_id, "commentpoints", cursor)
+            if not user_id_exists(user_id, "comment_points", cursor):
+                insert_user(user_id, "comment_points", cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error: {exception}")
