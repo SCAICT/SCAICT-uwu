@@ -278,7 +278,7 @@
                     .st6 {
                         fill: #ff6344;
                     }
-
+                    /*切換模式(單抽/十連)會把 3,4,5,6 顏色換掉 */
                     .st7 {
                         fill: #4d5967;
                     }
@@ -438,6 +438,10 @@
                     " 🎟️";
             });
     </script>
+    <!-- 隱藏表單，switch-btn裡面操控它的值 -->
+    <form  id="hiddenForm" style="display: none;">
+        <input type="hidden" name="selection" id="repeatLottory">
+    </form>
     <script src="/static/switch-btn.js"></script>
 </body>
 

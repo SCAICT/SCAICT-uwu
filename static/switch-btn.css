@@ -5,7 +5,7 @@
 	text-align: center;
 	position: absolute;
 	left: 50%;
-	top: 50%;
+	top: 25%;
 	transform: translate3D(-50%, -50%, 0);
 	will-change: transform;
 	z-index: 197 !important;
@@ -26,6 +26,7 @@
 	text-transform: uppercase;
 	letter-spacing: 5px;
 	padding-bottom: 1px;
+	font-weight: 700;
 }
 
 .switch-button-case:hover {
