@@ -237,7 +237,6 @@ def roll_slot():
     product = next((p for p in products["products"] if p["id"] == "slot"), None)
     # product 參考內容 {'name': '貓咪機', 'id': 'slot', 'description': '來抽獎吧', 'price': 1, 'image': 'https://cdn-icons-png.flaticon.com/128/1055/1055823.png', 'stock': 9999, 'category': '遊戲', 'pay': 'ticket', 'url': 'slot'}
     # 用來確認商品是否存在和價格用的
-    
     # 讀使用者的抽獎券和電電點
     user_tickets = read(discord_user["id"], "ticket", cursor)
     user_points = read(discord_user["id"], "point", cursor)
