@@ -217,42 +217,52 @@ def buy_product():
         json.dump(products, file)
     return "購買成功！"
 
-@app.route("/rollSlot", methods = [ "GET" ])
+@app.route("/rollSlot", methods = [ "POST" ])
 def roll_slot():
+    data = request.json
+    num_draws = int(data.get("numDraws", 1))  # 預設為 1 次抽獎
     connection, cursor = link_sql() # SQL 會話
     discord_user = session.get("user")
     if not discord_user:
         return "請重新登入"
 
-    # user = users.get(discord_user["id"])
+    # # user = users.get(discord_user["id"])
     if not user_id_exists(discord_user["id"], "USER", cursor):
         end(connection, cursor)
         return "使用者不存在"
     with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding = "utf-8") as file:
         products = json.load(file)
     # Check in the json array products.products for the product with the id
-    product = next((p for p in products["products"] if p["id"] == "slot"), None)
 
+    product = next((p for p in products["products"] if p["id"] == "slot"), None)
+    # product 參考內容 {'name': '貓咪機', 'id': 'slot', 'description': '來抽獎吧', 'price': 1, 'image': 'https://cdn-icons-png.flaticon.com/128/1055/1055823.png', 'stock': 9999, 'category': '遊戲', 'pay': 'ticket', 'url': 'slot'}
+    # 用來確認商品是否存在和價格用的
+    
     # 讀使用者的抽獎券和電電點
     user_tickets = read(discord_user["id"], "ticket", cursor)
     user_points = read(discord_user["id"], "point", cursor)
-    if user_tickets < product["price"]:
+    if user_tickets < product["price"]*num_draws:
         end(connection, cursor)
-        return "抽獎券不足"
+        EasterEgg="這位好駭客，burp suite 是不能突破我的" if num_draws!=1 and num_draws!=10 else ""
+        return "抽獎券不足\n"+EasterEgg
     with open(f"{os.getcwd()}/DataBase/slot.json", "r", encoding = "utf-8") as file:
         slot_json = json.load(file)
-    result = random.choices(
-        population = slot_json["population"],
-        weights = slot_json["weights"],
-        k = 1
-    )[0]
-    user_points += slot_json["get"][result]
-    user_tickets -= product["price"]
+    for _ in range(num_draws):
+        result = random.choices(
+            population = slot_json["population"],
+            weights = slot_json["weights"],
+            k = 1
+        )[0]
+        user_points += slot_json["get"][result]
+        user_tickets -= product["price"]
     # 更新抽獎券和電電點
+    if not discord_user:
+        return "請重新登入"
     write(discord_user["id"], "ticket", user_tickets, cursor)
     write(discord_user["id"], "point", user_points, cursor)
     end(connection, cursor)
-    return [ "抽獎成功", slot_json["get"][result], result ]
+    EasterEgg=f"你是好駭客，破例讓你連抽 {num_draws} 次" if num_draws!=1 and num_draws!=10 else ""#給用 burp suite 偷改前端表單的人一點驚喜
+    return [ EasterEgg+"抽獎成功", slot_json["get"][result], result ]
 
 # GitHub login
 
