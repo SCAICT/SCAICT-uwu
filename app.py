@@ -243,8 +243,8 @@ def roll_slot():
     user_points = read(discord_user["id"], "point", cursor)
     if user_tickets < product["price"]*num_draws:
         end(connection, cursor)
-        EasterEgg="這位好駭客，burp suite 是不能突破我的" if num_draws!=1 and num_draws!=10 else ""
-        return "抽獎券不足\n"+EasterEgg
+        easter_egg="這位好駭客，burp suite 是不能突破我的" if num_draws not in (1,10) else ""
+        return "抽獎券不足\n"+easter_egg
     with open(f"{os.getcwd()}/DataBase/slot.json", "r", encoding = "utf-8") as file:
         slot_json = json.load(file)
     for _ in range(num_draws):
@@ -261,8 +261,8 @@ def roll_slot():
     write(discord_user["id"], "ticket", user_tickets, cursor)
     write(discord_user["id"], "point", user_points, cursor)
     end(connection, cursor)
-    EasterEgg=f"你是好駭客，破例讓你連抽 {num_draws} 次" if num_draws!=1 and num_draws!=10 else ""#給用 burp suite 偷改前端表單的人一點驚喜
-    return [ EasterEgg+"抽獎成功", slot_json["get"][result], result ]
+    easter_egg=f"你是好駭客，破例讓你連抽 {num_draws} 次" if num_draws not in (1,10) else ""#給用 burp suite 偷改前端表單的人一點驚喜
+    return [ easter_egg+"抽獎成功", slot_json["get"][result], result ]
 
 # GitHub login
 
