@@ -278,7 +278,7 @@
                     .st6 {
                         fill: #ff6344;
                     }
-                    /*切換模式(單抽/十連)會把 3,4,5,6 顏色換掉 */
+                    /*切換模式(單抽/十連)會把 3,4,5,6 顏色換掉，這裡只是預設顏色，不會被顯示出來 */
                     .st7 {
                         fill: #4d5967;
                     }
@@ -357,11 +357,13 @@
                 ).style.backgroundPositionY = `0`;
                 main.classList.add("rolling");
                 main.classList.add("fast-rolling");
+                const numDraws = document.getElementById('numDraws').value;
                 fetch("/rollSlot", {
-                    method: "GET",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    body: JSON.stringify({ numDraws: numDraws })
                 })
                     // get response in plain txt
                     .then(response => response.text())
@@ -440,9 +442,10 @@
     </script>
     <!-- 隱藏表單，switch-btn裡面操控它的值 -->
     <form  id="hiddenForm" style="display: none;">
-        <input type="hidden" name="selection" id="repeatLottory">
+        <input type="hidden" name="selection" id="numDraws">
     </form>
     <script src="/static/switch-btn.js"></script>
+    <script>switchLeft()</script>
 </body>
 
 </html>
