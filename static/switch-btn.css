@@ -1,0 +1,69 @@
+
+.switch-button {
+	width: 400px;
+	height: 40px;
+	text-align: center;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate3D(-50%, -50%, 0);
+	will-change: transform;
+	z-index: 197 !important;
+	cursor: pointer;
+	transition: .3s ease all;
+	border: 1px solid white;
+}
+
+.switch-button-case {
+	display: inline-block;
+	background: none;
+	width: 49%;
+	height: 100%;
+	color: white;
+	position: relative;
+	border: none;
+	transition: .3s ease all;
+	text-transform: uppercase;
+	letter-spacing: 5px;
+	padding-bottom: 1px;
+}
+
+.switch-button-case:hover {
+	color: grey;
+	cursor: pointer;
+}
+
+.switch-button-case:focus {
+	outline: none;
+}
+
+.active {
+	color: #151515;
+	background-color: white;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 50%;
+	height: 100%;
+	z-index: -1;
+	transition: .3s ease-out all;
+}
+
+.active-case {
+	color: #151515;
+}
+
+.signature {
+	position: fixed;
+	font-family: sans-serif;
+	font-weight: 100;
+	bottom: 10px;
+	left: 0;
+	letter-spacing: 4px;
+	font-size: 10px;
+	width: 100vw;
+	text-align: center;
+	color: white;
+	text-transform: uppercase;
+	text-decoration: none;
+}

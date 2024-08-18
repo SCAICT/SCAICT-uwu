@@ -26,6 +26,7 @@
     <meta name="theme-color" content="#e9aa11" />
     <link rel="stylesheet" href="/static/style.css" />
     <script src="https://kit.fontawesome.com/f9ca08d03f.js" crossorigin="anonymous"></script>
+    
     <style>
         body {
             overflow: hidden;
@@ -204,14 +205,8 @@
                 background-position-y: 100%;
             }
         }
-        #mode-selector
-        {
-            display: flex;
-            justify-content: center;
-            gap: 1em;
-            margin: 1em;
-        }
     </style>
+    <link rel="stylesheet" href="/static/switch-btn.css"/>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-F4MZSTYBW8"></script>
     <script>
@@ -239,13 +234,10 @@
         <a href="/login">登入 <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
         {% endif %}
     </nav>
-    <div id="mode-selector">
-        <label>
-            <input type="radio" name="mode" value="single" checked> 單抽
-        </label>
-        <label>
-            <input type="radio" name="mode" value="ten"> 10 連抽
-        </label>
+    <div class="switch-button">
+        <span class="active"></span>
+        <button class="switch-button-case left active-case">單抽</button>
+        <button class="switch-button-case right">10 連抽</button>
     </div>
     <main>
         <div>
@@ -330,11 +322,7 @@
         const main = document.querySelector("main");
         // pull lever when mouse down or touch start. Add class to show the lever is pulled
         let pressStartTime;
-        const modeSelector = document.getElementById("mode-selector");
         function handleLeverPress(e) {
-            if (modeSelector.contains(e.target)) {
-        return;
-    }
             console.log("click", e.target);
             e.preventDefault();
             pressStartTime = Date.now();
@@ -450,6 +438,7 @@
                     " 🎟️";
             });
     </script>
+    <script src="/static/switch-btn.js"></script>
 </body>
 
 </html>
