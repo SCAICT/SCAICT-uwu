@@ -16,13 +16,13 @@
 
 </div>
 
-> 這個專案目前處於開發階段，並且可能會有一些問題。如果您發現了任何問題或有任何建議，請透過提交問題來通知我們。
+> 這個專案目前處於開發階段，並且可能會有一些問題。如果您發現了任何問題或有任何建議，請透過提交 issue 來通知我們。
 
 ## 如何部署？
 
-1. 克隆此倉庫。
+1. clone 此儲存庫。
 2. 在 Python 3.11 中建立環境。
-3. 安裝依賴套件。
+3. 安裝必要的函式庫。
 
    ```bash
    pip install -r requirements.txt
@@ -74,7 +74,7 @@
       "element": [ percentage, reward ]
   }
   ```
-
+> 更詳細的文檔敘述可以參考 [這裡](https://g.scaict.org/doc/)
 ## 鳴謝
 
 中電喵是由中電會和[貢獻者們](https://github.com/SCAICT/SCAICT-uwu/graphs/contributors)共同開發和維護的專案。角色設計由[毛哥 EM](https://elvismao.com/) 和[瑞樹](https://www.facebook.com/ruishuowo)創作，而部分圖示則選用了來自 [Freepik - Flaticon](https://www.flaticon.com/free-icons/slot-machine) 的設計素材。

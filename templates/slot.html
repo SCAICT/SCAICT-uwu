@@ -204,20 +204,24 @@
                 background-position-y: 100%;
             }
         }
+        #mode-selector
+        {
+            display: flex;
+            justify-content: center;
+            gap: 1em;
+            margin: 1em;
+        }
     </style>
     <!-- Google tag (gtag.js) -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-F4MZSTYBW8"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
-            gtag("config", "G-F4MZSTYBW8");
-        </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F4MZSTYBW8"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+        gtag("config", "G-F4MZSTYBW8");
+    </script>
 </head>
 
 <body>
@@ -235,6 +239,14 @@
         <a href="/login">登入 <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
         {% endif %}
     </nav>
+    <div id="mode-selector">
+        <label>
+            <input type="radio" name="mode" value="single" checked> 單抽
+        </label>
+        <label>
+            <input type="radio" name="mode" value="ten"> 10 連抽
+        </label>
+    </div>
     <main>
         <div>
             <img src="https://scaict.org/src/img/logo.svg" alt="" class="logo" />
@@ -318,8 +330,12 @@
         const main = document.querySelector("main");
         // pull lever when mouse down or touch start. Add class to show the lever is pulled
         let pressStartTime;
-
+        const modeSelector = document.getElementById("mode-selector");
         function handleLeverPress(e) {
+            if (modeSelector.contains(e.target)) {
+        return;
+    }
+            console.log("click", e.target);
             e.preventDefault();
             pressStartTime = Date.now();
             main.classList.add("pulled");
