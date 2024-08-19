@@ -216,7 +216,7 @@ class Comment(commands.Cog):
             elif decimal_number == now_seq + 1 or decimal_complement == now_seq + 1:
                 # 數數成立
                 cursor.execute("UPDATE game SET seq = seq+1")
-                cursor.execute(f"UPDATE game SET lastid = {message.author.id}")
+                cursor.execute("UPDATE game SET lastid = %s", (message.author.id,))
                 # add a check emoji to the message
                 await message.add_reaction("✅")
                 # 隨機產生 1~100 的數字。若模 11=10 ，九個數字符合，分布於 1~100 ，發生機率 9%。給予 5 點電電點
