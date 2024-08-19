@@ -1,0 +1,88 @@
+{
+	"$schema": "https://json-schema.org/schema#",
+	"description": "Abstract description of a scaict-uwu products.json",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"name": {
+			"type": "string",
+			"description": "Optional. Name/short description of the JSON file"
+		},
+		"description": {
+			"type": "string",
+			"description": "Optional. Description of the JSON file"
+		},
+		"products": {
+			"type": "array",
+			"additionalItems": false,
+			"description": "Array of products",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "ID of the product",
+						"pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
+					},
+					"name": {
+						"type": "string",
+						"description": "Name of the product"
+					},
+					"description": {
+						"type": "string",
+						"description": "Description of the product item"
+					},
+					"url": {
+						"type": "string",
+						"description": "Optional. The URL path without leading slash of the link target of the button",
+						"pattern": "^[^\/\n].*$"
+					},
+					"image": {
+						"type": "string",
+						"description": "Image URL of the product item. Preferred size of the image: 1000 × 1000 px, max. 2400, min. 300",
+						"format": "uri",
+						"pattern": "^https:\/\/.+$"
+					},
+					"category": {
+						"type": "string",
+						"description": "Category of the product item",
+						"enum": [
+							"實體周邊",
+							"遊戲"
+						]
+					},
+					"pay": {
+						"type": "string",
+						"description": "The payment method of the product item",
+						"enum": [
+							"point",
+							"ticket"
+						]
+					},
+					"price": {
+						"type": "integer",
+						"description": "Price of the product item, using the payment method as the unit of price"
+					},
+					"stock": {
+						"type": "integer",
+						"description": "Remaining stock count of the product item"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"description",
+					"image",
+					"category",
+					"pay",
+					"price",
+					"stock"
+				]
+			}
+		}
+	},
+	"required": [
+		"products"
+	]
+}
