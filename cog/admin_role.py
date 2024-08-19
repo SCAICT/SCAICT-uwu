@@ -1,6 +1,7 @@
 # Third-party imports
 import discord
 from discord.ext import commands
+from datetime import datetime
 
 # Local imports
 from build.build import Build
@@ -10,30 +11,6 @@ class AdminRole(Build):
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.Gift())
-
-    # 成員身分組
-    class RoleView(discord.ui.View):
-        def __init__(self):
-            super().__init__(timeout = None) # Timeout of the view must be set to None
-
-        @discord.ui.button(
-            label = "領取身分組",
-            style = discord.ButtonStyle.blurple,
-            emoji = "🥇",
-            custom_id = "take_the_role"
-        )
-        async def button_callback_1(self, button, interaction) -> None:
-            role = discord.utils.get(interaction.guild.roles, name = "ADMIN")
-            await interaction.user.add_roles(role)
-            await interaction.response.send_message("已領取身分組 `ヾ(≧▽≦*)o`", ephemeral = True)
-
-    @discord.slash_command()
-    async def create_role_button(self, ctx) -> None:
-        if ctx.author.guild_permissions.administrator:
-            embed = discord.Embed(color = 0x16b0fe)
-            embed.set_thumbnail(url = "https://emojiisland.com/cdn/shop/products/Nerd_with_Glasses_Emoji_2a8485bc-f136-4156-9af6-297d8522d8d1_large.png?v=1571606036")
-            embed.add_field(name = "哈囉 點一下", value = "  ", inline = False)
-            await ctx.respond(embed = embed, view = self.RoleView())
 
     # 禮物按鈕
     class Gift(discord.ui.View):
@@ -49,7 +26,7 @@ class AdminRole(Build):
             current_point = read(uid, bonus_type, cursor)
             write(uid, bonus_type, current_point + bonus, cursor)
             end(connection, cursor)
-            print(f"{uid} {username} get {bonus} {bonus_type} by Gift")
+            print(f"{uid} {username} get {bonus} {bonus_type} by Gift {datetime.now()}")
 
         # 存資料庫存取按鈕屬性(包括獎勵類型、數量)
         def __read_db(self, btn_id: int):
@@ -58,7 +35,10 @@ class AdminRole(Build):
             ret = cursor.fetchall()
             cursor.execute(f"DELETE FROM `gift` WHERE `btnID`={btn_id}")
             end(connection, cursor)
-            return ret[0][0], ret[0][1] # type, count
+            if len(ret) == 0:
+                return None, None
+            else:
+                return ret[0][0], ret[0][1] # type, count
 
         # 點擊後會觸發的動作
         @discord.ui.button(
@@ -68,6 +48,13 @@ class AdminRole(Build):
         )
         async def get_gift(self, button: discord.ui.Button, ctx) -> None:
             self.type, self.count = self.__read_db(ctx.message.id) # 傳入按鈕的訊息 ID
+            if self.type is None or self.count is None:
+                button.label = "出問題了" # Change the button's label to "已領取"
+                button.disabled = True # 關閉按鈕，避免錯誤再被觸發
+                await ctx.response.edit_message(view = self)
+                button.disabled = True # 關閉按鈕，避免重複點擊
+                print(f"{ctx.user.id},{ctx.user} throw error by get_gift {datetime.now()}")
+                return await ctx.respond("好像出了點問題，你可能已經領過或伺服器內部錯誤。若有異議請在收到此訊息兩天內截圖此畫面提交客服單回報", ephemeral = False)
             self.type = "point" if self.type == "電電點" else "ticket"
             self.__reward(ctx.user.id, ctx.user, self.type, self.count)
             # log
@@ -107,8 +94,6 @@ class AdminRole(Build):
                     await ctx.respond(f"找不到使用者 ： {username}{e}", ephemeral = True)
                     return
 
-            # 管理者介面提示
-            await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
             # 產生按鈕物件
             view = self.Gift()
             view.type = gift_type
@@ -129,9 +114,11 @@ class AdminRole(Build):
                 try:
                     await target_user.send(embed = embed)
                     msg = await target_user.send(view=view)
-                    await record_db(msg.id, gift_type, count, target_user.name)
+                    return await record_db(msg.id, gift_type, count, target_user.name)
                 except discord.Forbidden:
-                    await ctx.respond(f"無法向使用者 {target_user.name} 傳送訊息，可能是因為他們關閉了 DM。", ephemeral = True)
+                    return await ctx.respond(f"無法向使用者 {target_user.name} 傳送訊息，可能是因為他們關閉了 DM。", ephemeral = True)
+            # 管理者介面提示
+            await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
         else:
             await ctx.respond("你沒有權限使用這個指令！", ephemeral = True)
             return

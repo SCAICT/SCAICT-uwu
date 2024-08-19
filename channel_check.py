@@ -39,12 +39,20 @@ async def update_channel(bot):
     if channel is None:
         print("找不到指定的頻道")
         return
-
+    prev_points = get_total_points()
+    prev_total_members = guild.member_count
     while not bot.is_closed():
         points = get_total_points()
         total_members = guild.member_count
-        await member_channel.edit(name = f"👥電池數：{total_members}")
-        await point_channel.edit(name = f"🔋總電量：{points}")
+        
+        if points != prev_points:
+            await point_channel.edit(name = f"🔋總電量：{points}")
+            prev_points = points
+        
+        if total_members != prev_total_members:
+            await member_channel.edit(name = f"👥電池數：{total_members}")
+            prev_total_members = total_members
+        
         await asyncio.sleep(600)
 
 async def change_status(bot):
