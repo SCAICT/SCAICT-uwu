@@ -125,7 +125,7 @@ def profile():
 
     user_points = read(discord_user["id"], "point", cursor)
     user_tickets = read(discord_user["id"], "ticket", cursor)
-    if user_id_exists(discord_user["id"], "USER", cursor): # 有找到這個使用者在表上
+    if user_id_exists(discord_user["id"], "user", cursor): # 有找到這個使用者在表上
         end(connection, cursor)
         return render_template(
             "home.html",
@@ -152,7 +152,7 @@ def slot():
         return render_template("slot.html")
     user_points = read(discord_user["id"], "point", cursor)
     user_tickets = read(discord_user["id"], "ticket", cursor)
-    if user_id_exists(discord_user["id"], "USER", cursor): # 有找到這個使用者在資料表上
+    if user_id_exists(discord_user["id"], "user", cursor): # 有找到這個使用者在資料表上
         end(connection, cursor)
         return render_template(
             "slot.html",
@@ -201,7 +201,7 @@ def buy_product():
 
     connection, cursor = link_sql() # SQL 會話
 
-    if not user_id_exists(discord_user["id"], "USER", cursor):
+    if not user_id_exists(discord_user["id"], "user", cursor):
         end(connection, cursor)
         return "使用者不存在"
     user_points = read(discord_user["id"], "point", cursor)
@@ -226,8 +226,8 @@ def roll_slot()-> list:
     if not discord_user:
         return "請重新登入"
 
-    # user = users.get(discord_user["id"])
-    if not user_id_exists(discord_user["id"], "USER", cursor):
+    # # user = users.get(discord_user["id"])
+    if not user_id_exists(discord_user["id"], "user", cursor):
         end(connection, cursor)
         return "使用者不存在"
     with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding = "utf-8") as file:
@@ -330,8 +330,8 @@ def star_uwu():
     if response.ok:
         print(f"Successfully starred {repo_owner}/{repo_name}! {response}")
         connection, cursor = link_sql() # SQL 會話
-        if not user_id_exists(discord_user["id"], "USER", cursor): # 該 uesr id 不在USER表格內，插入該筆使用者資料
-            insert_user(discord_user["id"], "USER", cursor)
+        if not user_id_exists(discord_user["id"], "user", cursor): # 該 uesr id 不在user表格內，插入該筆使用者資料
+            insert_user(discord_user["id"], "user", cursor)
         # if already starred. liveuwu is 1
         if read(discord_user["id"], "loveuwu", cursor):
             end(connection, cursor)

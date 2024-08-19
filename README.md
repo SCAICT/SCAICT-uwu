@@ -74,7 +74,9 @@
       "element": [ percentage, reward ]
   }
   ```
-> 更詳細的文檔敘述可以參考 [這裡](https://g.scaict.org/doc/)
+
+> 更詳細的說明文件敘述可以參考[這裡](https://g.scaict.org/doc/)
+
 ## 鳴謝
 
 中電喵是由中電會和[貢獻者們](https://github.com/SCAICT/SCAICT-uwu/graphs/contributors)共同開發和維護的專案。角色設計由[毛哥 EM](https://elvismao.com/) 和[瑞樹](https://www.facebook.com/ruishuowo)創作，而部分圖示則選用了來自 [Freepik - Flaticon](https://www.flaticon.com/free-icons/slot-machine) 的設計素材。
