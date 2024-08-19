@@ -218,7 +218,7 @@ def buy_product():
     return "購買成功！"
 
 @app.route("/rollSlot", methods = [ "POST" ])
-def roll_slot():
+def roll_slot()-> list:
     data = request.json
     num_draws = int(data.get("numDraws", 1))  # 預設為 1 次抽獎
     connection, cursor = link_sql() # SQL 會話
@@ -226,7 +226,7 @@ def roll_slot():
     if not discord_user:
         return "請重新登入"
 
-    # # user = users.get(discord_user["id"])
+    # user = users.get(discord_user["id"])
     if not user_id_exists(discord_user["id"], "USER", cursor):
         end(connection, cursor)
         return "使用者不存在"
