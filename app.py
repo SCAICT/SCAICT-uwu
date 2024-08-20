@@ -2,11 +2,11 @@
 import json
 import os
 import random
+from urllib.parse import urlparse, urljoin
 
 # Third-party imports
 from flask import Flask, redirect, request, session, url_for, render_template, send_from_directory
 import requests
-from urllib.parse import urlparse, urljoin
 
 # Local imports
 from cog.core.sql import write
@@ -72,7 +72,6 @@ def callback():
     response = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
     response.raise_for_status()
     access_token = response.json().get("access_token")
-    
     if not access_token:
         return "Error: Access token not found", 400
 
@@ -102,9 +101,7 @@ def callback():
 
     if redirurl and is_safe_url(redirurl):
         return redirect(redirurl)
-    
     return redirect(url_for("profile"))
-
 @app.route("/github/discord-callback")
 def discord_callback():
     code = request.args.get("code")
