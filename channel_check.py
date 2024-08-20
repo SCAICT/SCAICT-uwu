@@ -50,7 +50,6 @@ async def update_channel(bot):
         if total_members != prev_total_members:
             await member_channel.edit(name = f"👥電池數：{total_members}")
             prev_total_members = total_members
-        
         await asyncio.sleep(600)
 
 async def change_status(bot):
