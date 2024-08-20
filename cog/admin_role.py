@@ -1,7 +1,8 @@
+# Standard imports
+from datetime import datetime
 # Third-party imports
 import discord
 from discord.ext import commands
-from datetime import datetime
 
 # Local imports
 from build.build import Build
@@ -37,8 +38,7 @@ class AdminRole(Build):
             end(connection, cursor)
             if len(ret) == 0:
                 return None, None
-            else:
-                return ret[0][0], ret[0][1] # type, count
+            return ret[0][0], ret[0][1] # type, count
 
         # 點擊後會觸發的動作
         @discord.ui.button(

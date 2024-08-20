@@ -44,11 +44,9 @@ async def update_channel(bot):
     while not bot.is_closed():
         points = get_total_points()
         total_members = guild.member_count
-        
         if points != prev_points:
             await point_channel.edit(name = f"🔋總電量：{points}")
             prev_points = points
-        
         if total_members != prev_total_members:
             await member_channel.edit(name = f"👥電池數：{total_members}")
             prev_total_members = total_members
