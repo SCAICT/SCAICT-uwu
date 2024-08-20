@@ -57,8 +57,8 @@ def reset(message, now, cursor):
     try:
         write(user_id, "today_comments", 0, cursor) # 歸零發言次數
         write(user_id, "last_comment", str(now), cursor)
-        write(user_id, "times", 2, cursor, table = "CommentPoints") # 初始化達標後能獲得的電電點
-        write(user_id, "next_reward", 1, cursor, table = "CommentPoints")
+        write(user_id, "times", 2, cursor, table = "comment_points") # 初始化達標後能獲得的電電點
+        write(user_id, "next_reward", 1, cursor, table = "comment_points")
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
         print(f"Error resetting user {user_id}: {exception}")
@@ -67,12 +67,12 @@ def reward(message, cursor):
     user_id = message.author.id
     user_display_name = message.author
     try:
-        # 讀USER資料表的東西
+        # 讀user資料表的東西
         today_comments = read(user_id, "today_comments", cursor)
         point = read(user_id, "point", cursor)
-        # 讀CommentPoints 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
-        next_reward = read(user_id, "next_reward", cursor, table = "CommentPoints")
-        times = read(user_id, "times", cursor, table = "CommentPoints")
+        # 讀comment_points 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
+        next_reward = read(user_id, "next_reward", cursor, table = "comment_points")
+        times = read(user_id, "times", cursor, table = "comment_points")
 
         today_comments += 1
 
@@ -81,8 +81,8 @@ def reward(message, cursor):
             next_reward += times ** 2
             times += 1
             write(user_id, "point", point, cursor)
-            write(user_id, "next_reward", next_reward, cursor, table = "CommentPoints")
-            write(user_id, "times", times, cursor, table = "CommentPoints")
+            write(user_id, "next_reward", next_reward, cursor, table = "comment_points")
+            write(user_id, "times", times, cursor, table = "comment_points")
 
             # 紀錄log
             print(f"{user_id}, {user_display_name} Get 2 point by comment {datetime.now()}")
@@ -126,11 +126,11 @@ class Comment(commands.Cog):
     def today_comment(user_id, message, cursor):
         try:
             # 新增該user的資料表
-            if not user_id_exists(user_id, "USER", cursor):
-                # 該 uesr id 不在USER資料表內，插入該筆使用者資料
-                insert_user(user_id, "USER", cursor)
-            if not user_id_exists(user_id, "CommentPoints", cursor):
-                insert_user(user_id, "CommentPoints", cursor)
+            if not user_id_exists(user_id, "user", cursor):
+                # 該 uesr id 不在user資料表內，插入該筆使用者資料
+                insert_user(user_id, "user", cursor)
+            if not user_id_exists(user_id, "comment_points", cursor):
+                insert_user(user_id, "comment_points", cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error: {exception}")
@@ -208,7 +208,7 @@ class Comment(commands.Cog):
             decimal_complement = ~decimal_number & ((1 << len(based_number)) - 1)
             cursor.execute("select seq from game")
             now_seq = cursor.fetchone()[0]
-            cursor.execute("select lastID from game")
+            cursor.execute("select lastid from game")
             latest_user = cursor.fetchone()[0]
             if message.author.id == latest_user:
                 # 同人疊數數
@@ -216,7 +216,7 @@ class Comment(commands.Cog):
             elif decimal_number == now_seq + 1 or decimal_complement == now_seq + 1:
                 # 數數成立
                 cursor.execute("UPDATE game SET seq = seq+1")
-                cursor.execute(f"UPDATE game SET lastID = {message.author.id}")
+                cursor.execute("UPDATE game SET lastid = %s", (message.author.id,))
                 # add a check emoji to the message
                 await message.add_reaction("✅")
                 # 隨機產生 1~100 的數字。若模 11=10 ，九個數字符合，分布於 1~100 ，發生機率 9%。給予 5 點電電點
@@ -250,12 +250,12 @@ class Comment(commands.Cog):
 
         try:
             connection, cursor = link_sql()
-            cursor.execute("SELECT niceColor FROM game")
+            cursor.execute("SELECT nicecolor FROM game")
             nice_color = cursor.fetchone()[0]
             # Convert to upper case before check
             hex_color = message.content.upper()
 
-            cursor.execute("SELECT `niceColorRound` FROM game")
+            cursor.execute("SELECT `nicecolorround` FROM game")
             guess_round = cursor.fetchone()[0] + 1
             if hex_color == nice_color:
                 # Use embed to send message. Set embed color to hex_color
@@ -269,7 +269,7 @@ class Comment(commands.Cog):
                 # Generate a new color by random three letter 0~F
                 new_color = ''.join([ random.choice('0123456789ABCDEF') for _ in range(3) ])
                 # 資料庫存 3 位色碼，重設回答次數
-                cursor.execute(f"UPDATE game SET niceColor = '{new_color}', niceColorRound = 0")
+                cursor.execute(f"UPDATE game SET nicecolor = '{new_color}', nicecolorround = 0")
                 # 格式化成六位數，配合 discord.Colour 輸出
                 new_color = ''.join([c*2 for c in new_color])
                 # Send new color to channel
@@ -284,9 +284,9 @@ class Comment(commands.Cog):
                 write(message.author.id, "point", point, cursor)
                 # Log
                 # pylint: disable-next = line-too-long
-                print(f"{message.author.id},{message.author} Get 2 point by niceColor reward {datetime.now()}")
+                print(f"{message.author.id},{message.author} Get 2 point by nice color reward {datetime.now()}")
             else:
-                cursor.execute("UPDATE game SET niceColorRound = niceColorRound + 1;")
+                cursor.execute("UPDATE game SET nicecolorround = nicecolorround + 1;")
                 # https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/consider-using-generator.html
                 # pylint: disable-next = line-too-long
                 correct = 100 - (sum((int(hex_color[i], 16) - int(nice_color[i], 16)) ** 2 for i in range(3)) ** 0.5 / 0.2598076211353316)

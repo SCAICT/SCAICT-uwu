@@ -26,6 +26,7 @@
     <meta name="theme-color" content="#e9aa11" />
     <link rel="stylesheet" href="/static/style.css" />
     <script src="https://kit.fontawesome.com/f9ca08d03f.js" crossorigin="anonymous"></script>
+    
     <style>
         body {
             overflow: hidden;
@@ -205,19 +206,17 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/static/switch-btn.css"/>
     <!-- Google tag (gtag.js) -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-F4MZSTYBW8"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
-            gtag("config", "G-F4MZSTYBW8");
-        </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F4MZSTYBW8"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+        gtag("config", "G-F4MZSTYBW8");
+    </script>
 </head>
 
 <body>
@@ -235,6 +234,11 @@
         <a href="/login">登入 <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
         {% endif %}
     </nav>
+    <div class="switch-button">
+        <span class="active"></span>
+        <button class="switch-button-case left active-case">單抽</button>
+        <button class="switch-button-case right">10 連抽</button>
+    </div>
     <main>
         <div>
             <img src="https://scaict.org/src/img/logo.svg" alt="" class="logo" />
@@ -274,7 +278,7 @@
                     .st6 {
                         fill: #ff6344;
                     }
-
+                    /*切換模式(單抽/十連)會把 3,4,5,6 顏色換掉，這裡只是預設顏色，不會被顯示出來 */
                     .st7 {
                         fill: #4d5967;
                     }
@@ -318,8 +322,8 @@
         const main = document.querySelector("main");
         // pull lever when mouse down or touch start. Add class to show the lever is pulled
         let pressStartTime;
-
         function handleLeverPress(e) {
+            console.log("click", e.target);
             e.preventDefault();
             pressStartTime = Date.now();
             main.classList.add("pulled");
@@ -353,11 +357,13 @@
                 ).style.backgroundPositionY = `0`;
                 main.classList.add("rolling");
                 main.classList.add("fast-rolling");
+                const numDraws = document.getElementById('numDraws').value;
                 fetch("/rollSlot", {
-                    method: "GET",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    body: JSON.stringify({ numDraws: numDraws })
                 })
                     // get response in plain txt
                     .then(response => response.text())
@@ -434,6 +440,12 @@
                     " 🎟️";
             });
     </script>
+    <!-- 隱藏表單，switch-btn裡面操控它的值 -->
+    <form  id="hiddenForm" style="display: none;">
+        <input type="hidden" name="selection" id="numDraws">
+    </form>
+    <script src="/static/switch-btn.js"></script>
+    <script>switchLeft()</script>
 </body>
 
 </html>

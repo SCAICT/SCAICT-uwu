@@ -1,15 +1,20 @@
+"""
+FIXME: Database table gift was missing here. See admin_role.py
+"""
+
 # Third-party imports
 # import mysql.connector
+
 # Local imports
 from .sql import link_sql
 
 connection, cursor = link_sql()
 
 # Use your database instead
-cursor.execute("USE DCSQLtest")
+cursor.execute("USE dcsqltest")
 
 cursor.execute("\
-    CREATE TABLE `USER`(\
+    CREATE TABLE `user` (\
         uid BIGINT NOT NULL,\
         loveuwu TINYINT(1) NOT NULL DEFAULT 0,\
         point INT NOT NULL DEFAULT 0,\
@@ -24,7 +29,7 @@ cursor.execute("\
 ")
 
 cursor.execute("\
-    CREATE TABLE `CommentPoints`(\
+    CREATE TABLE `commentpoints` (\
         seq INT AUTO_INCREMENT PRIMARY KEY,\
         uid BIGINT NOT NULL,\
         times INT NOT NULL DEFAULT 2,\
@@ -34,19 +39,19 @@ cursor.execute("\
 ")
 
 cursor.execute("\
-    CREATE TABLE `game`(\
+    CREATE TABLE `game` (\
         seq BIGINT NOT NULL DEFAULT 0,\
-        lastID BIGINT NOT NULL DEFAULT 0,\
-        niceColor VARCHAR(3) NOT NULL DEFAULT 'FFF',\
-        niceColorRound INT NOT NULL DEFAULT 0,\
-        niceColorCount BIGINT DEFAULT 0\
+        lastid BIGINT NOT NULL DEFAULT 0,\
+        nicecolor VARCHAR(3) NOT NULL DEFAULT 'FFF',\
+        nicecolorround INT NOT NULL DEFAULT 0,\
+        nicecolorcount BIGINT DEFAULT 0\
     );\
     insert into game (seq) VALUES 0;\
 ")
 
 cursor.execute("\
-    USE CTF;\
-    CREATE TABLE `data`(\
+    USE ctf;\
+    CREATE TABLE `data` (\
         id INT NOT NULL,\
         flags VARCHAR(255) NOT NULL,\
         score INT NOT NULL,\
@@ -59,7 +64,7 @@ cursor.execute("\
         tried int NOT NULL DEFAULT 0,\
         PRIMARY KEY(`id`)\
     )\
-    CREATE TABLE `history`(\
+    CREATE TABLE `history` (\
         data_id BIGINT,\
         uid BIGINT NOT NULL,\
         count INT NOT NULL DEFAULT 0,\

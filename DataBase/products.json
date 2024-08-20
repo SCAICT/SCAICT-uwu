@@ -1,75 +1,75 @@
 {
     "products": [
         {
-            "name": "中電會貼紙",
             "id": "KawaiiSticker",
+            "name": "中電會貼紙",
             "description": "可愛版中電會 Logo",
-            "price": 50,
             "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/KawaiiLogo.webp",
-            "stock": 500,
-            "category": "\u5be6\u9ad4\u5468\u908a",
-            "pay": "point"
-        },
-        {
-            "name": "中電喵貼紙",
-            "id": "uwuSticker",
-            "description": "uwu",
+            "category": "實體周邊",
+            "pay": "point",
             "price": 50,
-            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/scaict-uwu.webp",
-            "stock": 500,
-            "category": "\u5be6\u9ad4\u5468\u908a",
-            "pay": "point"
+            "stock": 500
         },
         {
-            "name": "中電喵雷射貼模貼紙",
+            "id": "uwuSticker",
+            "name": "中電喵貼紙",
+            "description": "uwu",
+            "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/scaict-uwu.webp",
+            "category": "實體周邊",
+            "pay": "point",
+            "price": 50,
+            "stock": 500
+        },
+        {
             "id": "uwuLazerSticker",
+            "name": "中電喵雷射貼模貼紙",
             "description": "閃亮的中電喵",
-            "price": 333,
             "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/scaict-uwu.webp",
-            "stock": 36,
-            "category": "\u5be6\u9ad4\u5468\u908a",
-            "pay": "point"
+            "category": "實體周邊",
+            "pay": "point",
+            "price": 333,
+            "stock": 36
         },
         {
-            "name": "中電喵便利貼",
             "id": "stickNotes",
+            "name": "中電喵便利貼",
             "description": "中電喵便利貼",
-            "price": 500,
             "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/sticknote.webp",
-            "stock": 20,
-            "category": "\u5be6\u9ad4\u5468\u908a",
-            "pay": "point"
-        },
-        {
-            "name": "中電會筆記本",
-            "id": "notebook",
-            "description": "16 頁牛皮紙筆記本",
+            "category": "實體周邊",
+            "pay": "point",
             "price": 500,
+            "stock": 20
+        },
+        {
+            "id": "notebook",
+            "name": "中電會筆記本",
+            "description": "16 頁牛皮紙筆記本",
             "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/notebook.webp",
-            "stock": 100,
-            "category": "\u5be6\u9ad4\u5468\u908a",
-            "pay": "point"
+            "category": "實體周邊",
+            "pay": "point",
+            "price": 500,
+            "stock": 100
         },
         {
-            "name": "8GB USB",
             "id": "usb",
+            "name": "8 GB USB",
             "description": "插件。插進去就會發光",
-            "price": 2000,
             "image": "https://raw.githubusercontent.com/SCAICT/website-data/main/converted/img/usb.webp",
-            "stock": 9,
-            "category": "\u5be6\u9ad4\u5468\u908a",
-            "pay": "point"
+            "category": "實體周邊",
+            "pay": "point",
+            "price": 2000,
+            "stock": 9
         },
         {
-            "name": "\u8c93\u54aa\u6a5f",
             "id": "slot",
-            "description": "\u4f86\u62bd\u734e\u5427",
-            "price": 1,
+            "name": "貓咪機",
+            "description": "來抽獎吧",
+            "url": "slot",
             "image": "https://cdn-icons-png.flaticon.com/128/1055/1055823.png",
-            "stock": 9999,
-            "category": "\u904a\u6232",
+            "category": "遊戲",
             "pay": "ticket",
-            "url": "slot"
+            "price": 1,
+            "stock": 9999
         }
     ]
 }

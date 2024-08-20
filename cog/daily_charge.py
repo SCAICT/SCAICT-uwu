@@ -1,6 +1,6 @@
 # Standard imports
 # import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 
@@ -85,7 +85,7 @@ class Charge(commands.Cog):
             # End connection instead of return
             # return
         else:
-            combo = 1 if (now - last_charge).days > 1 else combo + 1
+            combo = 1 if now.date() - last_charge.date() > timedelta(days=1) else combo + 1
             point += 5
             if combo % 7 == 0:
                 ticket = read(user_id, 'ticket', cursor)
