@@ -6,6 +6,7 @@ import random
 # Third-party imports
 from flask import Flask, redirect, request, session, url_for, render_template, send_from_directory
 import requests
+from urllib.parse import urlparse, urljoin
 
 # Local imports
 from cog.core.sql import write
@@ -42,10 +43,20 @@ def login():
 def logout():
     session.pop("user", None)
     return redirect(url_for("profile"))
-
+# 允許的第三方登入網站白名單
+ALLOWED_DOMAINS = {
+    "bar.scaict.org",
+}
+def is_safe_url(target):#運許的重定向白名單
+    test_url = urlparse(urljoin(request.host_url, target))
+    # 比對 target 的 netloc 是否在 ALLOWED_DOMAINS 中
+    # netloc 就是 domain
+    return test_url.netloc in ALLOWED_DOMAINS
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
+    redirurl = request.args.get("redirurl")
+
     data = {
         "client_id": discord_client_id,
         "client_secret": discord_client_secret,
@@ -58,25 +69,40 @@ def callback():
         "Content-Type": "application/x-www-form-urlencoded"
     }
     # pylint: disable-next = missing-timeout
-    response = requests.post("https://discord.com/api/oauth2/token", data = data, headers = headers)
-    access_token = response.json()["access_token"]
+    response = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
+    response.raise_for_status()
+    access_token = response.json().get("access_token")
+    
+    if not access_token:
+        return "Error: Access token not found", 400
+
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
     # pylint: disable-next = missing-timeout
-    user_response = requests.get("https://discord.com/api/users/@me", headers = headers)
+    user_response = requests.get("https://discord.com/api/users/@me", headers=headers)
+    user_response.raise_for_status()
     user_data = user_response.json()
-    session["user"] = {
-        "name": user_data["username"],
-        "avatar": f"https://cdn.discordapp.com/avatars/{user_data['id']}/{user_data['avatar']}.png",
-        "id": user_data["id"]
-    }
-    connection, cursor = link_sql()
-    write(user_data["id"], "DCname", user_data["username"], cursor)
-    #email
-    write(user_data["id"], "DCmail", user_data["email"], cursor)
 
+    username = user_data.get("username", "Unknown User")
+    avatar = user_data.get("avatar")
+    user_id = user_data.get("id")
+    email = user_data.get("email", "No email provided")
+
+    session["user"] = {
+        "name": username,
+        "avatar": f"https://cdn.discordapp.com/avatars/{user_id}/{avatar}.png" if avatar else None,
+        "id": user_id
+    }
+
+    connection, cursor = link_sql()
+    write(user_id, "DCname", username, cursor)
+    write(user_id, "DCmail", email, cursor)
     end(connection, cursor)
+
+    if redirurl and is_safe_url(redirurl):
+        return redirect(redirurl)
+    
     return redirect(url_for("profile"))
 
 @app.route("/github/discord-callback")
