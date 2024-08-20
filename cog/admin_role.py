@@ -7,6 +7,7 @@ from discord.ext import commands
 # Local imports
 from build.build import Build
 from cog.core.sql import link_sql, read, write, end
+from cog.core.sendgift import send_gift_button
 
 class AdminRole(Build):
     @commands.Cog.listener()
@@ -70,13 +71,17 @@ class AdminRole(Build):
         gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ] ),
         count: discord.Option(int, "數量")
     ) -> None:
-        if ctx.author.guild_permissions.administrator:
+        if not(ctx.author.guild_permissions.administrator):
+            await ctx.respond("你沒有權限使用這個指令！", ephemeral = True)
+            return
+        try:
             await ctx.defer() # 確保機器人請求不會超時
             # 不能發送負數
             if count <= 0:
                 await ctx.respond("不能發送 0 以下個禮物！", ephemeral = True)
                 return
-            manager = ctx.author
+            manager = ctx.author #return <class 'discord.member.Member'>
+            print(type(manager))
             target_usernames = target_str.split(',')
             target_users = []
 
@@ -94,34 +99,13 @@ class AdminRole(Build):
                     await ctx.respond(f"找不到使用者 ： {username}{e}", ephemeral = True)
                     return
 
-            # 產生按鈕物件
-            view = self.Gift()
-            view.type = gift_type
-            view.count = count
-            embed = discord.Embed(
-                title = f"你收到了 {count} {gift_type}！",
-                description = ":gift:",
-                color = discord.Color.blurple()
-            )
-
-            async def record_db(btn_id: int, gift_type: str, count: int, recipient: str) -> None:
-                connection, cursor = link_sql()
-                cursor.execute("INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`) VALUES (%s, %s, %s, %s)", (btn_id, gift_type, count, recipient))
-                end(connection, cursor)
-
             # DM 一個 Embed 和領取按鈕
             for target_user in target_users:
-                try:
-                    await target_user.send(embed = embed)
-                    msg = await target_user.send(view=view)
-                    return await record_db(msg.id, gift_type, count, target_user.name)
-                except discord.Forbidden:
-                    return await ctx.respond(f"無法向使用者 {target_user.name} 傳送訊息，可能是因為他們關閉了 DM。", ephemeral = True)
+                await send_gift_button(self, target_user, gift_type, count,manager.name)
             # 管理者介面提示
             await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
-        else:
-            await ctx.respond("你沒有權限使用這個指令！", ephemeral = True)
-            return
+        except Exception as e:
+            await ctx.respond(f"伺服器內部出現錯誤：{e}", ephemeral = True)
 
 def setup(bot):
     bot.add_cog(AdminRole(bot))
