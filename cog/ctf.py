@@ -64,7 +64,6 @@ class CTF(Build):
 
                 async def callback(self, interaction: discord.Interaction) -> None:
                     try:
-                        await interaction.defer()  # 確保機器人請求不會超時
                         connection, cursor = link_sql() # SQL 會話
                         question_id = interaction.message.embeds[0].footer.text.split(": ")[1]
                         # startTime
@@ -194,7 +193,6 @@ class CTF(Build):
                     except Exception as exception:
                         traceback_str = ''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))
                         print(f"Error: {exception}\n{traceback_str}")
-
                     end_sql(connection, cursor) # 結束SQL會話
 
             await interaction.response.send_modal(SubmitModal(title = "你找到 flag 了嗎？"))
