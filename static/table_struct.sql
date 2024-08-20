@@ -100,6 +100,8 @@ CREATE TABLE `gift` (
   `type` enum('電電點','抽獎券') DEFAULT NULL,
   `count` int DEFAULT NULL,
   `recipient` varchar(32) DEFAULT NULL,
+  `received` tinyint(1) DEFAULT '0',
+  `sender` varchar(32) DEFAULT 'admin',
   PRIMARY KEY (`btnID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -138,4 +140,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-20 10:22:41
+-- Dump completed on 2024-08-20 19:32:15
