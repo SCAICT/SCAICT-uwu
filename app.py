@@ -189,7 +189,7 @@ def send(target_user_id):
             "tts": False,  # Text-to-speech, 默認為 False
         }
         try:
-            response = requests.post(url, headers=headers, json=json_data,timeout=10)
+            response = requests.post(url, headers=headers, json=json_data, timeout=10)
             connect, cursor = link_sql()
             message_id = response.json().get("id")
             print(message_id)
@@ -206,7 +206,13 @@ def send(target_user_id):
             cursor.execute(query, (count, target_user_id))
             end(connect, cursor)
         except Exception as e:
-            return jsonify({"result":"interal server error(SQL) when insert gift","status":500,"error":str(e)})
+            return jsonify(
+                {
+                    "result": "interal server error(SQL) when insert gift",
+                    "status": 500,
+                    "error": str(e),
+                }
+            )
             # 用戶端那裏也要提試
             return jsonify(
                 {
