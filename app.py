@@ -56,38 +56,78 @@ def login():
 def logout():
     session.pop("user", None)
     return redirect(url_for("profile"))
-@app.route("/api/send")
-def send():
+@app.route("/api/send/<int:target_user_id>")
+def send(target_user_id):
     if not session:
         return jsonify({"resulet":"you must loggin","status":403})
     try:
-        someone=session.get("user")#<class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
-        someone_id=someone.get("id")
-        print(type(session),session)
-        connect, cursor = link_sql()
-        # cursor.execute(f"SELECT admkey FROM user WHERE uid = {someone['id']}")
+        api_admin=session.get("user")#<class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
+        api_admin_id=api_admin.get("id")
+        # connect, cursor = link_sql()
+        # cursor.execute(f"SELECT admkey FROM user WHERE uid = {api_admin['id']}")
         headers = {
-            'User-Agent': 'SCAICT-Each',
             "Authorization": f"Bot {discord_token}"
         }
-        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{someone_id}"
+        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{api_admin_id}"
         response = requests.get(url, headers=headers)
+        user_data = response.json()
         if response.status_code != 200:
             return jsonify({"error": "Failed to fetch user information"}), response.status_code
-        user_data = response.json()
-        print(user_data)
         if send_gift_role not in user_data.get("roles", []):
-            return jsonify({"result": "You do not have permission to use this command", "status": 403})
-        # target_user_id = request.args.get("discord_id")
-        # gift_type = request.args.get("gift_type", "電電點")
-        # count = int(request.args.get("count", 1))  # 預設數量為1
-        # if not target_user_id:
-        #     return jsonify({"result": "discord_id is required", "status": 400})
+            return jsonify({"result": "You do not have permission to use this", "status": 403})
+        gift_type = request.args.get("gift_type", "電電點")  # 預設為"電電點"
+        if gift_type not in ["電電點", "抽獎券"]:
+            return jsonify({"result": "Invalid gift type", "status": 400})
+        count = request.args.get("count", 1)  # 預設數量為1
+        try:
+            count = int(count)  # 確保 count 是整數
+        except ValueError:
+            return jsonify({"result": "Invalid count value", "status": 400})
+        print(gift_type,count)
+        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{target_user_id}"
+        response = requests.get(url, headers=headers)
+        user_data = response.json()
+        if response.status_code != 200:
+            # 確保 URL 的 target_user_id 在伺服器裡面
+            return jsonify({"error": "Failed to fetch user information in tg id"}), response.status_code
+        #送禮物
+        try:
+            url = "https://discord.com/api/v10/users/@me/channels"
+            headers = {
+                "Authorization": f"Bot {discord_token}",
+                "Content-Type": "application/json"
+            }
+            json_data = {
+                "recipient_id": target_user_id
+            }
+        except:
+            return jsonify({"result":"interal server error","status":500})
+        response = requests.post(url, headers=headers, json=json_data)
+        dm_channel = response.json()
+        dm_room=dm_channel['id']
+        url = f"https://discord.com/api/v10/channels/{dm_room}/messages"
+        #發送按鈕訊息
+        headers = {
+            "Authorization": f"Bot {discord_token}",
+            "Content-Type": "application/json"
+        }
+        embed = {
+            "title": f"你收到了 {count} {gift_type}!",
+            "color": 3447003,  # （藍色）
+            "description" :"gift:"
+        }
+        json_data = {
+            "embeds": [embed],
+            "tts": False  # Text-to-speech, 默認為 False
+        }
+        response = requests.post(url, headers=headers, json=json_data)
+        print("done")
         return user_data
     except:
         return jsonify({"result":"interal server error","status":500})
     finally:
-        end(connect,cursor)
+        pass
+        # end(connect,cursor)
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
