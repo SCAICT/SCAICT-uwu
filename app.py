@@ -57,7 +57,7 @@ def logout():
     return redirect(url_for("profile"))
 @app.route("/api/mlist")
 def listt():
-    url = "https://discord.com/api/v10/guilds/1203338928535379978/members"
+    url = "https://discord.com/api/v10/guilds/959823904266944562/members"
     headers = {
         "Authorization": f"Bot {discord_token}"
     }
