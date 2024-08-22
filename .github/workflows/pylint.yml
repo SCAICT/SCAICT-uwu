@@ -22,6 +22,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements_dev.txt
-    - name: Analysing the code with pylint
+    - name: Analysing the code with Pylint
       run: |
         pylint $(git ls-files '*.py')
