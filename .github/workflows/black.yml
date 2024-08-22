@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == true
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,5 +31,5 @@ jobs:
         git config --local user.name "github-actions[bot]"
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add *
-        git commit -m "Format \"$(git show -s --format=%s)\" using Black"
-        git push
+        git diff-index --quiet HEAD || git commit -m "Format \"$(git show -s --format=%s)\" using Black"
+        git diff-index --quiet HEAD || git push
