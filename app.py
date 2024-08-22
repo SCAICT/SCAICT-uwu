@@ -55,6 +55,17 @@ def login():
 def logout():
     session.pop("user", None)
     return redirect(url_for("profile"))
+@app.route("/api/mlist")
+def listt():
+    url = "https://discord.com/api/v10/guilds/1203338928535379978/members"
+    headers = {
+        "Authorization": f"Bot {discord_token}"
+    }
+    params = {
+        "limit": 1000  
+    }
+    response = requests.get(url, headers=headers, params=params,timeout=10)
+    return response.json()
 @app.route("/api/send/<int:target_user_id>")
 def send(target_user_id):
     if not session:
