@@ -7,8 +7,9 @@ from discord.ext import commands
 # Local imports
 from build.build import Build
 from cog.core.sql import link_sql, read, write, end
+from cog.core.sendgift import send_gift_button
 
-class AdminRole(Build):
+class SendGift(Build):
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.Gift())
@@ -30,15 +31,19 @@ class AdminRole(Build):
             print(f"{uid} {username} get {bonus} {bonus_type} by Gift {datetime.now()}")
 
         # 存資料庫存取按鈕屬性(包括獎勵類型、數量)
-        def __read_db(self, btn_id: int):
-            connection, cursor = link_sql()
-            cursor.execute(f"SELECT type, count FROM `gift` WHERE `btnID`={btn_id}")
-            ret = cursor.fetchall()
-            cursor.execute(f"DELETE FROM `gift` WHERE `btnID`={btn_id}")
-            end(connection, cursor)
-            if len(ret) == 0:
+        def __get_btn_attr(self, btn_id: int):
+            try:
+                connection, cursor = link_sql()
+                cursor.execute(f"SELECT type, count FROM `gift` WHERE `btnID`={btn_id} and `received`=0")
+                ret = cursor.fetchall()
+                if len(ret) == 0:
+                    return None, None
+                cursor.execute(f"UPDATE `gift` SET `received`=1 WHERE `btnID`={btn_id}")
+                end(connection, cursor)
+                return ret[0][0], ret[0][1] # type, count
+            except Exception as e:
+                print(e)
                 return None, None
-            return ret[0][0], ret[0][1] # type, count
 
         # 點擊後會觸發的動作
         @discord.ui.button(
@@ -47,7 +52,7 @@ class AdminRole(Build):
             custom_id = "get_gift"
         )
         async def get_gift(self, button: discord.ui.Button, ctx) -> None:
-            self.type, self.count = self.__read_db(ctx.message.id) # 傳入按鈕的訊息 ID
+            self.type, self.count = self.__get_btn_attr(ctx.message.id) # 傳入按鈕的訊息 ID，得到按鈕的屬性
             if self.type is None or self.count is None:
                 button.label = "出問題了" # Change the button's label to "已領取"
                 button.disabled = True # 關閉按鈕，避免錯誤再被觸發
@@ -70,13 +75,17 @@ class AdminRole(Build):
         gift_type: discord.Option(str, "送禮內容", choices = [ "電電點", "抽獎券" ] ),
         count: discord.Option(int, "數量")
     ) -> None:
-        if ctx.author.guild_permissions.administrator:
+        if not ctx.author.guild_permissions.administrator:
+            await ctx.respond("你沒有權限使用這個指令！", ephemeral = True)
+            return
+        try:
             await ctx.defer() # 確保機器人請求不會超時
             # 不能發送負數
             if count <= 0:
                 await ctx.respond("不能發送 0 以下個禮物！", ephemeral = True)
                 return
-            manager = ctx.author
+            manager = ctx.author #return <class 'discord.member.Member'>
+            print(type(manager))
             target_usernames = target_str.split(',')
             target_users = []
 
@@ -94,34 +103,13 @@ class AdminRole(Build):
                     await ctx.respond(f"找不到使用者 ： {username}{e}", ephemeral = True)
                     return
 
-            # 產生按鈕物件
-            view = self.Gift()
-            view.type = gift_type
-            view.count = count
-            embed = discord.Embed(
-                title = f"你收到了 {count} {gift_type}！",
-                description = ":gift:",
-                color = discord.Color.blurple()
-            )
-
-            async def record_db(btn_id: int, gift_type: str, count: int, recipient: str) -> None:
-                connection, cursor = link_sql()
-                cursor.execute("INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`) VALUES (%s, %s, %s, %s)", (btn_id, gift_type, count, recipient))
-                end(connection, cursor)
-
             # DM 一個 Embed 和領取按鈕
             for target_user in target_users:
-                try:
-                    await target_user.send(embed = embed)
-                    msg = await target_user.send(view=view)
-                    return await record_db(msg.id, gift_type, count, target_user.name)
-                except discord.Forbidden:
-                    return await ctx.respond(f"無法向使用者 {target_user.name} 傳送訊息，可能是因為他們關閉了 DM。", ephemeral = True)
+                await send_gift_button(self, target_user, gift_type, count,manager.name)
             # 管理者介面提示
             await ctx.respond(f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}")
-        else:
-            await ctx.respond("你沒有權限使用這個指令！", ephemeral = True)
-            return
+        except Exception as e:
+            await ctx.respond(f"伺服器內部出現錯誤：{e}", ephemeral = True)
 
 def setup(bot):
-    bot.add_cog(AdminRole(bot))
+    bot.add_cog(SendGift(bot))
