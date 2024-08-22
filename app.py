@@ -5,7 +5,7 @@ import random
 from urllib.parse import urlencode
 
 # Third-party imports
-from flask import Flask, redirect, request, session, url_for, render_template, send_from_directory
+from flask import Flask, redirect, request, session, url_for, render_template, send_from_directory,jsonify
 import requests
 
 # Local imports
@@ -14,7 +14,7 @@ from cog.core.sql import read
 from cog.core.sql import link_sql
 from cog.core.sql import end
 from cog.core.sql import user_id_exists
-
+from cog.core.sendgift import send_gift_button
 app = Flask(__name__)
 
 # FILEPATH: /d:/GayHub/SCAICT-Discord-Bot/token.json
@@ -29,7 +29,8 @@ github_client_id = token_data["github_client_id"]
 github_client_secret = token_data["github_client_secret"]
 github_redirect_uri = token_data["github_redirect_uri"]
 github_discord_redirect_uri = token_data["github_discord_redirect_uri"]
-
+discord_token=token_data["discord_token"]
+send_gift_role=token_data["send_gift_role"]
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html'), 404
@@ -55,12 +56,42 @@ def login():
 def logout():
     session.pop("user", None)
     return redirect(url_for("profile"))
-
+@app.route("/api/send")
+def send():
+    if not session:
+        return jsonify({"resulet":"you must loggin","status":403})
+    try:
+        someone=session.get("user")#<class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
+        someone_id=someone.get("id")
+        print(type(session),session)
+        connect, cursor = link_sql()
+        # cursor.execute(f"SELECT admkey FROM user WHERE uid = {someone['id']}")
+        headers = {
+            'User-Agent': 'SCAICT-Each',
+            "Authorization": f"Bot {discord_token}"
+        }
+        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{someone_id}"
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to fetch user information"}), response.status_code
+        user_data = response.json()
+        print(user_data)
+        if send_gift_role not in user_data.get("roles", []):
+            return jsonify({"result": "You do not have permission to use this command", "status": 403})
+        # target_user_id = request.args.get("discord_id")
+        # gift_type = request.args.get("gift_type", "電電點")
+        # count = int(request.args.get("count", 1))  # 預設數量為1
+        # if not target_user_id:
+        #     return jsonify({"result": "discord_id is required", "status": 400})
+        return user_data
+    except:
+        return jsonify({"result":"interal server error","status":500})
+    finally:
+        end(connect,cursor)
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
-    redirurl = request.args.get("state")  # 使用 state 作為重定向的目標 URL
-
+    redirurl = request.args.get("state")  # 使用 state 作為重定向的目標 URL 
     data = {
         "client_id": discord_client_id,
         "client_secret": discord_client_secret,
@@ -97,20 +128,18 @@ def callback():
     write(user_data["id"], "DCname", user_data["username"], cursor)
     write(user_data["id"], "DCmail", user_data.get("email", "No email provided"), cursor)
     end(connection, cursor)
-
     # 如果 redirurl 存在，將用戶資料作為查詢參數附加到 redirurl 並重定向
-    print("tetto bar",redirurl)
     if redirurl :#and is_safe_url(redirurl):
         params = {
             "username": user_data["username"],
             "user_id": user_data["id"],
             "avatar": session["user"]["avatar"],
-            "email": user_data.get("email", "No email provided")
+            "email": user_data.get("email", "No email provided"),
+            "headers" : headers
         }
         urlencoded = urlencode(params)
         separator = '&' if '?' in redirurl else '?'
         return redirect(f"https://{redirurl}{separator}{urlencoded}")
-    
     # 否則，重定向到 profile 頁面
     return redirect(url_for("profile"))
 @app.route("/github/discord-callback")
