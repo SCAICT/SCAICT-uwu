@@ -213,14 +213,7 @@ def send(target_user_id):
                     "error": str(e),
                 }
             )
-            # 用戶端那裏也要提試
-            return jsonify(
-                {
-                    "result": "interal server error(SQL) when insert gift",
-                    "status": 500,
-                    "error": str(e),
-                }
-            )
+            # 待辦：用戶端那裏也要提示
         response = requests.post(url, headers=headers, json=json_data, timeout=10)
         if response.status_code != 200:
             return jsonify(
