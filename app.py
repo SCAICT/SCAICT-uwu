@@ -146,16 +146,16 @@ def send(target_user_id):
             end(connect,cursor)
         except Exception as e:
             return jsonify({"result":"interal server error(SQL) when insert gift","status":500,"error":str(e)})
-        response = requests.post(url, headers=headers, json=json_dat,timeout=10)
+        response = requests.post(url, headers=headers, json=json_data,timeout=10)
         if response.status_code != 200:
             return jsonify({"error": "Failed to send message","status":response.status_code})
         return jsonify({"result":"success","status":200})
-    except:
-        return jsonify({"result":"interal server error","status":500})
+    except Exception as e:
+        return jsonify({"result":"interal server error","status":500,"error":str(e)})
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
-    redirurl = request.args.get("state")  # 使用 state 作為重定向的目標 URL 
+    redirurl = request.args.get("state")  # 使用 state 作為重定向的目標 URL
     data = {
         "client_id": discord_client_id,
         "client_secret": discord_client_secret,
@@ -475,3 +475,4 @@ def star_uwu():
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.run(debug = True)
+    
