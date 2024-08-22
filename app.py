@@ -63,8 +63,7 @@ def send(target_user_id):
     try:
         api_admin=session.get("user")#<class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
         api_admin_id=api_admin.get("id")
-        # connect, cursor = link_sql()
-        # cursor.execute(f"SELECT admkey FROM user WHERE uid = {api_admin['id']}")
+        api_admin_name=api_admin.get("name")
         headers = {
             "Authorization": f"Bot {discord_token}"
         }
@@ -114,20 +113,44 @@ def send(target_user_id):
         embed = {
             "title": f"你收到了 {count} {gift_type}!",
             "color": 3447003,  # （藍色）
-            "description" :"gift:"
+            "description" :":gift:"
+        }
+        button = {
+            "type": 1,
+            "components": [
+                {
+                    "type": 2,
+                    "label": "前往確認",
+                    "style": 5,  # `5` 表示 Link Button
+                    "url": "https://store.scaict.org"  # 要導向的連結
+                }
+            ]
         }
         json_data = {
             "embeds": [embed],
+            "components": [button],
             "tts": False  # Text-to-speech, 默認為 False
         }
+        try:
+            connect, cursor = link_sql()
+            print(response.json())
+            message_id = response.json().get("last_message_id")
+            if not user_id_exists(target_user_id, "user", cursor):
+                cursor.execute(f"INSERT INTO user (uid) VALUE(%s)",(target_user_id,))#這裡要調用 api 去抓使用者名稱和 Mail
+            cursor.execute("INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
+                                            (message_id,gift_type,count,target_user_id,True,api_admin_name))
+            gift_type = "point" if gift_type == "電電點" else "ticket"
+            query=f"update user set {gift_type}={gift_type}+%s where uid=%s"
+            cursor.execute(query,(count,target_user_id))
+            end(connect,cursor)
+        except Exception as e:
+            return jsonify({"result":"interal server error(SQL) when insert gift","status":500,"error":str(e)})
         response = requests.post(url, headers=headers, json=json_data)
-        print("done")
-        return user_data
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to send message","status":response.status_code})
+        return jsonify({"result":"success","status":200})
     except:
         return jsonify({"result":"interal server error","status":500})
-    finally:
-        pass
-        # end(connect,cursor)
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
