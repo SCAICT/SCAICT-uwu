@@ -1,4 +1,4 @@
-name: Pylint
+name: Black
 
 on:
   pull_request:
@@ -22,6 +22,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements_dev.txt
-    - name: Analysing the code with Pylint
+    - name: Formatting the code with Black
       run: |
-        pylint $(git ls-files '*.py')
+        black $(git ls-files '*.py')
+    - name: Add and commit
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "noreply@github.com"
+        git add *
+        git commit -m "Format \"$(git log -1 --pretty=%s)\" using Black"
