@@ -158,9 +158,10 @@ def send(target_user_id):
             "tts": False  # Text-to-speech, 默認為 False
         }
         try:
+            response = requests.post(url, headers=headers, json=json_data,timeout=10)
             connect, cursor = link_sql()
-            print(response.json())
-            message_id = response.json().get("last_message_id")
+            message_id = response.json().get("id")
+            print(message_id)
             if not user_id_exists(target_user_id, "user", cursor):
                 cursor.execute("INSERT INTO user (uid) VALUE(%s)",(target_user_id,))#這裡要調用 api 去抓使用者名稱和 Mail
             cursor.execute("INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
@@ -171,7 +172,7 @@ def send(target_user_id):
             end(connect,cursor)
         except Exception as e:
             return jsonify({"result":"interal server error(SQL) when insert gift","status":500,"error":str(e)})
-        response = requests.post(url, headers=headers, json=json_data,timeout=10)
+            # 用戶端那裏也要提試
         if response.status_code != 200:
             return jsonify({"error": "Failed to send message","status":response.status_code})
         return jsonify({"result":"success","status":200})
