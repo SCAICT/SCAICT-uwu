@@ -12,9 +12,10 @@ def analyze_string(s):
     transformed_elements = [str(element_map[element]) for element in elements]
 
     # 將轉換後的元素拼接成字串
-    transformed_string = ''.join(transformed_elements)
+    transformed_string = "".join(transformed_elements)
     print(transformed_string)
     print(int(transformed_string, 2))
+
 
 # 字串範例
 se = "1 0 3"
