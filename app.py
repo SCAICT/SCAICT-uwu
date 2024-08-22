@@ -14,7 +14,6 @@ from cog.core.sql import read
 from cog.core.sql import link_sql
 from cog.core.sql import end
 from cog.core.sql import user_id_exists
-from cog.core.sendgift import send_gift_button
 app = Flask(__name__)
 
 # FILEPATH: /d:/GayHub/SCAICT-Discord-Bot/token.json
@@ -68,7 +67,7 @@ def send(target_user_id):
             "Authorization": f"Bot {discord_token}"
         }
         url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{api_admin_id}"
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers,timeout=10)
         user_data = response.json()
         if response.status_code != 200:
             return jsonify({"error": "Failed to fetch user information"}), response.status_code
@@ -84,7 +83,7 @@ def send(target_user_id):
             return jsonify({"result": "Invalid count value", "status": 400})
         print(gift_type,count)
         url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{target_user_id}"
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers,timeout=10)
         user_data = response.json()
         if response.status_code != 200:
             # 確保 URL 的 target_user_id 在伺服器裡面
@@ -99,9 +98,11 @@ def send(target_user_id):
             json_data = {
                 "recipient_id": target_user_id
             }
-        except:
-            return jsonify({"result":"interal server error","status":500})
-        response = requests.post(url, headers=headers, json=json_data)
+        except requests.RequestException as e:
+            return jsonify({"result":"interal server error","status":500,"error":str(e)})
+        except Exception as e:
+            return jsonify({"result":"interal server error","status":500,"error":str(e)})
+        response = requests.post(url, headers=headers, json=json_data,timeout=10)
         dm_channel = response.json()
         dm_room=dm_channel['id']
         url = f"https://discord.com/api/v10/channels/{dm_room}/messages"
@@ -136,7 +137,7 @@ def send(target_user_id):
             print(response.json())
             message_id = response.json().get("last_message_id")
             if not user_id_exists(target_user_id, "user", cursor):
-                cursor.execute(f"INSERT INTO user (uid) VALUE(%s)",(target_user_id,))#這裡要調用 api 去抓使用者名稱和 Mail
+                cursor.execute("INSERT INTO user (uid) VALUE(%s)",(target_user_id,))#這裡要調用 api 去抓使用者名稱和 Mail
             cursor.execute("INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
                                             (message_id,gift_type,count,target_user_id,True,api_admin_name))
             gift_type = "point" if gift_type == "電電點" else "ticket"
@@ -145,7 +146,7 @@ def send(target_user_id):
             end(connect,cursor)
         except Exception as e:
             return jsonify({"result":"interal server error(SQL) when insert gift","status":500,"error":str(e)})
-        response = requests.post(url, headers=headers, json=json_data)
+        response = requests.post(url, headers=headers, json=json_dat,timeout=10)
         if response.status_code != 200:
             return jsonify({"error": "Failed to send message","status":response.status_code})
         return jsonify({"result":"success","status":200})
