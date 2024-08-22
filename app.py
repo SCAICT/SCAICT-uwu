@@ -57,6 +57,20 @@ def logout():
     return redirect(url_for("profile"))
 @app.route("/api/mlist")
 def listt():
+    if not session:
+        return jsonify({"resulet":"you must loggin","status":403})
+    api_admin=session.get("user")#<class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
+    api_admin_id=api_admin.get("id")
+    headers = {
+        "Authorization": f"Bot {discord_token}"
+    }
+    url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{api_admin_id}"
+    response = requests.get(url, headers=headers,timeout=10)
+    user_data = response.json()
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch user information"}), response.status_code
+    if send_gift_role not in user_data.get("roles", []):
+        return jsonify({"result": "You do not have permission to use this", "status": 403})
     url = "https://discord.com/api/v10/guilds/959823904266944562/members"
     headers = {
         "Authorization": f"Bot {discord_token}"
