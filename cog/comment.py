@@ -15,11 +15,13 @@ from discord.ext import commands
 from cog.core.sql import read
 from cog.core.sql import write
 from cog.core.sql import user_id_exists
-from cog.core.sql import end # 用於結束和SQL資料庫的會話
+from cog.core.sql import end  # 用於結束和SQL資料庫的會話
 from cog.core.sql import link_sql
 
 try:
-    with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as file:
+    with open(
+        f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+    ) as file:
         stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 except FileNotFoundError:
     print("Configuration file not found.")
@@ -28,20 +30,26 @@ except json.JSONDecodeError:
     print("Error decoding JSON.")
     stickers = {}
 
+
 def insert_user(user_id, table, cursor):
     """
     初始化（新增）傳入該ID的資料表
     """
     try:
-        cursor.execute(f"INSERT INTO {table} (uid) VALUE({user_id})") # 其他屬性在新增時MySQL會給預設值
+        cursor.execute(
+            f"INSERT INTO {table} (uid) VALUE({user_id})"
+        )  # 其他屬性在新增時MySQL會給預設值
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
         print(f"Error inserting user {user_id} into {table}: {exception}")
 
-def get_channels(): # 要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
+
+def get_channels():  # 要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
     # os.chdir("./")
     try:
-        with open(f"{os.getcwd()}/DataBase/server.config.json", "r", encoding = "utf-8") as config_file:
+        with open(
+            f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+        ) as config_file:
             return json.load(config_file)["SCAICT-alpha"]["channel"]
     except FileNotFoundError:
         print("Configuration file not found.")
@@ -52,16 +60,20 @@ def get_channels(): # 要特殊用途頻道的列表，這裡會用來判斷是�
 
     return {}
 
+
 def reset(message, now, cursor):
     user_id = message.author.id
     try:
-        write(user_id, "today_comments", 0, cursor) # 歸零發言次數
+        write(user_id, "today_comments", 0, cursor)  # 歸零發言次數
         write(user_id, "last_comment", str(now), cursor)
-        write(user_id, "times", 2, cursor, table = "comment_points") # 初始化達標後能獲得的電電點
-        write(user_id, "next_reward", 1, cursor, table = "comment_points")
+        write(
+            user_id, "times", 2, cursor, table="comment_points"
+        )  # 初始化達標後能獲得的電電點
+        write(user_id, "next_reward", 1, cursor, table="comment_points")
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
         print(f"Error resetting user {user_id}: {exception}")
+
 
 def reward(message, cursor):
     user_id = message.author.id
@@ -71,35 +83,38 @@ def reward(message, cursor):
         today_comments = read(user_id, "today_comments", cursor)
         point = read(user_id, "point", cursor)
         # 讀comment_points 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
-        next_reward = read(user_id, "next_reward", cursor, table = "comment_points")
-        times = read(user_id, "times", cursor, table = "comment_points")
+        next_reward = read(user_id, "next_reward", cursor, table="comment_points")
+        times = read(user_id, "times", cursor, table="comment_points")
 
         today_comments += 1
 
         if today_comments == next_reward:
             point += 2
-            next_reward += times ** 2
+            next_reward += times**2
             times += 1
             write(user_id, "point", point, cursor)
-            write(user_id, "next_reward", next_reward, cursor, table = "comment_points")
-            write(user_id, "times", times, cursor, table = "comment_points")
+            write(user_id, "next_reward", next_reward, cursor, table="comment_points")
+            write(user_id, "times", times, cursor, table="comment_points")
 
             # 紀錄log
-            print(f"{user_id}, {user_display_name} Get 2 point by comment {datetime.now()}")
+            print(
+                f"{user_id}, {user_display_name} Get 2 point by comment {datetime.now()}"
+            )
         write(user_id, "today_comments", today_comments, cursor)
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
         print(f"Error rewarding user {user_id}: {exception}")
 
+
 class Comment(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.sp_channel = get_channels() # 特殊用途的channel
+        self.sp_channel = get_channels()  # 特殊用途的channel
 
         self.sp_channel_handler = {
-            self.sp_channel["countChannel"]:self.count,
-            self.sp_channel["colorChannel"]:self.nice_color,
+            self.sp_channel["countChannel"]: self.count,
+            self.sp_channel["colorChannel"]: self.nice_color,
         }
 
     # 數數判定
@@ -107,20 +122,19 @@ class Comment(commands.Cog):
     async def on_message(self, message):
         user_id = message.author.id
         try:
-            if user_id != self.bot.user.id: # 機器人發言不可當成觸發條件，必須排除
+            if user_id != self.bot.user.id:  # 機器人發言不可當成觸發條件，必須排除
                 handler = self.sp_channel_handler.get(message.channel.id)
-                #根據訊息頻道 ID 切換要呼叫的函數
+                # 根據訊息頻道 ID 切換要呼叫的函數
                 if handler:
                     await handler(message)
                 if message.channel.id not in self.sp_channel["exclude_point"]:
                     # 平方發言加電電點，列表中頻道不算發言次數
-                    connection, cursor = link_sql() # SQL 會話
+                    connection, cursor = link_sql()  # SQL 會話
                     self.today_comment(user_id, message, cursor)
                     end(connection, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error in comment for user {user_id}: {exception}")
-
 
     @staticmethod
     def today_comment(user_id, message, cursor):
@@ -136,7 +150,7 @@ class Comment(commands.Cog):
             print(f"Error: {exception}")
 
         now = date.today()
-        delta = timedelta(days = 1)
+        delta = timedelta(days=1)
         # SQL回傳型態：<class 'datetime.date'>
         last_comment = read(user_id, "last_comment", cursor)
         # 今天第一次發言，重設發言次數
@@ -165,7 +179,7 @@ class Comment(commands.Cog):
             transformed_elements = [str(element_map[element]) for element in elements]
 
             # 將轉換後的元素拼接成字串
-            raw_content = ''.join(transformed_elements)
+            raw_content = "".join(transformed_elements)
 
             # emoji 數數(把emoji轉換成binary)
             counting_base = 2
@@ -189,22 +203,21 @@ class Comment(commands.Cog):
             # - "0 b 0000"
             # - "0 b 0 0000"
             if re.match(
-                "^(0[bdox]|0[bdox] |0 [bdox] |)" +
-                    "([0-9A-Fa-f]{1,4})" +
-                    "(([0-9A-Fa-f]{4})*|( [0-9A-Fa-f]{4})*)$",
-                based_number
+                "^(0[bdox]|0[bdox] |0 [bdox] |)"
+                + "([0-9A-Fa-f]{1,4})"
+                + "(([0-9A-Fa-f]{4})*|( [0-9A-Fa-f]{4})*)$",
+                based_number,
             ):
                 based_number = based_number.replace(" ", "")
             # If is valid 3-digit comma delimeter format
             # (10-based, without base)
-            elif (
-                counting_base == 10 and
-                re.match("^([0-9]{1,3}(,[0-9]{3})*)$", based_number)
+            elif counting_base == 10 and re.match(
+                "^([0-9]{1,3}(,[0-9]{3})*)$", based_number
             ):
                 based_number = based_number.replace(",", "")
             # 若based_number字串轉換至整數失敗，會直接跳到except
             decimal_number = int(based_number, counting_base)
-            #補數
+            # 補數
             decimal_complement = ~decimal_number & ((1 << len(based_number)) - 1)
             cursor.execute("select seq from game")
             now_seq = cursor.fetchone()[0]
@@ -225,7 +238,9 @@ class Comment(commands.Cog):
                     point = read(message.author.id, "point", cursor) + 5
                     write(message.author.id, "point", point, cursor)
                     # pylint: disable-next = line-too-long
-                    print(f"{message.author.id}, {message.author} Get 5 point by count reward {datetime.now()}")
+                    print(
+                        f"{message.author.id}, {message.author} Get 5 point by count reward {datetime.now()}"
+                    )
                     await message.add_reaction("💸")
             else:
                 # 不同人數數，但數字不對
@@ -259,57 +274,71 @@ class Comment(commands.Cog):
             guess_round = cursor.fetchone()[0] + 1
             if hex_color == nice_color:
                 # Use embed to send message. Set embed color to hex_color
-                nice_color = ''.join([ c * 2 for c in nice_color ]) # 格式化成六位數
+                nice_color = "".join([c * 2 for c in nice_color])  # 格式化成六位數
                 embed = discord.Embed(
-                    title = f"猜了 {guess_round}次後答對了！",
-                    description = f"#{hex_color}\n恭喜 {message.author.mention} 獲得 2{stickers['zap']}",
-                    color = discord.Colour(int(nice_color,16))
+                    title=f"猜了 {guess_round}次後答對了！",
+                    description=f"#{hex_color}\n恭喜 {message.author.mention} 獲得 2{stickers['zap']}",
+                    color=discord.Colour(int(nice_color, 16)),
                 )
-                await message.channel.send(embed = embed)
+                await message.channel.send(embed=embed)
                 # Generate a new color by random three letter 0~F
-                new_color = ''.join([ random.choice('0123456789ABCDEF') for _ in range(3) ])
+                new_color = "".join(
+                    [random.choice("0123456789ABCDEF") for _ in range(3)]
+                )
                 # 資料庫存 3 位色碼，重設回答次數
-                cursor.execute(f"UPDATE game SET nicecolor = '{new_color}', nicecolorround = 0")
+                cursor.execute(
+                    f"UPDATE game SET nicecolor = '{new_color}', nicecolorround = 0"
+                )
                 # 格式化成六位數，配合 discord.Colour 輸出
-                new_color = ''.join([c*2 for c in new_color])
+                new_color = "".join([c * 2 for c in new_color])
                 # Send new color to channel
                 embed = discord.Embed(
-                    title = "已產生新題目",
-                    description = "請輸入三位數回答",
-                    color = discord.Colour(int(new_color, 16))
+                    title="已產生新題目",
+                    description="請輸入三位數回答",
+                    color=discord.Colour(int(new_color, 16)),
                 )
-                await message.channel.send(embed = embed)
+                await message.channel.send(embed=embed)
                 # 猜對的使用者加分
                 point = read(message.author.id, "point", cursor) + 2
                 write(message.author.id, "point", point, cursor)
                 # Log
                 # pylint: disable-next = line-too-long
-                print(f"{message.author.id},{message.author} Get 2 point by nice color reward {datetime.now()}")
+                print(
+                    f"{message.author.id},{message.author} Get 2 point by nice color reward {datetime.now()}"
+                )
             else:
                 cursor.execute("UPDATE game SET nicecolorround = nicecolorround + 1;")
                 # https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/consider-using-generator.html
                 # pylint: disable-next = line-too-long
-                correct = 100 - (sum((int(hex_color[i], 16) - int(nice_color[i], 16)) ** 2 for i in range(3)) ** 0.5 / 0.2598076211353316)
-                hex_color = ''.join([ c * 2 for c in hex_color ]) # 格式化成六位數
-                embed = discord.Embed(
-                    title = f"#{hex_color}\n{correct:.2f}%",
-                    color = discord.Colour(int(hex_color, 16))
+                correct = 100 - (
+                    sum(
+                        (int(hex_color[i], 16) - int(nice_color[i], 16)) ** 2
+                        for i in range(3)
+                    )
+                    ** 0.5
+                    / 0.2598076211353316
                 )
-                await message.channel.send(embed = embed)
-                nice_color = ''.join([c*2 for c in nice_color]) # 格式化成六位數
+                hex_color = "".join([c * 2 for c in hex_color])  # 格式化成六位數
                 embed = discord.Embed(
-                    description = f"答案：左邊顏色\n總共回答次數：{guess_round}",
-                    color = discord.Colour(int(nice_color, 16))
+                    title=f"#{hex_color}\n{correct:.2f}%",
+                    color=discord.Colour(int(hex_color, 16)),
                 )
-                await message.channel.send(embed = embed)
+                await message.channel.send(embed=embed)
+                nice_color = "".join([c * 2 for c in nice_color])  # 格式化成六位數
+                embed = discord.Embed(
+                    description=f"答案：左邊顏色\n總共回答次數：{guess_round}",
+                    color=discord.Colour(int(nice_color, 16)),
+                )
+                await message.channel.send(embed=embed)
             # except:
-                # await message.add_reaction("❔")
-                # print error message
+            # await message.add_reaction("❔")
+            # print error message
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error: {exception}")
 
         end(connection, cursor)
+
 
 def setup(bot):
     bot.add_cog(Comment(bot))
