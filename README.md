@@ -40,7 +40,7 @@ Interact with SCAICT-uwu using slash commands in any channel where the bot is ac
 ### Dedicated Channels
 
 Some interactions with SCAICT-uwu occur within dedicated channels, allowing for more focused activities such as guessing colors or counting.
-
+![color guess](https://raw.githubusercontent.com/SCAICT/doc/main/static/img/color-demo.gif)
 ### Store
 #### Buy somthing
 You can buy some products like our stickers or USB drives using Electric Points. Note that the products currently can only be exchanged during in-person events. We will soon offer shipping options and more virtual rewards for redemption.
