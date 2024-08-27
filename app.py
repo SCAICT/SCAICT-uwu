@@ -40,7 +40,7 @@ send_gift_role = os.getenv("SEND_GIFT_ROLE")
 guild_ID = os.getenv("GUILD_ID")
 # 將字串轉換為列表
 if send_gift_role:
-    send_gift_role = [int(role_id) for role_id in send_gift_role.split(",")]
+    send_gift_role = [str(role_id) for role_id in send_gift_role.split(",")]
 else:
     send_gift_role_list = []
 @app.errorhandler(404)
@@ -113,11 +113,19 @@ def send(target_user_id):
         api_admin_id = api_admin.get("id")
         api_admin_name = api_admin.get("name")
         discord_api = Apis(discord_token, guild_ID)
-        headers = {"Authorization": f"Bot {discord_token}"}
-        url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{api_admin_id}"
-        response = requests.get(url, headers=headers, timeout=10)
-        user_data = discord_api.get_user(api_admin_id)
-        if send_gift_role not in user_data.get("roles", []):
+        request_admin = discord_api.get_user(api_admin_id)
+        if "error" in request_admin:
+            # 如果有錯誤，返回錯誤訊息和詳細信息
+            return jsonify(
+                {
+                    "result": "Failed to fetch user information in admin id",
+                    "status": 500,
+                    "error_details": request_admin.get("details"),
+                }
+            )
+        admin_roles =request_admin.get("roles", [])
+        # 確保發起人有權限發送禮物
+        if set(send_gift_role) & set(admin_roles) == set():
             return jsonify(
                 {"result": "You do not have permission to use this", "status": 403}
             )
@@ -129,94 +137,94 @@ def send(target_user_id):
             count = int(count)  # 確保 count 是整數
         except ValueError:
             return jsonify({"result": "Invalid count value", "status": 400})
-        
-        url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{target_user_id}"
-        response = requests.get(url, headers=headers, timeout=10)
-        user_data = response.json()
-        if response.status_code != 200:
-            # 確保 URL 的 target_user_id 在伺服器裡面
-            return (
-                jsonify({"error": "Failed to fetch user information in tg id"}),
-                response.status_code,
-            )
-        # 送禮物
-        try:
-            url = "https://discord.com/api/v10/users/@me/channels"
-            headers = {
-                "Authorization": f"Bot {discord_token}",
-                "Content-Type": "application/json",
-            }
-            json_data = {"recipient_id": target_user_id}
-        except requests.RequestException as e:
-            return jsonify(
-                {"result": "interal server error", "status": 500, "error": str(e)}
-            )
-        except Exception as e:
-            return jsonify(
-                {"result": "interal server error", "status": 500, "error": str(e)}
-            )
-        response = requests.post(url, headers=headers, json=json_data, timeout=10)
-        dm_channel = response.json()
-        dm_room = dm_channel["id"]
-        url = f"https://discord.com/api/v10/channels/{dm_room}/messages"
-        # 發送按鈕訊息
-        headers = {
-            "Authorization": f"Bot {discord_token}",
-            "Content-Type": "application/json",
-        }
-        embed = {
-            "title": f"你收到了 {count} {gift_type}!",
-            "color": 3447003,  # （藍色）
-            "description": ":gift:",
-        }
-        button = {
-            "type": 1,
-            "components": [
-                {
-                    "type": 2,
-                    "label": "前往確認",
-                    "style": 5,  # `5` 表示 Link Button
-                    "url": "https://store.scaict.org",  # 要導向的連結
-                }
-            ],
-        }
-        json_data = {
-            "embeds": [embed],
-            "components": [button],
-            "tts": False,  # Text-to-speech, 默認為 False
-        }
-        try:
-            response = requests.post(url, headers=headers, json=json_data, timeout=10)
-            connect, cursor = link_sql()
-            message_id = response.json().get("id")
-            print(message_id)
-            if not user_id_exists(target_user_id, "user", cursor):
-                cursor.execute(
-                    "INSERT INTO user (uid) VALUE(%s)", (target_user_id,)
-                )  # 這裡要調用 api 去抓使用者名稱和 Mail
-            cursor.execute(
-                "INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
-                (message_id, gift_type, count, target_user_id, True, api_admin_name),
-            )
-            gift_type = "point" if gift_type == "電電點" else "ticket"
-            query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
-            cursor.execute(query, (count, target_user_id))
-            end(connect, cursor)
-        except Exception as e:
-            return jsonify(
-                {
-                    "result": "interal server error(SQL) when insert gift",
-                    "status": 500,
-                    "error": str(e),
-                }
-            )
-            # 待辦：用戶端那裏也要提示
-        response = requests.post(url, headers=headers, json=json_data, timeout=10)
-        if response.status_code != 200:
-            return jsonify(
-                {"error": "Failed to send message", "status": response.status_code}
-            )
         return jsonify({"result": "success", "status": 200})
+    #     url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{target_user_id}"
+    #     response = requests.get(url, headers=headers, timeout=10)
+    #     user_data = discord_api.get_user(target_user_id)
+    #     if response.status_code != 200:
+    #         # 確保 URL 的 target_user_id 在伺服器裡面
+    #         return (
+    #             jsonify({"error": "Failed to fetch user information in tg id"}),
+    #             response.status_code,
+    #         )
+    #     # 送禮物
+    #     try:
+    #         url = "https://discord.com/api/v10/users/@me/channels"
+    #         headers = {
+    #             "Authorization": f"Bot {discord_token}",
+    #             "Content-Type": "application/json",
+    #         }
+    #         json_data = {"recipient_id": target_user_id}
+    #     except requests.RequestException as e:
+    #         return jsonify(
+    #             {"result": "interal server error", "status": 500, "error": str(e)}
+    #         )
+    #     except Exception as e:
+    #         return jsonify(
+    #             {"result": "interal server error", "status": 500, "error": str(e)}
+    #         )
+    #     response = requests.post(url, headers=headers, json=json_data, timeout=10)
+    #     dm_channel = response.json()
+    #     dm_room = dm_channel["id"]
+    #     url = f"https://discord.com/api/v10/channels/{dm_room}/messages"
+    #     # 發送按鈕訊息
+    #     headers = {
+    #         "Authorization": f"Bot {discord_token}",
+    #         "Content-Type": "application/json",
+    #     }
+    #     embed = {
+    #         "title": f"你收到了 {count} {gift_type}!",
+    #         "color": 3447003,  # （藍色）
+    #         "description": ":gift:",
+    #     }
+    #     button = {
+    #         "type": 1,
+    #         "components": [
+    #             {
+    #                 "type": 2,
+    #                 "label": "前往確認",
+    #                 "style": 5,  # `5` 表示 Link Button
+    #                 "url": "https://store.scaict.org",  # 要導向的連結
+    #             }
+    #         ],
+    #     }
+    #     json_data = {
+    #         "embeds": [embed],
+    #         "components": [button],
+    #         "tts": False,  # Text-to-speech, 默認為 False
+    #     }
+    #     try:
+    #         response = requests.post(url, headers=headers, json=json_data, timeout=10)
+    #         connect, cursor = link_sql()
+    #         message_id = response.json().get("id")
+    #         print(message_id)
+    #         if not user_id_exists(target_user_id, "user", cursor):
+    #             cursor.execute(
+    #                 "INSERT INTO user (uid) VALUE(%s)", (target_user_id,)
+    #             )  # 這裡要調用 api 去抓使用者名稱和 Mail
+    #         cursor.execute(
+    #             "INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
+    #             (message_id, gift_type, count, target_user_id, True, api_admin_name),
+    #         )
+    #         gift_type = "point" if gift_type == "電電點" else "ticket"
+    #         query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
+    #         cursor.execute(query, (count, target_user_id))
+    #         end(connect, cursor)
+    #     except Exception as e:
+    #         return jsonify(
+    #             {
+    #                 "result": "interal server error(SQL) when insert gift",
+    #                 "status": 500,
+    #                 "error": str(e),
+    #             }
+    #         )
+    #         # 待辦：用戶端那裏也要提示
+    #     response = requests.post(url, headers=headers, json=json_data, timeout=10)
+    #     if response.status_code != 200:
+    #         return jsonify(
+    #             {"error": "Failed to send message", "status": response.status_code}
+    #         )
+    #     return jsonify({"result": "success", "status": 200})
     except Exception as e:
         return jsonify(
             {"result": "interal server error", "status": 500, "error": str(e)}
@@ -224,7 +232,6 @@ def send(target_user_id):
 
 
 @app.route("/callback")
-        discord_api = Apis(discord_token, guild_ID)
 def callback():
     code = request.args.get("code")
     redirurl = request.args.get("state")  # 使用 state 作為重定向的目標 URL
