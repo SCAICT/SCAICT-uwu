@@ -16,7 +16,7 @@ from flask import (
     jsonify,
 )
 import requests
-
+from dotenv import load_dotenv
 # Local imports
 from cog.core.sql import write
 from cog.core.sql import read
@@ -25,23 +25,24 @@ from cog.core.sql import end
 from cog.core.sql import user_id_exists
 
 app = Flask(__name__)
+load_dotenv(f"{os.getcwd()}/.env",verbose=True, override=True)
 
-# FILEPATH: /d:/GayHub/SCAICT-Discord-Bot/token.json
-with open(f"{os.getcwd()}/token.json", encoding="utf-8") as token_file:
-    token_data = json.load(token_file)
-
-app.secret_key = token_data["secret_key"]
-discord_client_id = token_data["discord_client_id"]
-discord_client_secret = token_data["discord_client_secret"]
-discord_redirect_uri = token_data["discord_redirect_uri"]
-github_client_id = token_data["github_client_id"]
-github_client_secret = token_data["github_client_secret"]
-github_redirect_uri = token_data["github_redirect_uri"]
-github_discord_redirect_uri = token_data["github_discord_redirect_uri"]
-discord_token = token_data["discord_token"]
-send_gift_role = token_data["send_gift_role"]
-
-
+app.secret_key = os.getenv("SECRET_KEY")
+discord_client_id = os.getenv("DISCORD_CLIENT_ID")
+discord_client_secret = os.getenv("DISCORD_CLIENT_SECRET")
+discord_redirect_uri = os.getenv("DISCORD_REDIRECT_URI")
+github_client_id = os.getenv("GITHUB_CLIENT_ID")
+github_client_secret = os.getenv("GITHUB_CLIENT_SECRET")
+github_redirect_uri = os.getenv("GITHUB_REDIRECT_URI")
+github_discord_redirect_uri = os.getenv("GITHUB_DISCORD_REDIRECT_URI")
+discord_token = os.getenv("DISCORD_TOKEN")
+send_gift_role = os.getenv("SEND_GIFT_ROLE")
+guild_ID = os.getenv("GUILD_ID")
+# 將字串轉換為列表
+if send_gift_role:
+    send_gift_role = [int(role_id) for role_id in send_gift_role.split(",")]
+else:
+    send_gift_role_list = []
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template("404.html"), 404
@@ -81,7 +82,7 @@ def listt():
     api_admin_id = api_admin.get("id")
     headers = {"Authorization": f"Bot {discord_token}"}
     url = (
-        f"https://discord.com/api/v10/guilds/1203338928535379978/members/{api_admin_id}"
+        f"https://discord.com/api/v10/guilds/{guild_ID}/members/{api_admin_id}"
     )
     response = requests.get(url, headers=headers, timeout=10)
     user_data = response.json()
@@ -112,7 +113,7 @@ def send(target_user_id):
         api_admin_id = api_admin.get("id")
         api_admin_name = api_admin.get("name")
         headers = {"Authorization": f"Bot {discord_token}"}
-        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{api_admin_id}"
+        url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{api_admin_id}"
         response = requests.get(url, headers=headers, timeout=10)
         user_data = response.json()
         if response.status_code != 200:
@@ -133,7 +134,7 @@ def send(target_user_id):
         except ValueError:
             return jsonify({"result": "Invalid count value", "status": 400})
         print(gift_type, count)
-        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{target_user_id}"
+        url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{target_user_id}"
         response = requests.get(url, headers=headers, timeout=10)
         user_data = response.json()
         if response.status_code != 200:
