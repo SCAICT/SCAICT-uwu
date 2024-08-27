@@ -23,7 +23,7 @@ from cog.core.sql import read
 from cog.core.sql import link_sql
 from cog.core.sql import end
 from cog.core.sql import user_id_exists
-
+from cog.api.api import Apis
 app = Flask(__name__)
 load_dotenv(f"{os.getcwd()}/.env",verbose=True, override=True)
 
@@ -112,15 +112,11 @@ def send(target_user_id):
         )  # <class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
         api_admin_id = api_admin.get("id")
         api_admin_name = api_admin.get("name")
+        discord_api = Apis(discord_token, guild_ID)
         headers = {"Authorization": f"Bot {discord_token}"}
         url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{api_admin_id}"
         response = requests.get(url, headers=headers, timeout=10)
-        user_data = response.json()
-        if response.status_code != 200:
-            return (
-                jsonify({"error": "Failed to fetch user information"}),
-                response.status_code,
-            )
+        user_data = discord_api.get_user(api_admin_id)
         if send_gift_role not in user_data.get("roles", []):
             return jsonify(
                 {"result": "You do not have permission to use this", "status": 403}
@@ -133,7 +129,7 @@ def send(target_user_id):
             count = int(count)  # 確保 count 是整數
         except ValueError:
             return jsonify({"result": "Invalid count value", "status": 400})
-        print(gift_type, count)
+        
         url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{target_user_id}"
         response = requests.get(url, headers=headers, timeout=10)
         user_data = response.json()
@@ -228,6 +224,7 @@ def send(target_user_id):
 
 
 @app.route("/callback")
+        discord_api = Apis(discord_token, guild_ID)
 def callback():
     code = request.args.get("code")
     redirurl = request.args.get("state")  # 使用 state 作為重定向的目標 URL
