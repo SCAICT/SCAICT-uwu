@@ -118,6 +118,8 @@ def send(target_user_id):
         api_admin_name = api_admin.get("name")
         discord_api = Apis(discord_token, guild_ID)
         request_admin = discord_api.get_user(api_admin_id)
+        gift_type = request.args.get("gift_type", "電電點")  # 預設為"電電點"
+        gift_amount = request.args.get("count", 1)  # 預設數量為1
         if "error" in request_admin:
             # 如果有錯誤，返回錯誤訊息和詳細報錯
             return jsonify(
@@ -133,12 +135,10 @@ def send(target_user_id):
             return jsonify(
                 {"result": "You do not have permission to use this", "status": 403}
             )
-        gift_type = request.args.get("gift_type", "電電點")  # 預設為"電電點"
         if gift_type not in ["電電點", "抽獎券"]:
             return jsonify({"result": "Invalid gift type", "status": 400})
-        count = request.args.get("count", 1)  # 預設數量為1
         try:
-            count = int(count)  # 確保 count 是整數
+            gift_amount = int(gift_amount)  # 確保 count 是整數
         except ValueError:
             return jsonify({"result": "Invalid count value", "status": 400})
         # 確保目標用戶存在
@@ -165,51 +165,20 @@ def send(target_user_id):
                         "error": new_gift.error_msg,
                     }
                 )
-            return jsonify({"result": "success", "status": 200})
-        #     url = f"https://discord.com/api/v10/channels/{dm_room}/messages"
-        #     # 發送按鈕訊息
-        #     headers = {
-        #         "Authorization": f"Bot {discord_token}",
-        #         "Content-Type": "application/json",
-        #     }
-        #     embed = {
-        #         "title": f"你收到了 {count} {gift_type}!",
-        #         "color": 3447003,  # （藍色）
-        #         "description": ":gift:",
-        #     }
-        #     button = {
-        #         "type": 1,
-        #         "components": [
-        #             {
-        #                 "type": 2,
-        #                 "label": "前往確認",
-        #                 "style": 5,  # `5` 表示 Link Button
-        #                 "url": "https://store.scaict.org",  # 要導向的連結
-        #             }
-        #         ],
-        #     }
-        #     json_data = {
-        #         "embeds": [embed],
-        #         "components": [button],
-        #         "tts": False,  # Text-to-speech, 默認為 False
-        #     }
-        #     try:
-        #         response = requests.post(url, headers=headers, json=json_data, timeout=10)
-        #         connect, cursor = link_sql()
-        #         message_id = response.json().get("id")
-        #         print(message_id)
-        #         if not user_id_exists(target_user_id, "user", cursor):
-        #             cursor.execute(
-        #                 "INSERT INTO user (uid) VALUE(%s)", (target_user_id,)
-        #             )  # 這裡要調用 api 去抓使用者名稱和 Mail
-        #         cursor.execute(
-        #             "INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
-        #             (message_id, gift_type, count, target_user_id, True, api_admin_name),
-        #         )
-        #         gift_type = "point" if gift_type == "電電點" else "ticket"
-        #         query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
-        #         cursor.execute(query, (count, target_user_id))
-        #         end(connect, cursor)
+            message_id = new_gift.send_gift(gift_type, gift_amount)
+            connect, cursor = link_sql()
+            if not user_id_exists(target_user_id, "user", cursor):
+                cursor.execute(
+                    "INSERT INTO user (uid) VALUE(%s)", (target_user_id,)
+                )  # 這裡要調用 api 去抓使用者名稱和 Mail
+            cursor.execute(
+                "INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
+                (message_id, gift_type, gift_amount, target_user_id, True, api_admin_name),
+            )
+            gift_type = "point" if gift_type == "電電點" else "ticket"
+            query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
+            cursor.execute(query, (gift_amount, target_user_id))
+            end(connect, cursor)
 
         except Exception as e:
             return jsonify(
@@ -219,6 +188,7 @@ def send(target_user_id):
                     "error": str(e),
                 }
             )
+        return jsonify({"result": "success", "status": 200})
     #         # 待辦：用戶端那裏也要提示
     #     response = requests.post(url, headers=headers, json=json_data, timeout=10)
     #     if response.status_code != 200:

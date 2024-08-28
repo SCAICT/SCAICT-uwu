@@ -1,6 +1,5 @@
 import requests
 
-
 class Gift:
     def __init__(self, api_key: str, guild_id: int, recipient_id: int):
         self.api_key = api_key
@@ -19,7 +18,6 @@ class Gift:
         except Exception as e:
             self.dm_room = None
             self.error_msg = str(e)
-        print(self.dm_room)
 
     def __new_dm(self, uid: int) -> dict:
         try:
@@ -33,3 +31,31 @@ class Gift:
             return {"result": "interal server error", "status": 500, "error": str(e)}
         except Exception as e:
             return {"result": "interal server error", "status": 500, "error": str(e)}
+    def _gen_msg(self, gift_type: str, gift_amount: int) -> str:
+        embed = {
+            "title": f"你收到了 {gift_amount} {gift_type}!",
+            "color": 3447003,  # （藍色）
+            "description": ":gift:",
+        }
+        button = {
+                "type": 1,
+                "components": [
+                    {
+                        "type": 2,
+                        "label": "前往確認",
+                        "style": 5,  # `5` 表示 Link Button
+                        "url": "https://store.scaict.org",  # 要導向的連結
+                    }
+                ],
+        }
+        json_data = {
+                "embeds": [embed],
+                "components": [button],
+                "tts": False,  # Text-to-speech, 默認為 False
+        }
+        return json_data
+    def send_gift(self, gift_type: str, gift_amount: int) -> str:
+        url = f"https://discord.com/api/v10/channels/{self.dm_room}/messages"
+        payload = self._gen_msg(gift_type, gift_amount)
+        response = requests.post(url, headers=self.headers, json=payload, timeout=5)
+        return response.json().get("id")
