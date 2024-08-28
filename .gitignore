@@ -12,6 +12,7 @@
 ## Python
 **/__pycache__
 *.egg-info/
+build/lib/
 ## Linux
 flakLog.out
 nohup.out
