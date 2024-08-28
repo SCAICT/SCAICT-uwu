@@ -25,6 +25,7 @@ from cog.core.sql import link_sql
 from cog.core.sql import end
 from cog.core.sql import user_id_exists
 from cog.api.api import Apis
+from cog.api.gift import Gift
 
 app = Flask(__name__)
 load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
@@ -118,7 +119,7 @@ def send(target_user_id):
         discord_api = Apis(discord_token, guild_ID)
         request_admin = discord_api.get_user(api_admin_id)
         if "error" in request_admin:
-            # 如果有錯誤，返回錯誤訊息和詳細信息
+            # 如果有錯誤，返回錯誤訊息和詳細報錯
             return jsonify(
                 {
                     "result": "Failed to fetch user information in admin id",
@@ -140,36 +141,20 @@ def send(target_user_id):
             count = int(count)  # 確保 count 是整數
         except ValueError:
             return jsonify({"result": "Invalid count value", "status": 400})
-        # return jsonify({"result": "success", "status": 200})
-        usr_in_guild = discord_api.in_guild(target_user_id)
-    #     url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{target_user_id}"
-    #     response = requests.get(url, headers=headers, timeout=10)
-    #     user_data = discord_api.get_user(target_user_id)
-    #     if response.status_code != 200:
-    #         # 確保 URL 的 target_user_id 在伺服器裡面
-    #         return (
-    #             jsonify({"error": "Failed to fetch user information in tg id"}),
-    #             response.status_code,
-    #         )
+        # 確保目標用戶存在
+        user_data = discord_api.get_user(target_user_id)
+        if "error" in user_data:
+            # 如果有錯誤，返回錯誤訊息和詳細信息
+            return jsonify(
+                {
+                    "result": "Failed to fetch user information in target id(whitch is in url path)",
+                    "status": 500,
+                    "error_details": request_admin.get("details"),
+                }
+            )
     #     # 送禮物
-    #     try:
-    #         url = "https://discord.com/api/v10/users/@me/channels"
-    #         headers = {
-    #             "Authorization": f"Bot {discord_token}",
-    #             "Content-Type": "application/json",
-    #         }
-    #         json_data = {"recipient_id": target_user_id}
-    #     except requests.RequestException as e:
-    #         return jsonify(
-    #             {"result": "interal server error", "status": 500, "error": str(e)}
-    #         )
-    #     except Exception as e:
-    #         return jsonify(
-    #             {"result": "interal server error", "status": 500, "error": str(e)}
-    #         )
-    #     response = requests.post(url, headers=headers, json=json_data, timeout=10)
-    #     dm_channel = response.json()
-    #     dm_room = dm_channel["id"]
+        try:
+          new_gift = Gift(discord_token, guild_ID)
     #     url = f"https://discord.com/api/v10/channels/{dm_room}/messages"
     #     # 發送按鈕訊息
     #     headers = {
@@ -214,14 +199,14 @@ def send(target_user_id):
     #         query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
     #         cursor.execute(query, (count, target_user_id))
     #         end(connect, cursor)
-    #     except Exception as e:
-    #         return jsonify(
-    #             {
-    #                 "result": "interal server error(SQL) when insert gift",
-    #                 "status": 500,
-    #                 "error": str(e),
-    #             }
-    #         )
+        except Exception as e:
+            return jsonify(
+                {
+                    "result": "interal server error(SQL) when insert gift",
+                    "status": 500,
+                    "error": str(e),
+                }
+            )
     #         # 待辦：用戶端那裏也要提示
     #     response = requests.post(url, headers=headers, json=json_data, timeout=10)
     #     if response.status_code != 200:
