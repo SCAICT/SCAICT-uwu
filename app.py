@@ -17,6 +17,7 @@ from flask import (
 )
 import requests
 from dotenv import load_dotenv
+
 # Local imports
 from cog.core.sql import write
 from cog.core.sql import read
@@ -24,8 +25,9 @@ from cog.core.sql import link_sql
 from cog.core.sql import end
 from cog.core.sql import user_id_exists
 from cog.api.api import Apis
+
 app = Flask(__name__)
-load_dotenv(f"{os.getcwd()}/.env",verbose=True, override=True)
+load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
 
 app.secret_key = os.getenv("SECRET_KEY")
 discord_client_id = os.getenv("DISCORD_CLIENT_ID")
@@ -43,6 +45,8 @@ if send_gift_role:
     send_gift_role = [str(role_id) for role_id in send_gift_role.split(",")]
 else:
     send_gift_role_list = []
+
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template("404.html"), 404
@@ -81,9 +85,7 @@ def listt():
     )  # <class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
     api_admin_id = api_admin.get("id")
     headers = {"Authorization": f"Bot {discord_token}"}
-    url = (
-        f"https://discord.com/api/v10/guilds/{guild_ID}/members/{api_admin_id}"
-    )
+    url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{api_admin_id}"
     response = requests.get(url, headers=headers, timeout=10)
     user_data = response.json()
     if response.status_code != 200:
@@ -123,7 +125,7 @@ def send(target_user_id):
                     "error_details": request_admin.get("details"),
                 }
             )
-        admin_roles =request_admin.get("roles", [])
+        admin_roles = request_admin.get("roles", [])
         # 確保發起人有權限發送禮物
         if set(send_gift_role) & set(admin_roles) == set():
             return jsonify(
