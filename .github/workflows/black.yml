@@ -36,12 +36,12 @@ jobs:
       run: |
         git config --local user.name "github-actions[bot]"
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    - name: Git diff
+      run: |
+        git diff-index --quiet HEAD
     - name: Git add
       run: |
         git add *
-    - name: Git commit
+    - name: Git commit & push
       run: |
-        git diff-index --quiet HEAD || git commit -m "Format \"$(git show -s --format=%s)\" using Black"
-    - name: Git push
-      run: |
-        git push
+        git diff-index --quiet HEAD || ( git commit -m "Format \"$(git show -s --format=%s)\" using Black" && git push )
