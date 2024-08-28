@@ -173,7 +173,14 @@ def send(target_user_id):
                 )  # 這裡要調用 api 去抓使用者名稱和 Mail
             cursor.execute(
                 "INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
-                (message_id, gift_type, gift_amount, target_user_id, True, api_admin_name),
+                (
+                    message_id,
+                    gift_type,
+                    gift_amount,
+                    target_user_id,
+                    True,
+                    api_admin_name,
+                ),
             )
             gift_type = "point" if gift_type == "電電點" else "ticket"
             query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
