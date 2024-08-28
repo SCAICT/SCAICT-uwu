@@ -152,7 +152,7 @@ def send(target_user_id):
                     "error_details": request_admin.get("details"),
                 }
             )
-    #     # 送禮物
+        #     # 送禮物
         try:
             new_gift = Gift(discord_token, guild_ID,target_user_id) # create a new gift object
             if new_gift.dm_room is None:
