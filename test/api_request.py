@@ -1,7 +1,10 @@
-import os
-import requests
-from dotenv import load_dotenv
+# Standard imports
 import json
+import os
+
+# Third-party imports
+from dotenv import load_dotenv
+import requests
 
 load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
 guild_id = os.getenv("GUILD_ID")

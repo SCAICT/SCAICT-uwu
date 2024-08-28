@@ -22,7 +22,7 @@ class Gift:
 
     def __new_dm(self, uid: int) -> dict:
         try:
-            url = f"https://discord.com/api/v10/users/@me/channels"
+            url = "https://discord.com/api/v10/users/@me/channels"
             payload = {"recipient_id": uid}
             # {'id': '', 'type': 1, 'last_message_id': '1276230139230814241', 'flags': 0, 'recipients': [{'id': '', 'username': '', 'avatar': '', 'discriminator': '0', 'public_flags': 256, 'flags': 256, 'banner': '', 'accent_color': 2054367, 'global_name': '', 'avatar_decoration_data': {'asset': '', 'sku_id': '1144058522808614923', 'expires_at': None}, 'banner_color': '#1f58df', 'clan': None}]}
             response = requests.post(url, headers=self.headers, json=payload, timeout=5)
