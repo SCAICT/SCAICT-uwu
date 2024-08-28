@@ -5,7 +5,8 @@ This is used when the database schema is modified and we need to apply patches.
 """
 
 # Local imports
-from scaict_uwu.maintenance.maintenance import Maintenance
+# scaict_uwu.maintenance.maintenance
+from ..maintenance import Maintenance
 
 
 class UpdateMaintenance(Maintenance):

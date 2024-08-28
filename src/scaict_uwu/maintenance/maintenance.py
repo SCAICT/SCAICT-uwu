@@ -3,7 +3,8 @@ This is the module for the abstract class for all maintenance scripts.
 """
 
 # Local imports
-from scaict_uwu.maintenance.parameters import MaintenanceParameters
+# scaict_uwu.maintenance.parameters
+from .parameters import MaintenanceParameters
 
 
 class Maintenance:
