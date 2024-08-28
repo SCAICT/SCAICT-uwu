@@ -154,7 +154,10 @@ def send(target_user_id):
             )
     #     # 送禮物
         try:
-          new_gift = Gift(discord_token, guild_ID)
+            new_gift = Gift(discord_token, guild_ID,target_user_id) # create a new gift object
+            if new_gift.dm_room is None:
+                return jsonify({"result": "Failed to create DM channel", "status": 500, "error": new_gift.error_msg})
+            return jsonify({"result": "success", "status": 200})
     #     url = f"https://discord.com/api/v10/channels/{dm_room}/messages"
     #     # 發送按鈕訊息
     #     headers = {
@@ -199,6 +202,7 @@ def send(target_user_id):
     #         query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
     #         cursor.execute(query, (count, target_user_id))
     #         end(connect, cursor)
+            
         except Exception as e:
             return jsonify(
                 {
