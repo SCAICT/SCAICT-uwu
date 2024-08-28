@@ -53,6 +53,17 @@ class Apis:
         except requests.exceptions.RequestException as e:
             # 如果發生錯誤，返回一個包含錯誤訊息和詳細報錯的字典
             return {"error": "get_user error", "details": str(e)}
+    def in_guild(self, uid):
+        # 檢查用戶是否在伺服器中
+        try:
+            url = f"https://discord.com/api/v10/guilds/{self.guild_id}/members/{uid}"
+            response = requests.get(url, headers=self.headers,timeout=5)
+            response.raise_for_status()  # 檢查 HTTP 狀態碼
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            # 如果發生錯誤，返回一個包含錯誤訊息和詳細報錯的字典
+            return {"error": "in_guild", "details": str(e)}
+
     def create_dm_channel(self, target_user_id: str):
         try:
             url = "https://discord.com/api/v10/users/@me/channels"

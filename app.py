@@ -105,6 +105,7 @@ def listt():
 
 
 @app.route("/api/send/<int:target_user_id>")
+# api/send/{recipient}?gift_type={電電點|抽獎券}count={count}
 def send(target_user_id):
     if not session:
         return jsonify({"resulet": "you must loggin", "status": 403})
@@ -139,7 +140,8 @@ def send(target_user_id):
             count = int(count)  # 確保 count 是整數
         except ValueError:
             return jsonify({"result": "Invalid count value", "status": 400})
-        return jsonify({"result": "success", "status": 200})
+        # return jsonify({"result": "success", "status": 200})
+        usr_in_guild = discord_api.in_guild(target_user_id)
     #     url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{target_user_id}"
     #     response = requests.get(url, headers=headers, timeout=10)
     #     user_data = discord_api.get_user(target_user_id)
