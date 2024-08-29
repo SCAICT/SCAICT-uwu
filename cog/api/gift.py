@@ -11,7 +11,7 @@ class Gift:
             "Content-Type": "application/json",
         }
         try:
-            fetch_usr = self.__new_dm(recipient_id)["id"]
+            fetch_usr = self.__new_dm(recipient_id)
             if "id" in fetch_usr:
                 self.dm_room = fetch_usr["id"]
             else:

@@ -3,7 +3,7 @@ import json
 import os
 import random
 from urllib.parse import urlencode
-
+import traceback
 # Third-party imports
 from flask import (
     Flask,
@@ -26,7 +26,6 @@ from cog.core.sql import end
 from cog.core.sql import user_id_exists
 from cog.api.api import Apis
 from cog.api.gift import Gift
-
 app = Flask(__name__)
 load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
 
@@ -152,7 +151,8 @@ def send(target_user_id):
                     "error_details": request_admin.get("details"),
                 }
             )
-        #     # 送禮物
+        # 送禮物
+        user_name = user_data["user"]["username"]
         try:
             new_gift = Gift(
                 discord_token, guild_ID, target_user_id
@@ -177,7 +177,7 @@ def send(target_user_id):
                     message_id,
                     gift_type,
                     gift_amount,
-                    target_user_id,
+                    user_name,
                     True,
                     api_admin_name,
                 ),
@@ -196,14 +196,8 @@ def send(target_user_id):
                 }
             )
         return jsonify({"result": "success", "status": 200})
-    #         # 待辦：用戶端那裏也要提示
-    #     response = requests.post(url, headers=headers, json=json_data, timeout=10)
-    #     if response.status_code != 200:
-    #         return jsonify(
-    #             {"error": "Failed to send message", "status": response.status_code}
-    #         )
-    #     return jsonify({"result": "success", "status": 200})
     except Exception as e:
+        traceback.print_exc()
         return jsonify(
             {"result": "interal server error", "status": 500, "error": str(e)}
         )

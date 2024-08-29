@@ -4,7 +4,6 @@ import os
 # Third-party imports
 import discord
 from dotenv import load_dotenv
-
 # Local imports
 from channel_check import update_channel  # update_channel程式從core目錄底下引入
 from channel_check import change_status  # update_channel程式從core目錄底下引入
@@ -30,6 +29,6 @@ async def on_ready():
 
 
 if __name__ == "__main__":
-    load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
+    load_dotenv(f"{os.getcwd()}/.env",verbose=True, override=True)
     bot_token = os.getenv("DISCORD_TOKEN")
     bot.run(bot_token)

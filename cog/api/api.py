@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 class Apis:
@@ -52,9 +53,9 @@ class Apis:
         """
         try:
             url = f"https://discord.com/api/v10/guilds/{self.guild_id}/members/{uid}"
-            response = requests.get(url, headers=self.headers, timeout=5)
-            response.raise_for_status()  # 檢查 HTTP 狀態碼
-            return response.json()
+            usr = requests.get(url, headers=self.headers, timeout=5)
+            usr.raise_for_status()  # 檢查 HTTP 狀態碼
+            return usr.json()
         except requests.exceptions.RequestException as e:
             # 如果發生錯誤，返回一個包含錯誤訊息和詳細報錯的字典
             return {"error": "get_user error", "details": str(e)}
