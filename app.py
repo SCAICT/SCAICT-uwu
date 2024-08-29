@@ -66,7 +66,6 @@ def login():
         params["state"] = redirurl
     # 將參數進行 URL 編碼並組合成最終的 URL
     urlencoded = urlencode(params)
-    print(f"{base_url}?\n\n{urlencoded}")
     return redirect(f"{base_url}?{urlencoded}")
 
 
@@ -279,7 +278,6 @@ def discord_callback():
     response = requests.post(
         "https://discord.com/api/oauth2/token", data=data, headers=headers
     )
-    print(response.json())
     access_token = response.json()["access_token"]
     headers = {"Authorization": f"Bearer {access_token}"}
     # pylint: disable-next = missing-timeout
@@ -478,7 +476,6 @@ def github_callback():
     }
     # pylint: disable-next = missing-timeout
     response = requests.post(token_url, headers=headers, data=data)
-    print(response.json())
     session["access_token"] = response.json()["access_token"]
 
     return redirect(url_for("star_uwu"))
@@ -504,7 +501,6 @@ def star_uwu():
     headers = {"Authorization": f"token {session['access_token']}"}
     # pylint: disable-next = missing-timeout
     user_response = requests.get(user_url, headers=headers)
-    print(user_response.json())
     github_username = user_response.json()["login"]
     github_email = user_response.json()["email"]
     connection, cursor = link_sql()  # SQL 會話
@@ -517,11 +513,9 @@ def star_uwu():
     repo_name = "SCAICT-uwu"
     star_url = f"https://api.github.com/user/starred/{repo_owner}/{repo_name}"
     headers = {"Authorization": f"token {session['access_token']}"}
-    print(session["access_token"])
     # Sending a PUT request to star the repository
     # pylint: disable-next = missing-timeout
     response = requests.put(star_url, headers=headers)
-    print(response.text)
     # Checking the response status and returning an appropriate message
     if response.ok:
         print(f"Successfully starred {repo_owner}/{repo_name}! {response}")

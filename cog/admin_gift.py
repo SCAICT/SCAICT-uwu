@@ -100,7 +100,6 @@ class SendGift(Build):
                 await ctx.respond("不能發送 0 以下個禮物！", ephemeral=True)
                 return
             manager = ctx.author  # return <class 'discord.member.Member'>
-            print(type(manager))
             target_usernames = target_str.split(",")
             target_users = []
             async def fetch_user_by_name(name):
@@ -114,6 +113,8 @@ class SendGift(Build):
 
             for username in target_usernames:
                 username = username.strip()
+                if username not in SendGift.user_cache:
+                    continue
                 try:
                     user = await fetch_user_by_name(username)
                     target_users.append(user)
@@ -132,7 +133,5 @@ class SendGift(Build):
         except Exception as e:
             traceback.print_exc()
             await ctx.respond(f"伺服器內部出現錯誤：{e}", ephemeral=True)
-
-
 def setup(bot):
     bot.add_cog(SendGift(bot))

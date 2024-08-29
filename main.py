@@ -19,7 +19,14 @@ for filename in os.listdir(f"{os.getcwd()}/cog"):
         bot.load_extension(f"cog.{filename[:-3]}")
         print(f"📖 {filename} loaded")  # test
 
-
+@bot.command()
+async def load(ctx, extension):
+    bot.load_extension(f"cog.{extension}")
+    await ctx.send(f"📖 {extension} loaded")
+@bot.command()
+async def unload(ctx, extension):
+    bot.unload_extension(f"cog.{extension}")
+    await ctx.send(f"📖 {extension} unloaded")
 @bot.event
 async def on_ready():
     print(f"✅ {bot.user} is online")
