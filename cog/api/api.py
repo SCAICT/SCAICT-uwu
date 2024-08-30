@@ -1,5 +1,8 @@
+# Standard imports
+# import json
+
+# Third-party imports
 import requests
-import json
 
 
 class Apis:
