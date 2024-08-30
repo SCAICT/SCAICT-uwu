@@ -76,9 +76,11 @@ class SendGift(Build):
             button.label = "已領取"  # Change the button's label to "已領取"
             button.disabled = True  # 關閉按鈕，避免重複點擊
             await ctx.response.edit_message(view=self)
+
     def cache_users_by_name(self):
         # 將所有使用者名稱和對應的使用者物件存入字典
         return {user.name: user for user in self.bot.users}
+
     @discord.slash_command(name="發送禮物", description="dm_gift")
     async def send_dm_gift(
         self,
@@ -102,6 +104,7 @@ class SendGift(Build):
             manager = ctx.author  # return <class 'discord.member.Member'>
             target_usernames = target_str.split(",")
             target_users = []
+
             async def fetch_user_by_name(name):
                 user_obj = discord.utils.find(lambda u: u.name == name, self.bot.users)
                 if user_obj:
@@ -133,5 +136,7 @@ class SendGift(Build):
         except Exception as e:
             traceback.print_exc()
             await ctx.respond(f"伺服器內部出現錯誤：{e}", ephemeral=True)
+
+
 def setup(bot):
     bot.add_cog(SendGift(bot))

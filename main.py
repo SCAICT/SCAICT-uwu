@@ -4,6 +4,7 @@ import os
 # Third-party imports
 import discord
 from dotenv import load_dotenv
+
 # Local imports
 from channel_check import update_channel  # update_channel程式從core目錄底下引入
 from channel_check import change_status  # update_channel程式從core目錄底下引入
@@ -19,14 +20,19 @@ for filename in os.listdir(f"{os.getcwd()}/cog"):
         bot.load_extension(f"cog.{filename[:-3]}")
         print(f"📖 {filename} loaded")  # test
 
+
 @bot.command()
 async def load(ctx, extension):
     bot.load_extension(f"cog.{extension}")
     await ctx.send(f"📖 {extension} loaded")
+
+
 @bot.command()
 async def unload(ctx, extension):
     bot.unload_extension(f"cog.{extension}")
     await ctx.send(f"📖 {extension} unloaded")
+
+
 @bot.event
 async def on_ready():
     print(f"✅ {bot.user} is online")
@@ -36,6 +42,6 @@ async def on_ready():
 
 
 if __name__ == "__main__":
-    load_dotenv(f"{os.getcwd()}/.env",verbose=True, override=True)
+    load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
     bot_token = os.getenv("DISCORD_TOKEN")
     bot.run(bot_token)

@@ -4,6 +4,7 @@ import os
 import random
 from urllib.parse import urlencode
 import traceback
+
 # Third-party imports
 from flask import (
     Flask,
@@ -26,6 +27,7 @@ from cog.core.sql import end
 from cog.core.sql import user_id_exists
 from cog.api.api import Apis
 from cog.api.gift import Gift
+
 app = Flask(__name__)
 load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
 
