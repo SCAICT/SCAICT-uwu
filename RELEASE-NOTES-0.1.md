@@ -503,60 +503,8 @@ Below only new and removed languages are listed.
 
 This is the initial release of SCAICT-uwu 0.1 version.
 
-### Configuration changes for system administrators in 0.1.0
+### Changes in 0.1.0
 
-#### New configuration in 0.1.0
-
-* …
-
-#### Changed configuration in 0.1.0
-
-* …
-
-#### Removed configuration in 0.1.0
-
-* …
-
-### New user-facing features in 0.1.0
-
-* …
-
-### New features for sysadmins in 0.1.0
-
-* …
-
-### New developer features in 0.1.0
-
-* …
-
-### Bug fixes in 0.1.0
-
-* …
-
-### API changes in 0.1.0
-
-* …
-
-### API internal changes in 0.1.0
-
-* …
-
-### Languages updated in 0.1.0
-
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
-
-Below only new and removed languages are listed.
-
-* …
-
-### Breaking changes in 0.1.0
-
-* …
-
-### Deprecations in 0.1.0
-
-* …
-
-### Other changes in 0.1.0
-
-* …
+* Initial commit.
+  * Added `LICENSE`, using Apache License Version 2.0, January 2004.
+  * Added `README.md`.
