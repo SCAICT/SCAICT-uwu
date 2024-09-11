@@ -497,6 +497,41 @@ Below only new and removed languages are listed.
 
 ### Other changes in 0.1.1
 
+* Added dynamic voice channel and support ticket feature.
+* Added `.gitignore` to ignore token files.
+* Added `.gitignore` to ignore cache files.
+* Added channel member display.
+* Added CTF features.
+* self problem.
+* Updated CTF features wip (can create and list).
+* independent update channel.
+* Passing bot attributes.
+* Added comment, check_point and daily_charge Python modules.
+* Added JSON file as initial database.
+* Added user Python module.
+* Migrated use of user functions to user Python module.
+* Rewrote the daily charge feature.
+* Completed CTF features.
+* Fixed counting error, only replyer sees message.
+* Added initial website using Flask.
+* Completed course role features.
+* Updated design of SCAICT Store.
+* Updated to use JSON file to get CTF maker role ID.
+* Updated the support ticket embed description.
+* Updated to limit the usage of daily change command to specific channel.
+* Completed SCAICT Store.
+* Added lottery slot feature in SCAICT Store.
+* Added SQL database.
+* Migrated user.json to SQL database.
+* Added exception handling for data not found issues.
+* Renamed SQL column name from `user_id` to `uid`.
+* Added support for bot status/presence.
+* Added zap emoji.
+* Added Google Analytics.
+* Added total point status display.
+* Dropped support for `user.json`, use SQL database instead.
+* Fixed issue caused by users without avatar set.
+* Updated CTF features.
 * …
 
 ## SCAICT-uwu 0.1.0
