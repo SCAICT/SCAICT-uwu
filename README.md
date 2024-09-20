@@ -5,17 +5,18 @@
 <img src="uwu.png" width="200px" alt="中電喵 SCAICT uwu">
 
 # 中電喵 SCAICT uwu
-[![同步代辦事項至 Notion](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml/badge.svg?event=issues)](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml)
-[![website](https://img.shields.io/website?label=website&&url=https%3A%2F%2Fscaict.org%2F)](https://scaict.org/)
-[![SCAICT store](https://img.shields.io/website?label=SCAICT-store&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://store.scaict.org/)
-[![document](https://img.shields.io/website?label=Document&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://g.scaict.org/doc/)
-[![Join Discord](https://img.shields.io/discord/959823904266944562?label=Discord&logo=discord&)](https://dc.scaict.org)
-[![follow Instagram](https://img.shields.io/badge/follow-%40scaict.tw-pink?&logo=instagram)](https://www.instagram.com/scaict.tw/)
+
+[![Sync issues to Notion](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml/badge.svg?event=issues)](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml)
+[![Website](https://img.shields.io/website?label=Website&&url=https%3A%2F%2Fscaict.org%2F)](https://scaict.org/)
+[![SCAICT store](https://img.shields.io/website?label=SCAICT+store&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://store.scaict.org/)
+[![Documentation](https://img.shields.io/website?label=Documentation&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://g.scaict.org/doc/)
+[![Join Discord server](https://img.shields.io/discord/959823904266944562?label=Discord&logo=discord&)](https://dc.scaict.org)
+[![Follow Instagram](https://img.shields.io/badge/Follow-%40scaict.tw-pink?&logo=instagram)](https://www.instagram.com/scaict.tw/)
 
 </div>
 
-
 # SCAICT-uwu
+
 SCAICT-uwu is a playful and interactive Discord bot that resides in the SCAICT Discord community. Designed to bring fun and utility to its users, SCAICT-uwu loves to sing, dance, code, and do math, making it an engaging companion for the community members.
 
 ## Overview
@@ -23,6 +24,7 @@ SCAICT-uwu is a playful and interactive Discord bot that resides in the SCAICT D
 SCAICT-uwu offers a range of interactive features, from daily activities to coding challenges. Whether you want to play games, solve puzzles, or simply chat, SCAICT-uwu is always ready to respond to your commands.
 
 ### About SCAICT
+
 SCAICT, the Student Club Information Association of Central Taiwan, is an electronic engineering club composed of schools from central Taiwan. By combining the resources of the Central District, we actively organize educational events, activities, and competitions related to information technology, with the goal of facilitating the flow of technology and knowledge.
 
 ## Features
@@ -41,8 +43,11 @@ Interact with SCAICT-uwu using slash commands in any channel where the bot is ac
 
 Some interactions with SCAICT-uwu occur within dedicated channels, allowing for more focused activities such as guessing colors or counting.
 ![color guess](https://raw.githubusercontent.com/SCAICT/doc/main/static/img/color-demo.gif)
+
 ### Store
+
 #### Buy somthing
+
 You can buy some products like our stickers or USB drives using Electric Points. Note that the products currently can only be exchanged during in-person events. We will soon offer shipping options and more virtual rewards for redemption.
 
 <div align="center">
@@ -52,6 +57,7 @@ You can buy some products like our stickers or USB drives using Electric Points.
 </div>
 
 #### Play slot
+
 Get some tickets, and you can play the slot machine to earn Electric Points. Just long press to start the slot.
 <div align="center">
 
@@ -60,12 +66,11 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
 </div>
 
 ## Getting Started
-1. **Join the Server**  
-   Start by joining the SCAICT Discord community using this [link](https://dc.scaict.org).
 
+1. **Join the Server**
+   Start by joining the SCAICT Discord community using this [link](https://dc.scaict.org).
 2. **Earn Your First Electric Points**  
    Visit the `#daily-charge` channel and use the `/charge` command to receive your first set of Electric Points, the primary currency used within the bot's ecosystem.
-
 3. **Enjoy in Services**  
    Explore the various commands and interactions SCAICT-uwu offers, and enjoy the space within the server, engaging and connecting with everyone.
 
@@ -129,9 +134,8 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
       "element": [ percentage, reward ]
   }
   ```
+
 > For more detailed documentation, please refer to [this link](https://g.scaict.org/doc/docs/category/%E9%96%8B%E7%99%BC%E8%80%85%E5%B0%88%E5%8D%80)
-
-
 
 ## Acknowledgements
 
