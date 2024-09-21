@@ -185,11 +185,11 @@ body:not(.mediawiki) .mw-parser-output .mw-tpl-schemadiagram-credit a.external{
 <h3 id="user_2">user</h3>
 </div>
 <ul>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> DCname STRING(32)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> DCname VARCHAR(32)</li>
 <li><span title="Primary key" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--primary"></span> uid BIGINT</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> DCMail STRING(320)</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> githubName STRING(39)</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> githubMail STRING(320)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> DCMail VARCHAR(320)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> githubName VARCHAR(39)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> githubMail VARCHAR(320)</li>
 <li><span title="Required (Not nullable)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--notnull"></span> loveuwu TINYINT(1)</li>
 <li><span title="Required (Not nullable)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--notnull"></span> point INT</li>
 <li><span title="Required (Not nullable)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--notnull"></span> ticket INT</li>
@@ -246,7 +246,7 @@ body:not(.mediawiki) .mw-parser-output .mw-tpl-schemadiagram-credit a.external{
 <li>
 <span title="Required (Not nullable)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--notnull"></span> seq BIGINT</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> lastID BIGINT</li>
-<li><span title="Required (Not nullable)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--notnull"></span> niceColor STRING(3)</li>
+<li><span title="Required (Not nullable)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--notnull"></span> niceColor VARCHAR(3)</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> nicecolorround INT</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> niceColorCount BIGINT</li>
 </ul>
@@ -271,11 +271,11 @@ body:not(.mediawiki) .mw-parser-output .mw-tpl-schemadiagram-credit a.external{
 <ul>
 <li>
 <span title="Primary key" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--primary"></span> btnID BIGINT</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> type ENUM</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> type ENUM(…)</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> count INT</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> recipient STRING(32)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> recipient VARCHAR(32)</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> received TINYINT(1)</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> sender STRING(32)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> sender VARCHAR(32)</li>
 </ul>
 </div>
 </td>
@@ -298,14 +298,14 @@ body:not(.mediawiki) .mw-parser-output .mw-tpl-schemadiagram-credit a.external{
 <ul>
 <li>
 <span title="Required (Not nullable)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--notnull"></span> id BIGINT</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> flags STRING(255)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> flags VARCHAR(255)</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> score INT</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> restrictions STRING(255)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> restrictions VARCHAR(255)</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> message_id BIGINT</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> case_status TINYINT(1)</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> start_time DATETIME</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> end_time STRING(255)</li>
-<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> title STRING(255)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> end_time VARCHAR(255)</li>
+<li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> title VARCHAR(255)</li>
 <li><span title="Optional (May be null)" class="mw-tpl-schemadiagram-field mw-tpl-schemadiagram-field--regular"></span> tried INT</li>
 </ul>
 </div>
