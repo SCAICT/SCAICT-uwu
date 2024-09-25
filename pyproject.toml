@@ -37,6 +37,6 @@ dependencies = [
 # Lock file: requirements_dev.txt
 optional-dependencies.dev = [
 	"black == 24.8.0",
-	"pylint == 3.3.0",
+	"pylint == 3.3.1",
 	"pytest == 8.3.3",
 ]
