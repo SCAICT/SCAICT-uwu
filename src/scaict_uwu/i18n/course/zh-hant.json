@@ -1,4 +1,11 @@
 {
+	"@metadata": {
+		"authors": [
+			"Each Chen",
+			"os24",
+			"Winston Sung"
+		]
+	},
 	"course-token-redeem-button-label": "請輸入課程代碼",
 	"course-token-modal-title": "請輸入課程代碼",
 	"course-token-modal-input-text-label": "請輸入課程代碼",
