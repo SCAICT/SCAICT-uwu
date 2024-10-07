@@ -1,5 +1,5 @@
 """
-Entry point for the SCAICT shop website using Flask run.
+Entry point for the SCAICT store website using Flask run.
 
 TODO: Complete this
 """
