@@ -25,7 +25,7 @@ SCAICT-uwu offers a range of interactive features, from daily activities to codi
 
 ### About SCAICT
 
-SCAICT, the Student Club Information Association of Central Taiwan, is an electronic engineering club composed of schools from central Taiwan. By combining the resources of the Central District, we actively organize educational events, activities, and competitions related to information technology, with the goal of facilitating the flow of technology and knowledge.
+SCAICT, Student Club's Association of Information in Central Taiwan, is an electronic engineering club composed of schools from Central Taiwan. By combining the resources of the Central Region, we actively organize educational events, activities, and competitions related to information technology, with the goal of facilitating the flow of technology and knowledge.
 
 ## Features
 
@@ -46,7 +46,7 @@ Some interactions with SCAICT-uwu occur within dedicated channels, allowing for 
 
 ### Store
 
-#### Buy somthing
+#### Buy something
 
 You can buy some products like our stickers or USB drives using Electric Points. Note that the products currently can only be exchanged during in-person events. We will soon offer shipping options and more virtual rewards for redemption.
 
@@ -61,7 +61,7 @@ You can buy some products like our stickers or USB drives using Electric Points.
 Get some tickets, and you can play the slot machine to earn Electric Points. Just long press to start the slot.
 <div align="center">
 
-![solt demo](https://raw.githubusercontent.com/SCAICT/doc/main/static/img/slot-demo.gif)
+![slot demo](https://raw.githubusercontent.com/SCAICT/doc/main/static/img/slot-demo.gif)
 
 </div>
 
@@ -70,7 +70,7 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
 1. **Join the Server**
    Start by joining the SCAICT Discord community using this [link](https://dc.scaict.org).
 2. **Earn Your First Electric Points**  
-   Visit the `#daily-charge` channel and use the `/charge` command to receive your first set of Electric Points, the primary currency used within the bot's ecosystem.
+   Visit the `#🔌每日充電` (`everyDayCharge`) channel and use the `/charge` command to receive your first set of Electric Points, the primary currency used within the bot's ecosystem.
 3. **Enjoy in Services**  
    Explore the various commands and interactions SCAICT-uwu offers, and enjoy the space within the server, engaging and connecting with everyone.
 
@@ -139,4 +139,4 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
 
 ## Acknowledgements
 
-SCAICT-uww is a project jointly developed and maintained by SCAICT and [contributors](https://github.com/SCAICT/SCAICT-uwu/graphs/contributors). The character design was created by [毛哥 EM](https://elvismao.com/) and [瑞樹](https://www.facebook.com/ruishuowo), while some icons were sourced from [Freepik - Flaticon](https://www.flaticon.com/free-icons/slot-machine).
+SCAICT-uwu is a project jointly developed and maintained by SCAICT and [contributors](https://github.com/SCAICT/SCAICT-uwu/graphs/contributors). The character design was created by [毛哥 EM](https://elvismao.com/) and [瑞樹](https://www.facebook.com/ruishuowo), while some icons were sourced from [Freepik - Flaticon](https://www.flaticon.com/free-icons/slot-machine).

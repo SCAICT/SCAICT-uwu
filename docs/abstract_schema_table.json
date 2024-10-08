@@ -129,7 +129,7 @@
 									},
 									"enum_values": {
 										"type": "array",
-										"description": "Values to use with type 'mwenum'",
+										"description": "Values to use with type 'enum'",
 										"additionalItems": false,
 										"items": {
 											"type": "string"

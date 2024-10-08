@@ -29,9 +29,9 @@ class Gift:
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            return {"result": "interal server error", "status": 500, "error": str(e)}
+            return {"result": "internal server error", "status": 500, "error": str(e)}
         except Exception as e:
-            return {"result": "interal server error", "status": 500, "error": str(e)}
+            return {"result": "internal server error", "status": 500, "error": str(e)}
 
     def _gen_msg(self, gift_type: str, gift_amount: int) -> str:
         embed = {

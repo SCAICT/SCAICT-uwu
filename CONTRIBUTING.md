@@ -189,7 +189,7 @@ for further information.
   MySQL/MariaDB.
 * Column names should be unique, i.e., same column name should not exist in
   different tables.
-* Column names should be prefixed with table names or abbrieviations.
+* Column names should be prefixed with table names or abbreviations.
   * For example, `user_id` in `user`, `ug_user` in `user_groups`.
 
 Examples:

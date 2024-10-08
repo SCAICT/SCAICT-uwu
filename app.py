@@ -80,7 +80,7 @@ def logout():
 @app.route("/api/mlist")
 def listt():
     if not session:
-        return jsonify({"resulet": "you must loggin", "status": 403})
+        return jsonify({"result": "you must login", "status": 403})
     api_admin = session.get(
         "user"
     )  # <class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
@@ -109,7 +109,7 @@ def listt():
 # api/send/{recipient}?gift_type={電電點|抽獎券}count={count}
 def send(target_user_id):
     if not session:
-        return jsonify({"resulet": "you must loggin", "status": 403})
+        return jsonify({"result": "you must login", "status": 403})
     try:
         api_admin = session.get(
             "user"
@@ -147,7 +147,7 @@ def send(target_user_id):
             # 如果有錯誤，返回錯誤訊息和詳細信息
             return jsonify(
                 {
-                    "result": "Failed to fetch user information in target id(whitch is in url path)",
+                    "result": "Failed to fetch user information in target id (which is in url path)",
                     "status": 500,
                     "error_details": request_admin.get("details"),
                 }
@@ -191,7 +191,7 @@ def send(target_user_id):
         except Exception as e:
             return jsonify(
                 {
-                    "result": "interal server error(SQL) when insert gift",
+                    "result": "internal server error(SQL) when insert gift",
                     "status": 500,
                     "error": str(e),
                 }
@@ -200,7 +200,7 @@ def send(target_user_id):
     except Exception as e:
         traceback.print_exc()
         return jsonify(
-            {"result": "interal server error", "status": 500, "error": str(e)}
+            {"result": "internal server error", "status": 500, "error": str(e)}
         )
 
 
@@ -293,7 +293,7 @@ def discord_callback():
     return redirect(url_for("star_uwu"))
 
 
-# make filder static in templates/static static
+# make filter static in templates/static static
 @app.route("/static/<path:filename>")
 def staticfiles(path):
     return send_from_directory("static", path)
@@ -367,7 +367,7 @@ def product_list():
 
 @app.route("/buyProduct", methods=["POST"])
 def buy_product():
-    # Recieve POST request, get product id and check if logged in
+    # Receive POST request, get product id and check if logged in
     discord_user = session.get("user")
     if not discord_user:
         return "請重新登入"
@@ -491,7 +491,7 @@ def star_uwu():
     if "access_token" not in session:
         print("GitHub access token not found!")
         return redirect(url_for("github_login"))
-    # if dc not loggin
+    # if dc not login
     discord_user = session.get("user")
     if not discord_user:
         # pylint: disable-next = line-too-long
@@ -524,9 +524,9 @@ def star_uwu():
         connection, cursor = link_sql()  # SQL 會話
         if not user_id_exists(
             discord_user["id"], "user", cursor
-        ):  # 該 uesr id 不在user表格內，插入該筆使用者資料
+        ):  # 該 user id 不在user表格內，插入該筆使用者資料
             insert_user(discord_user["id"], "user", cursor)
-        # if already starred. liveuwu is 1
+        # if already starred. loveuwu is 1
         if read(discord_user["id"], "loveuwu", cursor):
             end(connection, cursor)
             return render_template("already.html")

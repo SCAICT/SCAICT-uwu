@@ -1,4 +1,4 @@
-# enume 測試
+# enum 測試
 from enum import Enum
 
 
@@ -7,7 +7,7 @@ class GiftType(Enum):
     ticket = "抽獎券"
 
 
-for gt in GiftType:  # eqaul to print(GiftType.{item}.name)
+for gt in GiftType:  # equal to print(GiftType.{item}.name)
     print(gt)
 print(GiftType.point.name)
 
