@@ -1,69 +1,8 @@
+# History
+
+Change notes from older releases. For current info, see RELEASE-NOTES-0.2.
+
 # SCAICT-uwu 0.1
-
-## SCAICT-uwu 0.1 development branch
-
-THIS IS NOT A RELEASE YET
-
-The `development` branch is a beta-quality development branch. Use it at your
-own risk!
-
-### Configuration changes for system administrators
-
-#### New configuration
-
-* …
-
-#### Changed configuration
-
-* …
-
-#### Removed configuration
-
-* …
-
-### New user-facing features
-
-* …
-
-### New features for sysadmins
-
-* …
-
-### New developer features
-
-* …
-
-### Bug fixes
-
-* …
-
-### API changes
-
-* …
-
-### API internal changes
-
-* …
-
-### Languages updated
-
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
-
-Below only new and removed languages are listed.
-
-* …
-
-### Breaking changes
-
-* …
-
-### Deprecations
-
-* …
-
-### Other changes
-
-* …
 
 ## SCAICT-uwu 0.1.7
 
@@ -109,7 +48,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.7
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
 ### Breaking changes in 0.1.7
 
@@ -167,7 +106,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.6
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
 ### Breaking changes in 0.1.6
 
@@ -225,7 +164,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.5
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
 ### Breaking changes in 0.1.5
 
@@ -283,7 +222,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.4
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
 ### Breaking changes in 0.1.4
 
@@ -341,7 +280,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.3
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
 ### Breaking changes in 0.1.3
 
@@ -399,7 +338,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.2
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
 ### Breaking changes in 0.1.2
 
@@ -451,7 +390,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages in 0.1.1
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
 Below only new and removed languages are listed.
 
