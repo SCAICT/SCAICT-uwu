@@ -9,7 +9,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    if: # github.event.review.state == 'approved' &&
+    if:
+      github.event.review.state == 'approved' &&
       (
         github.event.review.author_association == 'OWNER' ||
         github.event.review.author_association == 'MEMBER' ||
