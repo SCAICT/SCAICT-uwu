@@ -12,7 +12,7 @@ frozenlist == 1.4.1
 idna == 3.10
 itsdangerous == 2.2.0
 jinja2 == 3.1.4
-markupsafe == 3.0.0
+markupsafe == 3.0.1
 multidict == 6.1.0
 mysql-connector-python == 8.4.0
 py-cord == 2.6.1
