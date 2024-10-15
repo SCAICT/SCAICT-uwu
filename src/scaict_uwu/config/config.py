@@ -1,0 +1,7 @@
+"""
+Config
+"""
+
+
+class Config:
+    pass
