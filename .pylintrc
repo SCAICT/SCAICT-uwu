@@ -154,7 +154,7 @@ class-attribute-naming-style=any
 # Naming style matching correct class constant names.
 # class-const-naming-style=UPPER_CASE
 # False positives
-class-const-naming-style=any
+class-const-naming-style=UPPER_CASE
 
 # Regular expression matching correct class constant names. Overrides class-
 # const-naming-style. If left empty, class constant names will be checked with
@@ -331,7 +331,7 @@ check-protected-access-in-special-methods=no
 expected-line-ending-format=LF
 
 # Regexp for a line that is allowed to be longer than the limit.
-ignore-long-lines=^\s*(# )?<?https?://\S+>?$
+ignore-long-lines=^\s*# .+|.*https?://[^\"]{30,}
 
 # Number of spaces of indent required inside a hanging or continued line.
 indent-after-paren=4
@@ -432,29 +432,9 @@ confidence=HIGH,
 #         use-symbolic-message-instead,
 #         use-implicit-booleaness-not-comparison-to-string,
 #         use-implicit-booleaness-not-comparison-to-zero
-disable=raw-checker-failed,
-        bad-inline-option,
-        locally-disabled,
-        file-ignored,
-        suppressed-message,
-        useless-suppression,
-        deprecated-pragma,
-        use-symbolic-message-instead,
-        use-implicit-booleaness-not-comparison-to-string,
-        use-implicit-booleaness-not-comparison-to-zero,
-        missing-module-docstring,
+disable=missing-module-docstring,
         missing-class-docstring,
-        missing-function-docstring,
-        line-too-long,
-        duplicate-code,
-        no-member,
-        too-few-public-methods,
-        unused-argument,
-        too-many-locals,
-        too-many-arguments,
-        too-many-statements,
-        too-many-return-statements,
-        broad-exception-caught
+        missing-function-docstring
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -579,7 +559,7 @@ contextmanager-decorators=contextlib.contextmanager
 # List of members which are set dynamically and missed by pylint inference
 # system, and so shouldn't trigger E1101 when accessed. Python regular
 # expressions are accepted.
-# generated-members=
+generated-members=discord
 
 # Tells whether to warn about missing members when the owner of the attribute
 # is inferred to be None.

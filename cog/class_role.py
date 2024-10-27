@@ -1,4 +1,5 @@
 # Standard imports
+from dataclasses import dataclass
 import json
 import os
 
@@ -10,6 +11,16 @@ from discord.ext import commands
 from build.build import Build
 
 
+@dataclass
+class Class:
+    class_code: str
+    name: str
+    theme: str
+    teacher: str
+    time: str
+
+
+# XXX: `clas` or `course`?
 def get_courses():
     try:
         with open(f"{os.getcwd()}/DataBase/clas.json", "r", encoding="utf-8") as file:
@@ -49,8 +60,7 @@ class ClassRole(Build):
             emoji="🏷️",
             custom_id="button",
         )
-        # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(self, _button, interaction):
             class TokenModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
                     super().__init__(*args, **kwargs)
@@ -73,7 +83,6 @@ class ClassRole(Build):
                         time = data[user_code]["time"]
                         # embed
                         embed = discord.Embed(color=0x3DBD46)
-                        # pylint: disable-next = line-too-long
                         embed.set_thumbnail(
                             url="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/47298/check-mark-button-emoji-clipart-md.png"
                         )
@@ -94,7 +103,6 @@ class ClassRole(Build):
                         )
                     else:
                         embed = discord.Embed(color=0xBD3D3D)
-                        # pylint: disable-next = line-too-long
                         embed.set_thumbnail(
                             url="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/47329/cross-mark-button-emoji-clipart-md.png"
                         )
@@ -115,7 +123,6 @@ class ClassRole(Build):
     async def send_modal(self, ctx):
         if ctx.author.guild_permissions.administrator:
             embed = discord.Embed(color=0x4BE1EC)
-            # pylint: disable-next = line-too-long
             embed.set_thumbnail(
                 url="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/56531/label-emoji-clipart-md.png"
             )
@@ -124,15 +131,17 @@ class ClassRole(Build):
             await ctx.send(embed=embed, view=self.TokenVerifyButton())
 
     @discord.slash_command(description="新增主題課程")
-    # pylint: disable-next = too-many-arguments, too-many-positional-arguments
-    async def add_class(
-        self, ctx, class_code: str, name: str, theme: str, teacher: str, time: str
-    ):
+    async def add_class(self, ctx, clas: Class):
         if ctx.author.guild_permissions.administrator:
-            d = {"name": name, "theme": theme, "teacher": teacher, "time": time}
-            add_data(class_code, d)
+            d = {
+                "name": clas.name,
+                "theme": clas.theme,
+                "teacher": clas.teacher,
+                "time": clas.time,
+            }
+            add_data(clas.class_code, d)
             await ctx.respond(
-                f"已將{name}新增至 JSON；主題：{theme}，講師：{teacher}，時間：{time}"
+                f"已將{clas.name}新增至 JSON；主題：{clas.theme}，講師：{clas.teacher}，時間：{clas.time}"
             )
 
 

@@ -4,11 +4,11 @@ import json
 import os
 import random
 import traceback
+from typing import Literal
 
 # Third-party imports
 import discord
 from discord.ext import commands
-from discord.commands import Option
 
 # Local imports
 from build.build import Build
@@ -62,8 +62,7 @@ class CTF(Build):
             custom_id="new_ctf",
         )
         # user送出flag
-        # pylint: disable-next = unused-argument
-        async def button_callback_1(self, button, interaction) -> None:
+        async def button_callback_1(self, _button, interaction) -> None:
             class SubmitModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
                     super().__init__(*args, **kwargs)
@@ -118,9 +117,11 @@ class CTF(Build):
                         user_id = interaction.user.id
                         nickname = interaction.user
                         # 判斷題目可作答次數
-                        # pylint: disable-next = line-too-long
                         cursor.execute(
-                            "SELECT count FROM ctf_history WHERE data_id=%s AND uid=%s;",
+                            (
+                                "SELECT count FROM ctf_history"
+                                "WHERE data_id=%s AND uid=%s;"
+                            ),
                             (question_id, user_id),
                         )
                         # return None or tuple.like (1,)
@@ -130,9 +131,11 @@ class CTF(Build):
                         not_exist = answer_count is None
                         if not_exist:
                             # 初始化作答次數
-                            # pylint: disable-next = line-too-long
                             cursor.execute(
-                                "INSERT INTO ctf_history (data_id,uid,count) VALUES (%s,%s,0);",
+                                (
+                                    "INSERT INTO ctf_history (data_id,uid,count) "
+                                    "VALUES (%s,%s,0);"
+                                ),
                                 (question_id, user_id),
                             )
                             answer_count = 0
@@ -155,9 +158,11 @@ class CTF(Build):
                                 return
 
                         # 更新作答次數，包括總表和個人表
-                        # pylint: disable-next = line-too-long
                         cursor.execute(
-                            "UPDATE ctf_history SET count=count+1 WHERE data_id=%s AND uid=%s;",
+                            (
+                                "UPDATE ctf_history SET count=count+1"
+                                "WHERE data_id=%s AND uid=%s;"
+                            ),
                             (question_id, user_id),
                         )
                         answer_count += 1  # SQL和變數同步，變數之後還要用
@@ -171,9 +176,11 @@ class CTF(Build):
                             "SELECT tried FROM ctf_data WHERE id=%s;", (question_id,)
                         )
                         total_tried = int(cursor.fetchone()[0])  # 該題總共嘗試次數
-                        # pylint: disable-next = line-too-long
                         cursor.execute(
-                            "SELECT COUNT(*) FROM ctf_history WHERE data_id=%s AND solved=1;",
+                            (
+                                "SELECT COUNT(*) FROM ctf_history"
+                                "WHERE data_id=%s AND solved=1;"
+                            ),
                             (question_id,),
                         )
                         total_solved = int(cursor.fetchone()[0])  # 該題完成人數
@@ -190,9 +197,11 @@ class CTF(Build):
                             case == 1 and response_flag.lower() == answer.lower()
                         ):
                             # 判斷是否重複回答
-                            # pylint: disable-next = line-too-long
                             cursor.execute(
-                                "UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;",
+                                (
+                                    "UPDATE ctf_history SET solved=1"
+                                    "WHERE data_id=%s AND uid=%s;"
+                                ),
                                 (question_id, user_id),
                             )
                             cursor.execute(
@@ -212,7 +221,6 @@ class CTF(Build):
                                 )
                                 return
                             # else 未曾回答過，送獎勵
-                            # pylint: disable-next = line-too-long
                             cursor.execute(
                                 "SELECT score FROM ctf_data WHERE id=%s;",
                                 (question_id,),
@@ -277,33 +285,42 @@ class CTF(Build):
                 SubmitModal(title="你找到 flag 了嗎？")
             )
 
-    @ctf_commands.command(name="create", description="新題目")
     # 新增題目
-    # pylint: disable-next = too-many-positional-arguments
+    @ctf_commands.command(name="create", description="新題目")
+    @discord.option("title", str, description="題目標題", required=True)
+    @discord.option("flag", str, description="輸入 flag 解答", required=True)
+    @discord.option("score", int, description="分數", required=True, default="20")
+    # XXX: Infinity?
+    @discord.option(
+        "limit", int, description="限制回答次數", required=False, default="∞"
+    )
+    @discord.option(
+        "case", bool, description="大小寫忽略", required=False, default=False
+    )
+    @discord.option(
+        "start",
+        str,
+        description=f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
+        required=False,
+        default="",
+    )
+    @discord.option(
+        "end",
+        str,
+        description=f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
+        required=False,
+        default="",
+    )
     async def create(
         self,
         ctx,
-        title: Option(str, "題目標題", required=True),
-        flag: Option(str, "輸入 flag 解答", required=True),
-        score: Option(int, "分數", required=True, default="20"),
-        limit: Option(int, "限制回答次數", required=False, default="∞"),
-        case: Option(
-            bool, "大小寫忽略", required=False, default=False
-        ),  # True:忽略大小寫
-        # pylint: disable-next = line-too-long
-        start: Option(
-            str,
-            f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
-            required=False,
-            default="",
-        ),  # 時間格式
-        # pylint: disable-next = line-too-long
-        end: Option(
-            str,
-            f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
-            required=False,
-            default="",
-        ),
+        title: str,
+        flag: str,
+        score: int,
+        limit: int | Literal["∞"],
+        case: bool,  # True: 忽略大小寫
+        start: str,  # 時間格式
+        end: str,
     ) -> None:
         # SQL沒有布林值，所以要將T/F轉換成0或1
         case = 1 if case else 0
@@ -374,15 +391,24 @@ class CTF(Build):
             # (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) VALUES \
             # ({new_id},'{flag}',{score},'{limit}',{message_id},{case},'{start}','{end}',\'{title}\',{0});")
             if end == "NULL":
+                # XXX: can be refactored
                 cursor.execute(
-                    "INSERT INTO `ctf_data` (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) \
-                                VALUES (%s,%s,%s,%s,%s,%s,%s,NULL,%s,%s);",
+                    (
+                        "INSERT INTO `ctf_data` ("
+                        "  id,flags,score,restrictions,message_id,"
+                        "  case_status,start_time,end_time,title,tried"
+                        ") VALUES (%s,%s,%s,%s,%s,%s,%s,NULL,%s,%s);"
+                    ),
                     (new_id, flag, score, limit, message_id, case, start, title, 0),
                 )
             else:
                 cursor.execute(
-                    "INSERT INTO `ctf_data` (id,flags,score,restrictions,message_id,case_status,start_time,end_time,title,tried) \
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);",
+                    (
+                        "INSERT INTO `ctf_data` ("
+                        "  id,flags,score,restrictions,message_id,"
+                        "  case_status,start_time,end_time,title,tried"
+                        ") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+                    ),
                     (
                         new_id,
                         flag,
@@ -411,13 +437,16 @@ class CTF(Build):
 
     # 刪除題目
     @ctf_commands.command(name="delete", description="刪除題目")
+    @discord.option("qid", str, description="欲刪除的題目", required=True)
+    @discord.option("channel_id", str, description="題目所在的貼文頻道", required=True)
+    @discord.option("key", str, description="輸入該題題目解答", required=True)
     async def delete_ctf(
         self,
         ctx,
-        qid: discord.Option(str, "欲刪除的題目", required=True),
-        channel_id: discord.Option(str, "題目所在的貼文頻道", required=True),
+        qid: str,
+        channel_id: str,
         # 防呆
-        key: discord.Option(str, "輸入該題題目解答", required=True),
+        key: str,
     ) -> None:
         role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
         role = discord.utils.get(ctx.guild.roles, id=role_id)

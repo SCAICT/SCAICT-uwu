@@ -203,7 +203,7 @@ class Comment(commands.Cog):
             # - "0 b 0000"
             # - "0 b 0 0000"
             if re.match(
-                "^(0[bdox]|0[bdox] |0 [bdox] |)"
+                "^(0[bdox]|0[bdox] |0 [bdox] |)"  # cspell:disable-line
                 + "([0-9A-Fa-f]{1,4})"
                 + "(([0-9A-Fa-f]{4})*|( [0-9A-Fa-f]{4})*)$",
                 based_number,
@@ -237,9 +237,9 @@ class Comment(commands.Cog):
                 if rand % 11 == 10:
                     point = read(message.author.id, "point", cursor) + 5
                     write(message.author.id, "point", point, cursor)
-                    # pylint: disable-next = line-too-long
                     print(
-                        f"{message.author.id}, {message.author} Get 5 point by count reward {datetime.now()}"
+                        f"{message.author.id}, {message.author}",
+                        f"Get 5 point by count reward {datetime.now()}",
                     )
                     await message.add_reaction("💸")
             else:
@@ -302,14 +302,12 @@ class Comment(commands.Cog):
                 point = read(message.author.id, "point", cursor) + 2
                 write(message.author.id, "point", point, cursor)
                 # Log
-                # pylint: disable-next = line-too-long
                 print(
-                    f"{message.author.id},{message.author} Get 2 point by nice color reward {datetime.now()}"
+                    f"{message.author.id},{message.author}",
+                    f"Get 2 point by nice color reward {datetime.now()}",
                 )
             else:
                 cursor.execute("UPDATE game SET nicecolorround = nicecolorround + 1;")
-                # https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/consider-using-generator.html
-                # pylint: disable-next = line-too-long
                 correct = 100 - (
                     sum(
                         (int(hex_color[i], 16) - int(nice_color[i], 16)) ** 2

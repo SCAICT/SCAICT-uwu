@@ -1,6 +1,7 @@
 # Standard imports
 from datetime import datetime
 import traceback
+from typing import Literal
 
 # Third-party imports
 import discord
@@ -82,14 +83,22 @@ class SendGift(Build):
         return {user.name: user for user in self.bot.users}
 
     @discord.slash_command(name="發送禮物", description="dm_gift")
+    @discord.option(
+        "target_str",
+        str,
+        description="發送對象（用半形逗號分隔多個使用者名稱）",
+        required=True,
+    )
+    @discord.option(
+        "gift_type", str, description="送禮內容", choices=["電電點", "抽獎券"]
+    )
+    @discord.option("count", str, description="數量")
     async def send_dm_gift(
         self,
         ctx,
-        target_str: discord.Option(
-            str, "發送對象（用半形逗號分隔多個使用者名稱）", required=True
-        ),
-        gift_type: discord.Option(str, "送禮內容", choices=["電電點", "抽獎券"]),
-        count: discord.Option(int, "數量"),
+        target_str: str,
+        gift_type: Literal["電電點", "抽獎券"],
+        count: int,
     ) -> None:
         if not ctx.author.guild_permissions.administrator:
             await ctx.respond("你沒有權限使用這個指令！", ephemeral=True)
@@ -131,7 +140,10 @@ class SendGift(Build):
                 )
             # 管理者介面提示
             await ctx.respond(
-                f"{manager} 已發送 {count} {gift_type} 給 {', '.join([user.name for user in target_users])}"
+                (
+                    f"{manager} 已發送 {count} {gift_type} "
+                    f"給 {', '.join([user.name for user in target_users])}"
+                )
             )
         except Exception as e:
             traceback.print_exc()

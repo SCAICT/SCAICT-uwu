@@ -50,7 +50,7 @@ else:
 
 
 @app.errorhandler(404)
-def not_found_error(error):
+def not_found_error(_error):
     return render_template("404.html"), 404
 
 
@@ -147,7 +147,10 @@ def send(target_user_id):
             # 如果有錯誤，返回錯誤訊息和詳細信息
             return jsonify(
                 {
-                    "result": "Failed to fetch user information in target id (which is in url path)",
+                    "result": (
+                        "Failed to fetch user information in target id "
+                        "(which is in url path)"
+                    ),
                     "status": 500,
                     "error_details": request_admin.get("details"),
                 }
@@ -173,7 +176,10 @@ def send(target_user_id):
                     "INSERT INTO user (uid) VALUE(%s)", (target_user_id,)
                 )  # 這裡要調用 api 去抓使用者名稱和 Mail
             cursor.execute(
-                "INSERT into gift (btnID,type,count,recipient,received,sender) VALUE(%s,%s,%s,%s,%s,%s)",
+                (
+                    "INSERT into gift (btnID,type,count,recipient,received,sender) "
+                    "VALUE(%s,%s,%s,%s,%s,%s)"
+                ),
                 (
                     message_id,
                     gift_type,
@@ -460,7 +466,6 @@ def roll_slot() -> list:
 @app.route("/github/login")
 def github_login():
     # Redirect to GitHub's OAuth login page
-    # pylint: disable-next = line-too-long
     github_oauth_url = f"https://github.com/login/oauth/authorize?client_id={github_client_id}&scope=user%20repo&redirect_uri={github_redirect_uri}"
     return redirect(github_oauth_url)
 
@@ -494,7 +499,6 @@ def star_uwu():
     # if dc not login
     discord_user = session.get("user")
     if not discord_user:
-        # pylint: disable-next = line-too-long
         return redirect(
             f"https://discord.com/api/oauth2/authorize?client_id={discord_client_id}&redirect_uri={github_discord_redirect_uri}&response_type=code&scope=identify+email"
         )

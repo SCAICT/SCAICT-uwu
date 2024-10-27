@@ -2,6 +2,7 @@
 import json
 import os
 import random
+from typing import Literal
 
 # Third-party imports
 import discord
@@ -37,10 +38,9 @@ stickers = get_channels()["stickers"]["zap"]
 class Game(commands.Cog):
     # User can use this command to play ✊-🤚-✌️ with the bot in the command channel
     @discord.slash_command(name="rock_paper_scissors", description="玩剪刀石頭布")
+    @discord.option("choice", str, choices=["✊", "🤚", "✌️"])
     # user can choose ✊, 🤚, or ✌️ in their command
-    async def rock_paper_scissors(
-        self, interaction, choice: discord.Option(str, choices=["✊", "🤚", "✌️"])
-    ):
+    async def rock_paper_scissors(self, interaction, choice: Literal["✊", "🤚", "✌️"]):
         if interaction.channel.id != get_channels()["channel"]["commandChannel"]:
             await interaction.response.send_message("這裡不是指令區喔")
             return
@@ -81,9 +81,10 @@ class Game(commands.Cog):
                 await interaction.response.send_message(
                     content=f"我出{bot_choice}，{result}，你還有{point}{stickers}"
                 )
-                # pylint: disable-next = line-too-long
                 print(
-                    f"{user_id}, {user_display_name} Get {game_outcomes[(bot_choice, choice)]} point by playing rock-paper-scissors"
+                    f"{user_id}, {user_display_name}",
+                    f"Get {game_outcomes[(bot_choice, choice)]} point",
+                    "by playing rock-paper-scissors",
                 )
             write(user_id, "point", point, cursor)
         # pylint: disable-next = broad-exception-caught

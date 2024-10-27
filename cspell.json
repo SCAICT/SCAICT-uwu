@@ -1,0 +1,61 @@
+{
+    "version": "0.2",
+    "ignorePaths": [
+        "**/*.sql",
+        "**/*.svg",
+        ".gitignore",
+        ".pylintrc",
+        "cspell.json",
+        "pyproject.toml",
+        "requirements.txt",
+        "requirements_dev.txt"
+    ],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "Analysing",    // present participle of analyse.
+                        // analyse, British standard spelling of analyze -- Wikipedia
+        "autoincrement",  // an attribute of DBAL
+        "blurple",  // A bluish-purple colour that is more blue than violet. --Wiktionary
+                    // for discord it is #5865F2.
+        "Capa",     // "Layer" in Spanish
+        "clas",     // "class" but avoid having the same name as Python keywords
+        "codereview",   // custom spelling of "code review"
+        "Colour",   // Commonwealth and Ireland standard spelling of color. --Wiktionary
+        "CTFID",    // custom spelling of CTF ID
+        "datetime", // a module of Python. or a type of DBAL
+        "datetimetz",   // a type of DBAL
+        "dotenv",   // a third-party module named python-dotenv
+        "Flaticon", // a website which provides vector icons and stickers
+        "Freepik",  // the company behind Flaticon
+        "fulltext", // informal spelling of full-text
+        "iach",     // a part of name of one of author
+        "intt",     // custom abbreviation of "intent"
+        "jsonify",  // a function of flask
+        "Kawaii",   // (chiefly in the context of Japanese culture, ACG) Cute, adorable. --Wiktionary
+        "lastid",   // custom spelling of last id
+        "Lazer",    // (slang) Laser. --Wiktionary
+        "listt",    // "list" but avoid having the same name as Python keywords
+        "localisations",    // (British spelling) Alternative spelling of localization. --Wiktionary
+        "loveuwu",  // custom word
+        "nicecolor",    // custom spelling of nice color
+        "nicecolorround",   // custom spelling of nice color round
+        "notnull",  // custom spelling of not null
+        "Pycord",   // an API wrapper for Discord written in Python --Github
+        "pylint",   // a static code analysis tool for the Python progamming language. --Wikipedia
+        "pytest",   // a Python testing framework that originated from the PyPy project.
+        "redirurl", // custom abbreviation of redirect url
+        "SCAICT",   // the name of our organization
+        "schemadiagram",    // custom spelling of schema diagram
+        "sendgift", // custom spelling of send gift
+        "smallint", // a type of DBAL
+        "sparanoid",    // an user on Github
+        "subtag",   // A tag that is secondary or subordinate to another tag. --Wiktionary
+        "subtags",  // plural of subtag
+        "tinyint",  // a type of DBAL
+        "urandom",  // a function under `os` module. "u" in /dev/urandom means "unlimited"
+        "werkzeug"  // a comprehensive WSGI web application library. --PyPI
+    ],
+    "ignoreWords": [],
+    "import": []
+}

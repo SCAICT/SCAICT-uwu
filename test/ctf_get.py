@@ -19,7 +19,10 @@ with open("./DataBase/ctf.json", "r", encoding="utf-8") as file:
         for h in ctf["history"]:
             solved = 1 if int(h) in ctf["solved"] else 0
             cursor.execute(
-                f"INSERT INTO `history`(data_id,uid,count,solved) VALUES('{questionId}',{h},{ctf['history'][h]},{solved});"
+                (
+                    f"INSERT INTO `history`(data_id,uid,count,solved) "
+                    f"VALUES('{questionId}',{h},{ctf['history'][h]},{solved});"
+                )
             )
 
         end(connection, cursor)

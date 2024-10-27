@@ -17,7 +17,7 @@ class Ticket(Build):
         self.bot.add_view(self.CloseView())
         self.bot.add_view(self.DelView())
 
-    ## del cahnnel button
+    ## del channel button
     class DelView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)  # timeout of the view must be set to Nones
@@ -25,8 +25,7 @@ class Ticket(Build):
         @discord.ui.button(
             label="刪除頻道", style=discord.ButtonStyle.red, emoji="🗑️", custom_id="del"
         )
-        # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(self, _button, interaction):
             embed = discord.Embed(color=0xFF0000)
             embed.add_field(name="將於幾秒後刪除", value=" ", inline=False)
             await interaction.response.send_message(embed=embed)
@@ -44,8 +43,7 @@ class Ticket(Build):
             emoji="🔒",
             custom_id="close",
         )
-        # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(self, _button, interaction):
             user = interaction.user
             channel = interaction.channel
 
@@ -76,12 +74,11 @@ class Ticket(Build):
             emoji="📩",
             custom_id="ticket",
         )
-        # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(self, _button, interaction):
             await self.create_ticket_channel(interaction, "開單")
 
-        # pylint: disable-next = unused-argument
-        async def create_ticket_channel(self, interaction, button_name):
+        # XXX: unknown `button_name` uses
+        async def create_ticket_channel(self, interaction, _button_name):
             user = interaction.user
             guild = interaction.guild
             target_category_name = "開單處"

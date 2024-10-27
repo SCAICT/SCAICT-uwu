@@ -31,7 +31,10 @@ async def send_gift_button(
         try:
             connection, cursor = link_sql()
             cursor.execute(
-                "INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`,`sender`) VALUES (%s, %s, %s, %s,%s)",
+                (
+                    "INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`,`sender`) "
+                    "VALUES (%s, %s, %s, %s,%s)"
+                ),
                 (btn_id, gift_type, count, recipient, sender),
             )
             end(connection, cursor)

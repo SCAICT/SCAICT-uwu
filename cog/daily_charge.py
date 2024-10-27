@@ -106,9 +106,9 @@ class Charge(commands.Cog):
             await self.send_message(point, combo, interaction)
 
             # 紀錄log
-            # pylint: disable-next = line-too-long
             print(
-                f"{interaction.user.id},{interaction.user} Get 5 point by daily_charge {datetime.now()}"
+                f"{interaction.user.id},{interaction.user}",
+                f"Get 5 point by daily_charge {datetime.now()}",
             )
         end(connection, cursor)
 
