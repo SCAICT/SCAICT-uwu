@@ -40,3 +40,23 @@ optional-dependencies.dev = [
 	"pylint == 3.3.1",
 	"pytest == 8.3.3",
 ]
+
+[tool.poetry]
+name = "scaict-uwu"
+authors = ["ChiuDeYuan","Each Chen","Elvis Mao" ,"os24","Winston Sung"]
+description = "A cat living in SCAICT Discord server."
+version = "0.1.9"
+
+[tool.poetry.dependencies]
+python = "~3.11"
+flask = "3.1.0"
+mysql-connector-python = "9.1.0"
+py-cord = "2.6.1"
+python-dotenv = "1.0.1"
+requests = "2.32.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "24.10.0"
+pylint = "3.3.1"
+pyright = "1.1.389"
+pytest = "8.3.3"
