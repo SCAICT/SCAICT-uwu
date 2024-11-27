@@ -3,7 +3,7 @@ This is the module for the class for all system messages.
 """
 
 # Local imports
-from ..language.language import Language
+from ..language.language_tag import LanguageTag
 
 
 class Message:
@@ -27,7 +27,7 @@ class Message:
         self,
         key: str,
         params: list,
-        use_lang: Language | None,
+        use_lang: LanguageTag | None,
     ) -> None:
         """
         Set the language tag of the language that the message expected to use.
