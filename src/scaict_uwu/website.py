@@ -1,5 +1,9 @@
 """
 Entry point for the SCAICT store website using Flask run.
-
-TODO: Complete this
 """
+
+
+def run() -> None:
+    """
+    TODO: Complete this
+    """
