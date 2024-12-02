@@ -122,7 +122,7 @@ class LanguageUtils:
         return None
 
     @classmethod
-    def get_bcp_47_from_discord_code(cls, code: str) -> str:
+    def get_from_discord_code(cls, code: str) -> str:
         """
         Get the BCP 47 language tag from Discord locale code.
 

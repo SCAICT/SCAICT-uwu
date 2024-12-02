@@ -43,23 +43,23 @@ class ServiceContainer:
 
     def apply_wiring(self, service_instantiators) -> None:
         for name, instantiator in service_instantiators:
-            self.define_service(name, instantiator)
+            self.define(name, instantiator)
 
-    def get_service_names(self) -> list:
+    def get_names(self) -> list:
         # Convert dict_keys to list
         return list(self._service_instantiators.keys())
 
-    def has_service(self, name: str) -> bool:
+    def has(self, name: str) -> bool:
         return name in self._service_instantiators
 
-    def define_service(self, name: str, instantiator: Callable) -> None:
-        if self.has_service(name):
+    def define(self, name: str, instantiator: Callable) -> None:
+        if self.has(name):
             sys.exit("ServiceAlreadyDefinedException $name")
 
         self._service_instantiators[name] = instantiator
 
-    def redefine_service(self, name: str, instantiator: Callable) -> None:
-        if not self.has_service(name):
+    def redefine(self, name: str, instantiator: Callable) -> None:
+        if not self.has(name):
             sys.exit("NoSuchServiceException $name")
 
         if name in self._services:
@@ -67,8 +67,8 @@ class ServiceContainer:
 
         self._service_instantiators[name] = instantiator
 
-    def create_service(self, name: str):
-        if not self.has_service(name):
+    def create(self, name: str):
+        if not self.has(name):
             sys.exit("NoSuchServiceException $name")
 
         if name in self._services_being_created:
@@ -81,19 +81,19 @@ class ServiceContainer:
 
         return self._service_instantiators[name](self)
 
-    def get_service(self, name: str):
+    def get(self, name: str):
         if name not in self._services:
-            self._services[name] = self.create_service(name)
+            self._services[name] = self.create(name)
 
         return self._services[name]
 
     # Service helper functions
 
     def get_config(self) -> Config:
-        return self.get_service("Config")
+        return self.get("Config")
 
     def get_config_factory(self) -> ConfigFactory:
-        return self.get_service("ConfigFactory")
+        return self.get("ConfigFactory")
 
     def get_language_tag_factory(self) -> LanguageTagFactory:
-        return self.get_service("LanguageTagFactory")
+        return self.get("LanguageTagFactory")
