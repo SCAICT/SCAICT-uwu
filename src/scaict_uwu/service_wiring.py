@@ -27,17 +27,14 @@ def get_wiring() -> dict[str, Callable]:
         "LanguageTagFactory": get_language_tag_factory,
     }
 
-def get_config(
-    service_container: ServiceContainer
-) -> Config:
+
+def get_config(service_container: ServiceContainer) -> Config:
     return service_container.get_config_factory().get()
 
-def get_config_factory(
-    service_container: ServiceContainer
-) -> ConfigFactory:
+
+def get_config_factory(service_container: ServiceContainer) -> ConfigFactory:
     return ConfigFactory()
 
-def get_language_tag_factory(
-    service_container: ServiceContainer
-) -> LanguageTagFactory:
+
+def get_language_tag_factory(service_container: ServiceContainer) -> LanguageTagFactory:
     return LanguageTagFactory()

@@ -82,7 +82,7 @@ class ServiceContainer:
         return self._service_instantiators[name](self)
 
     def get_service(self, name: str):
-        if  name not in self._services:
+        if name not in self._services:
             self._services[name] = self.create_service(name)
 
         return self._services[name]
