@@ -28,7 +28,7 @@ class LanguageTagFactory:
             tag (str): BCP 47 language tag.
 
         Returns:
-            LanguageTag: The LanguageTag object to the responding BCP 47\
+            LanguageTag: The LanguageTag object to the corresponding BCP 47\
                 language tag.
         """
 
@@ -45,7 +45,7 @@ class LanguageTagFactory:
             code (str): Discord locale code.
 
         Returns:
-            (LanguageTag | None): The LanguageTag object of the responding\
+            (LanguageTag | None): The LanguageTag object of the corresponding\
                 Discord locale code. Return None when is not a supported\
                 Discord locale code.
         """
@@ -53,7 +53,7 @@ class LanguageTagFactory:
         if code not in LanguageUtils.get_supported_discord_codes():
             return None
 
-        tag = LanguageUtils.get_bcp_47_from_discord_code(code)
+        tag = LanguageUtils.get_from_discord_code(code)
 
         if tag not in self._tags:
             self._tags[tag] = LanguageTag(tag)

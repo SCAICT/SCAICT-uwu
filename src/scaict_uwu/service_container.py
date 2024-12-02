@@ -33,7 +33,7 @@ class ServiceContainer:
 
     def load_wiring_module(self, module) -> None:
         try:
-            self.apply_wiring(module.get_wiring())
+            self.apply_wiring(module.get_wiring().items())
         except AttributeError:
             sys.exit("InvalidWiringModuleException")
 
