@@ -8,6 +8,15 @@ from .language_utils import LanguageUtils
 class LanguageTag:
     """
     The LanguageTag class deals with language data.
+
+    Note:
+        This class is designed to be instantiated through LanguageTagFactory\
+        rather than directly.
+
+        Example:
+            language_tag_factory = LanguageTagFactory()
+            tag = language_tag_factory.get("zh-Hant")
+            tag = language_tag_factory.get_by_discord_code("zh-TW")
     """
 
     _tag: str
@@ -15,13 +24,13 @@ class LanguageTag:
     _tag (str): The BCP 47 language subtag of the LanguageTag object.
     """
 
-    def __init__(self, language_tag: str) -> None:
+    def __init__(self, tag: str) -> None:
         """
         Parameters:
-            language_tag (str): BCP 47 language tag.
+            tag (str): BCP 47 language tag.
         """
 
-        self._tag = language_tag
+        self._tag = tag
 
     def get_bcp_47_tag(self) -> str:
         """
@@ -50,17 +59,18 @@ class LanguageTag:
         See <https://discord.com/developers/docs/reference#locales>
 
         Returns:
-            str: The Discord locale code.
+            (str | None): The Discord locale code. Return None when there is no\
+                corresponding supported Discord locale code.
         """
 
         return LanguageUtils.get_discord_code(self._tag)
 
-    def get_fallbacks(self) -> list:
+    def get_fallbacks(self) -> list[str]:
         """
         Get the language fallback chain of the LanguageTag object.
 
         Returns:
-            list: The list containing BCP 47 language tags of the language\
+            list[str]: The list containing BCP 47 language tags of the language\
                 fallback chain.
         """
 

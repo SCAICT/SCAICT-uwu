@@ -11,15 +11,15 @@ class Message:
     The Message class deals with fetching and processing of system messages.
     """
 
-    __use_lang: str | None = None
+    _use_lang: str | None = None
     """
-    __use_lang (str|None): The language tag of the language for the system\
+    _use_lang (str|None): The language tag of the language for the system\
         message to use.
     """
 
-    __in_lang: str | None = None
+    _in_lang: str | None = None
     """
-    __in_lang (str|None): The language tag of the language that the system\
+    _in_lang (str|None): The language tag of the language that the system\
         message actually used.
     """
 
@@ -48,7 +48,7 @@ class Message:
                 expected to use.
         """
 
-        self.__use_lang = lang_tag
+        self._use_lang = lang_tag
 
     def get_lang(self) -> str:
         """
@@ -59,4 +59,4 @@ class Message:
             str: Description of return value.
         """
 
-        return self.__use_lang or self.__in_lang or ""
+        return self._use_lang or self._in_lang or ""

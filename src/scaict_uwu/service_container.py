@@ -3,8 +3,13 @@ Module for SCAICT-uwu service locator.
 """
 
 # Standard imports
-import importlib
 import sys
+from typing import Callable
+
+# Local imports
+from .core.config.config import Config
+from .core.config.config_factory import ConfigFactory
+from .libs.language.language_tag_factory import LanguageTagFactory
 
 
 class ServiceContainer:
@@ -26,10 +31,15 @@ class ServiceContainer:
     """
     """
 
-    def load_wiring_files(self, wiring_modules: list) -> None:
-        for module_name in wiring_modules:
-            module = importlib.import_module(module_name)
+    def load_wiring_module(self, module) -> None:
+        try:
             self.apply_wiring(module.get_wiring())
+        except AttributeError:
+            sys.exit("InvalidWiringModuleException")
+
+    def load_wiring_modules(self, modules: list) -> None:
+        for module in modules:
+            self.load_wiring_module(module)
 
     def apply_wiring(self, service_instantiators) -> None:
         for name, instantiator in service_instantiators:
@@ -42,13 +52,13 @@ class ServiceContainer:
     def has_service(self, name: str) -> bool:
         return name in self._service_instantiators
 
-    def define_service(self, name: str, instantiator) -> None:
+    def define_service(self, name: str, instantiator: Callable) -> None:
         if self.has_service(name):
             sys.exit("ServiceAlreadyDefinedException $name")
 
         self._service_instantiators[name] = instantiator
 
-    def redefine_service(self, name: str, instantiator) -> None:
+    def redefine_service(self, name: str, instantiator: Callable) -> None:
         if not self.has_service(name):
             sys.exit("NoSuchServiceException $name")
 
@@ -61,7 +71,7 @@ class ServiceContainer:
         if not self.has_service(name):
             sys.exit("NoSuchServiceException $name")
 
-        if not name in self._services_being_created:
+        if name in self._services_being_created:
             sys.exit(
                 "RecursiveServiceDependencyException "
                 + "Circular dependency when creating service!"
@@ -69,23 +79,21 @@ class ServiceContainer:
 
         self._services_being_created[name] = True
 
-        service = self._service_instantiators[name](self)
-
-        return service
+        return self._service_instantiators[name](self)
 
     def get_service(self, name: str):
-        if not name in self._services:
+        if  name not in self._services:
             self._services[name] = self.create_service(name)
 
         return self._services[name]
 
     # Service helper functions
 
-    def get_config(self):
+    def get_config(self) -> Config:
         return self.get_service("Config")
 
-    def get_language_tag(self):
-        return self.get_service("LanguageTag")
+    def get_config_factory(self) -> ConfigFactory:
+        return self.get_service("ConfigFactory")
 
-    def get_language_tag_factory(self):
+    def get_language_tag_factory(self) -> LanguageTagFactory:
         return self.get_service("LanguageTagFactory")

@@ -2,6 +2,10 @@
 Config factory
 """
 
+# Local imports
+from .config import Config
+
 
 class ConfigFactory:
-    pass
+    def get(self) -> Config:
+        return Config()

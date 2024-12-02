@@ -9,7 +9,7 @@ class LanguageUtils:
     """
 
     @staticmethod
-    def get_supported_discord_codes() -> list:
+    def get_supported_discord_codes() -> list[str]:
         """
         Get the Discord locale codes supported by Discord.
 
@@ -17,7 +17,7 @@ class LanguageUtils:
         See <https://discord.com/developers/docs/reference#locales>
 
         Returns:
-            list: The list of Discord locale codes supported by Discord.
+            list[str]: The list of Discord locale codes supported by Discord.
         """
 
         return [
@@ -58,12 +58,12 @@ class LanguageUtils:
         ]
 
     @staticmethod
-    def get_discord_code_mapping() -> dict:
+    def get_discord_code_mapping() -> dict[str, str]:
         """
         Get the mapping of BCP 47 language tag to Discord locale code.
 
         Returns:
-            dict: The mapping of BCP 47 language tag to Discord locale code.
+            dict[str, str]: The mapping of BCP 47 language tag to Discord locale code.
         """
 
         return {
@@ -84,26 +84,53 @@ class LanguageUtils:
             dict: The mapping of Discord locale code to BCP 47 language tag.
         """
 
-        return {v: k for k, v in cls.get_discord_code_mapping()}
+        return {v: k for k, v in cls.get_discord_code_mapping().items()}
 
     @classmethod
-    def get_discord_code(cls, code) -> str:
+    def is_supported_discord_code(cls, code: str) -> bool:
+        """
+        Check if the given code is a supported Discord locale code.
+
+        Parameters:
+            code (str): Discord locale code.
+
+        Returns:
+            bool: Whether the given code is a supported Discord locale code.
+        """
+
+        return code in cls.get_supported_discord_codes()
+
+    @classmethod
+    def get_discord_code(cls, tag: str) -> str | None:
+        """
+        Get the Discord locale code from BCP 47 language tag.
+
+        Parameters:
+            tag (str): BCP 47 language tag.
+
+        Returns:
+            (str | None): the Discord locale code of the BCP 47 language tag.\
+                Return None when there's no corresponding supported Discord\
+                locale code.
+        """
+
+        code = cls.get_discord_code_mapping().get(tag, tag)
+
+        if cls.is_supported_discord_code(code):
+            return code
+
+        return None
+
+    @classmethod
+    def get_bcp_47_from_discord_code(cls, code: str) -> str:
         """
         Get the BCP 47 language tag from Discord locale code.
 
-        Returns:
-            str: the mapping of Discord locale code to BCP 47 language tag.
-        """
-
-        return cls.get_discord_code_mapping().get(code, code)
-
-    @classmethod
-    def get_bcp_47_from_discord_code(cls, code) -> str:
-        """
-        Get the BCP 47 language tag from Discord locale code.
+        Parameters:
+            code (str): Discord locale code.
 
         Returns:
-            str: the mapping of Discord locale code to BCP 47 language tag.
+            str: the BCP 47 language tag of the Discord locale code.
         """
 
         return cls.get_discord_code_to_bcp_47_mapping().get(code, code)
