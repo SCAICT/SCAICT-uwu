@@ -33,6 +33,28 @@ own risk!
 
 * …
 
+### External dependency changes
+
+#### New external dependencies
+
+* …
+
+#### New development-only external dependencies
+
+* …
+
+#### Changed external dependencies
+
+* …
+
+#### Changed development-only external dependencies
+
+* …
+
+#### Removed external dependencies
+
+* …
+
 ### Bug fixes
 
 * …
@@ -47,11 +69,7 @@ own risk!
 
 ### Languages updated
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
-
-Below only new and removed languages are listed.
-
-* …
+SCAICT-uwu now supports 1 language.
 
 ### Breaking changes
 
@@ -95,6 +113,28 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 * …
 
+### External dependency changes in 0.1.7
+
+#### New external dependencies in 0.1.7
+
+* …
+
+#### New development-only external dependencies in 0.1.7
+
+* …
+
+#### Changed external dependencies in 0.1.7
+
+* …
+
+#### Changed development-only external dependencies in 0.1.7
+
+* …
+
+#### Removed external dependencies in 0.1.7
+
+* …
+
 ### Bug fixes in 0.1.7
 
 * …
@@ -109,7 +149,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.7
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language.
 
 ### Breaking changes in 0.1.7
 
@@ -153,6 +193,28 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 * …
 
+### External dependency changes in 0.1.6
+
+#### New external dependencies in 0.1.6
+
+* …
+
+#### New development-only external dependencies in 0.1.6
+
+* …
+
+#### Changed external dependencies in 0.1.6
+
+* …
+
+#### Changed development-only external dependencies in 0.1.6
+
+* …
+
+#### Removed external dependencies in 0.1.6
+
+* …
+
 ### Bug fixes in 0.1.6
 
 * …
@@ -167,7 +229,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.6
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language.
 
 ### Breaking changes in 0.1.6
 
@@ -211,6 +273,28 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 * …
 
+### External dependency changes in 0.1.5
+
+#### New external dependencies in 0.1.5
+
+* …
+
+#### New development-only external dependencies in 0.1.5
+
+* …
+
+#### Changed external dependencies in 0.1.5
+
+* …
+
+#### Changed development-only external dependencies in 0.1.5
+
+* …
+
+#### Removed external dependencies in 0.1.5
+
+* …
+
 ### Bug fixes in 0.1.5
 
 * …
@@ -225,7 +309,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.5
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language.
 
 ### Breaking changes in 0.1.5
 
@@ -269,6 +353,28 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 * …
 
+### External dependency changes in 0.1.4
+
+#### New external dependencies in 0.1.4
+
+* …
+
+#### New development-only external dependencies in 0.1.4
+
+* …
+
+#### Changed external dependencies in 0.1.4
+
+* …
+
+#### Changed development-only external dependencies in 0.1.4
+
+* …
+
+#### Removed external dependencies in 0.1.4
+
+* …
+
 ### Bug fixes in 0.1.4
 
 * …
@@ -283,7 +389,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.4
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language.
 
 ### Breaking changes in 0.1.4
 
@@ -327,6 +433,28 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 * …
 
+### External dependency changes in 0.1.3
+
+#### New external dependencies in 0.1.3
+
+* …
+
+#### New development-only external dependencies in 0.1.3
+
+* …
+
+#### Changed external dependencies in 0.1.3
+
+* …
+
+#### Changed development-only external dependencies in 0.1.3
+
+* …
+
+#### Removed external dependencies in 0.1.3
+
+* …
+
 ### Bug fixes in 0.1.3
 
 * …
@@ -341,7 +469,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.3
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language.
 
 ### Breaking changes in 0.1.3
 
@@ -385,6 +513,28 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 * …
 
+### External dependency changes in 0.1.2
+
+#### New external dependencies in 0.1.2
+
+* …
+
+#### New development-only external dependencies in 0.1.2
+
+* …
+
+#### Changed external dependencies in 0.1.2
+
+* …
+
+#### Changed development-only external dependencies in 0.1.2
+
+* …
+
+#### Removed external dependencies in 0.1.2
+
+* …
+
 ### Bug fixes in 0.1.2
 
 * …
@@ -399,7 +549,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages updated in 0.1.2
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language.
 
 ### Breaking changes in 0.1.2
 
@@ -451,7 +601,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 ### Languages in 0.1.1
 
-SCAICT-uwu now supports 1 language. Many localisations are updated regularly.
+SCAICT-uwu now supports 1 language.
 
 Below only new and removed languages are listed.
 
