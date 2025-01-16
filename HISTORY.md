@@ -1,3 +1,7 @@
+# History
+
+Change notes from older releases. For current info, see RELEASE-NOTES-0.2.
+
 # SCAICT-uwu 0.1
 
 ## SCAICT-uwu 0.1.7
