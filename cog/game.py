@@ -42,7 +42,7 @@ class Game(commands.Cog):
         self, interaction, choice: discord.Option(str, choices=["✊", "🤚", "✌️"])
     ):
         if interaction.channel.id != get_channels()["channel"]["commandChannel"]:
-            await interaction.response.send_message("這裡不是指令區喔")
+            await interaction.response.send_message("這裡不是指令區喔", ephemeral=True)
             return
         user_id = interaction.user.id
         user_display_name = interaction.user
@@ -51,11 +51,15 @@ class Game(commands.Cog):
 
             point = read(user_id, "point", cursor)
             if point < 5:
-                await interaction.response.send_message("你的電電點不足以玩這個遊戲")
+                await interaction.response.send_message(
+                    "你的電電點不足以玩這個遊戲", ephemeral=True
+                )
                 end(connection, cursor)
                 return
             if choice not in ["✊", "🤚", "✌️"]:
-                await interaction.response.send_message("請輸入正確的選擇")
+                await interaction.response.send_message(
+                    "請輸入正確的選擇", ephemeral=True
+                )
                 end(connection, cursor)
                 return
 
