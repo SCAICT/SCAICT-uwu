@@ -24,7 +24,7 @@ class LanguageTag:
     _tag (str): The BCP 47 language subtag of the LanguageTag object.
     """
 
-    def __init__(self, tag: str) -> None:
+    def __init__(self, tag: str, /) -> None:
         """
         Parameters:
             tag (str): BCP 47 language tag.

@@ -20,12 +20,12 @@ class LanguageTagFactory:
     _tags (dict): The LanguageTag objects.
     """
 
-    def get(self, tag: str) -> LanguageTag:
+    def _get(self, tag: str, /) -> LanguageTag:
         """
-        Get LanguageTag object by BCP 47 language tag.
+        Get LanguageTag object by normalized BCP 47 language tag.
 
         Parameters:
-            tag (str): BCP 47 language tag.
+            tag (str): Normalized BCP 47 language tag.
 
         Returns:
             LanguageTag: The LanguageTag object to the corresponding BCP 47\
@@ -37,7 +37,39 @@ class LanguageTagFactory:
 
         return self._tags[tag]
 
-    def get_by_discord_code(self, code: str) -> LanguageTag | None:
+    def get(self, tag: str, /) -> LanguageTag:
+        """
+        Get LanguageTag object by normalized BCP 47 language tag.
+
+        Parameters:
+            tag (str): Normalized BCP 47 language tag.
+
+        Returns:
+            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+                language tag.
+        """
+
+        tag = LanguageUtils.to_bcp_47_case(tag)
+
+        return self._get(tag)
+
+    def get_by_unnormalized(self, tag: str, /) -> LanguageTag:
+        """
+        Get LanguageTag object by unnormalized BCP 47 language tag.
+
+        Parameters:
+            tag (str): Unnormalized BCP 47 language tag.
+
+        Returns:
+            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+                language tag.
+        """
+
+        tag = LanguageUtils.to_bcp_47(tag)
+
+        return self._get(tag)
+
+    def get_by_discord_code(self, code: str, /) -> LanguageTag | None:
         """
         Get LanguageTag object by Discord locale code.
 
@@ -55,7 +87,4 @@ class LanguageTagFactory:
 
         tag = LanguageUtils.get_from_discord_code(code)
 
-        if tag not in self._tags:
-            self._tags[tag] = LanguageTag(tag)
-
-        return self._tags[tag]
+        return self._get(tag)
