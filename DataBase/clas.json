@@ -1,1 +1,32 @@
-{}
+{
+  "akesel": {
+    "name": "113 工人身分組",
+    "theme": "959827031326081184",
+    "teacher": "empty",
+    "time": "2024~2025"
+  },
+  "6OKhfUt3bMo": {
+    "name": "11月主題課程",
+    "theme": "php後端網頁設計",
+    "teacher": ".xiulan",
+    "time": "11/23 & 11/24 19:00-21:00"
+  },
+  "6": {
+    "name": "12月主題課程",
+    "theme": "12月主題課程 - 基礎資料結構",
+    "teacher": "summer",
+    "time": "2024/12/28"
+  },
+  "3BwzKrSU": {
+    "name": "12月主題課程",
+    "theme": "12月主題課程 - 基礎資料結構",
+    "teacher": "summer",
+    "time": "2024/12/28"
+  },
+  "FebruaryClass": {
+    "name": "2月主題課程",
+    "theme": "2月主題課程-基礎演算法",
+    "teacher": "kuei",
+    "time": "2025/2/23"
+  }
+}
