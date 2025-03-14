@@ -81,7 +81,7 @@ def listt():
     api_admin_id = api_admin.get("id")
     headers = {"Authorization": f"Bot {discord_token}"}
     url = (
-        f"https://discord.com/api/v10/guilds/1203338928535379978/members/{api_admin_id}"
+        f"https://discord.com/api/v10/guilds/959823904266944562/members/{api_admin_id}"
     )
     response = requests.get(url, headers=headers, timeout=10)
     user_data = response.json()
@@ -112,7 +112,7 @@ def send(target_user_id):
         api_admin_id = api_admin.get("id")
         api_admin_name = api_admin.get("name")
         headers = {"Authorization": f"Bot {discord_token}"}
-        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{api_admin_id}"
+        url = f"https://discord.com/api/v10/guilds/959823904266944562/members/{api_admin_id}"
         response = requests.get(url, headers=headers, timeout=10)
         user_data = response.json()
         if response.status_code != 200:
@@ -133,7 +133,7 @@ def send(target_user_id):
         except ValueError:
             return jsonify({"result": "Invalid count value", "status": 400})
         print(gift_type, count)
-        url = f"https://discord.com/api/v10/guilds/1203338928535379978/members/{target_user_id}"
+        url = f"https://discord.com/api/v10/guilds/959823904266944562/members/{target_user_id}"
         response = requests.get(url, headers=headers, timeout=10)
         user_data = response.json()
         if response.status_code != 200:
