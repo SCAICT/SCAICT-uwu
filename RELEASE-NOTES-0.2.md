@@ -31,6 +31,7 @@ own risk!
 
 ### New developer features
 
+* Updated project.classifiers in `pyproject.toml`.
 * …
 
 ### External dependency changes
@@ -38,7 +39,7 @@ own risk!
 #### New external dependencies
 
 * Added py-cord dependency.
-  * Added propcache 0.2.1.
+  * Added propcache 0.3.1.
 
 #### New development-only external dependencies
 
@@ -60,8 +61,7 @@ own risk!
   * Updated attrs from 24.2.0 to 25.3.0.
   * Updated frozenlist from 1.4.1 to 1.5.0.
   * Updated idna from 3.7 to 3.10.
-  * Updated multidict from 6.0.5 to 6.3.0.
-  * Updated propcache from 0.2.1 to 0.3.1.
+  * Updated multidict from 6.0.5 to 6.3.1.
   * Updated yarl from 1.9.4 to 1.18.3.
 * Updated requests dependencies.
   * Updated certifi from 2024.7.4 to 2025.1.31.
@@ -74,12 +74,12 @@ own risk!
 * Updated black from 24.8.0 to 25.1.0.
   * Updated click from 8.1.7 to 8.1.8.
   * Updated packaging from 24.1 to 24.2.
-  * Updated platformdirs from 4.2.2 to 4.3.6.
-* Updated pylint from 3.2.6 to 3.3.4.
+  * Updated platformdirs from 4.2.2 to 4.3.7.
+* Updated pylint from 3.2.6 to 3.3.6.
   * Updated astroid from 3.2.4 to 3.3.9.
   * Updated dill from 0.3.8 to 0.3.9.
   * Updated isort from 5.13.2 to 6.0.1.
-  * Updated platformdirs from 4.2.2 to 4.3.6.
+  * Updated platformdirs from 4.2.2 to 4.3.7.
 * Updated pytest from 8.3.2 to 8.3.5.
   * Updated iniconfig from 2.0.0 to 2.1.0.
   * Updated packaging from 24.1 to 24.2.
