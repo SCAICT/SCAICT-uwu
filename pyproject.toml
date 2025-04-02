@@ -20,12 +20,14 @@ authors = [
 	{ name = "Winston Sung" },
 ]
 classifiers = [
+	"Development Status :: 4 - Beta",
 	"Environment :: Console",
 	"Environment :: Web Environment",
 	"Framework :: Flask",
 	"Framework :: Pytest",
 	"Intended Audience :: Developers",
 	"Intended Audience :: Education",
+	"Intended Audience :: Information Technology",
 	"License :: OSI Approved :: Apache Software License",
 	"Natural Language :: Chinese (Traditional)",
 	"Operating System :: OS Independent",
