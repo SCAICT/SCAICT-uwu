@@ -20,9 +20,21 @@ authors = [
 	{ name = "Winston Sung" },
 ]
 classifiers = [
+	"Environment :: Console",
+	"Environment :: Web Environment",
+	"Framework :: Flask",
+	"Framework :: Pytest",
+	"Intended Audience :: Developers",
+	"Intended Audience :: Education",
 	"License :: OSI Approved :: Apache Software License",
+	"Natural Language :: Chinese (Traditional)",
+	"Operating System :: OS Independent",
+	"Programming Language :: JavaScript",
+	"Programming Language :: Python",
 	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
 	"Programming Language :: Python :: 3.11",
+	"Programming Language :: SQL",
 ]
 urls.repository = "https://github.com/SCAICT/SCAICT-uwu.git"
 urls.issues = "https://github.com/SCAICT/SCAICT-uwu/issues"
