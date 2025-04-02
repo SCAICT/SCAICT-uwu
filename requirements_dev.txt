@@ -11,6 +11,6 @@ packaging == 24.2
 pathspec == 0.12.1
 platformdirs == 4.3.7
 pluggy == 1.5.0
-pylint == 3.3.4
+pylint == 3.3.6
 pytest == 8.3.5
 tomlkit == 0.13.2
