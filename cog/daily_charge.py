@@ -89,10 +89,10 @@ class Charge(commands.Cog):
                     )
 
                     # TODO: send the message together, or there may have problem about send but not modify
-                    # embed = self.embed_successful(
-                    #     user_data.point, user_data.charge_combo, author
-                    # )
-                    # await message.reply(embed=embed)
+                    embed = self.embed_successful(
+                        user_data.point, user_data.charge_combo, author
+                    )
+                    await message.reply(embed=embed, silent=True)
             # end loop
             # modify all "is_restored" of each data from datelist
             restored_downtime_list = [
