@@ -36,14 +36,12 @@ class Downtime:
         return Downtime(start, end, is_restored)
 
     @staticmethod
-    def from_dict(d: dict[str, str | bool]):
-        return (
-            Downtime.from_str(
+    def from_dict(d: dict[str, str | bool]) -> Downtime:
+        return Downtime.from_str(
                 start_str=str(d["start"]),
                 end_str=str(d.get("end", None)),
                 is_restored=bool(d.get("is_restored", False)),
-            ),
-        )
+            )
 
     def to_dict(self) -> dict[str, str | bool]:
         return self.__dict__
@@ -57,7 +55,7 @@ def get_downtime_list() -> list[Downtime]:
     with open(DOWNTIME_PATH, "r", encoding="utf-8") as file:
         data: list[dict[str, str | bool]] = json.load(file)
 
-    return list(*map(Downtime.from_dict, data))
+    return list(map(Downtime.from_dict, data))
 
 
 def write_downtime_list(downtime_list: list[Downtime]):
