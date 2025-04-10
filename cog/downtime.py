@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 import json
 import os
@@ -16,7 +16,7 @@ DOWNTIME_PATH = f"{os.getcwd()}/DataBase/downtime.json"
 class Downtime:
     start: datetime
     # TODO: will Downtime.end be None?
-    end: datetime = datetime.now()
+    end: datetime = field(default_factory=datetime.now)
     is_restored: bool = False
 
     def __contains__(self, timestamp: datetime):
