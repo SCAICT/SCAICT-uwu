@@ -13,9 +13,12 @@ from .secret import connect
 # TODO: replace link_sql()
 @contextmanager
 def mysql_connection():
+    connection: CMySQLConnection | None = None
+    cursor: CMySQLCursor | None = None
+
     try:
-        connection: CMySQLConnection = connect()
-        cursor: CMySQLCursor = connection.cursor()
+        connection = connect()
+        cursor = connection.cursor()
         yield cursor
         connection.commit()
     except MySQLError:
@@ -49,26 +52,17 @@ def link_sql():
 # end(connection.cursor)
 
 
-def fetch_one_from_sql(
-    table: str,
-    primary_key_name: str,
-    primary_property_value: MySQLConvertibleType,
-    *,
-    unique: bool = False,
-):
+def fetchone_by_primary_key(table: str, key_name: str, value: MySQLConvertibleType):
     with mysql_connection() as cursor:
-        query = (
-            "SELECT * FROM %(table)s "
-            "WHERE %(primary_key_name)s=%(primary_property_value)s"
-        )
-        cursor.execute(query, (table, primary_key_name, primary_property_value))
+        query = f"SELECT * FROM `{table}` WHERE `{key_name}` = %s"
+        cursor.execute(query, (value,))
         result = cursor.fetchall()
 
         if len(result) == 0:
             return None
-        
-        if unique:
-            assert len(result) == 1, "Result have multiple rows."
+
+        if len(result) != 1:
+            raise ValueError("Result have multiple rows.")
 
         row = result[0]
         field_names = cursor.column_names

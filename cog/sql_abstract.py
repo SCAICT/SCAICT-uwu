@@ -5,7 +5,7 @@ from datetime import datetime, date
 from dataclasses import dataclass, is_dataclass, fields
 from typing import Generic, TypeVar
 
-from cog.core.sql import fetch_one_from_sql, write, mysql_connection
+from cog.core.sql import fetchone_by_primary_key, write, mysql_connection
 from cog.singleton import SingletonMeta
 
 
@@ -128,7 +128,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
         uid: int,
     ):
 
-        data = fetch_one_from_sql("user", "uid", uid, unique=True)
+        data = fetchone_by_primary_key("user", "uid", uid)
         if data is None:
             return None
 
