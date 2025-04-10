@@ -75,8 +75,8 @@ class ProtectedAttrReadOnlyMixin:
 
 
 class SQLTable(ABC):
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def from_sql(unique_id): ...
 
     @abstractmethod
