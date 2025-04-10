@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 import json
 import os
+from typing import cast
 
 # Third-party imports
 import discord
@@ -216,7 +217,8 @@ class Charge(commands.Cog):
         return last_charge
 
     @discord.slash_command(name="charge", description="每日充電")
-    async def charge(self, interaction: discord.Interaction):
+    async def charge(self, interaction):
+        interaction = cast(discord.Interaction, interaction)
 
         assert (
             interaction.user
