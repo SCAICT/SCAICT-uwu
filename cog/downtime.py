@@ -5,6 +5,9 @@ from datetime import datetime
 import json
 import os
 
+from discord import Bot
+from discord.abc import Messageable
+
 DATETIME_FORMAT = "%y-%m-%d %H:%M:%S"
 DOWNTIME_PATH = f"{os.getcwd()}/DataBase/downtime.json"
 
@@ -60,3 +63,25 @@ def get_downtime_list() -> list[Downtime]:
 def write_downtime_list(downtime_list: list[Downtime]):
     with open(DOWNTIME_PATH, "w", encoding="utf-8") as file:
         json.dump([downtime.to_dict() for downtime in downtime_list], file, indent=4)
+
+
+async def get_history(
+    bot: Bot, channel_id, *, after: datetime, before: datetime | None = None
+):
+    if before is None:
+        before = datetime.now()
+    channel: Messageable = bot.get_channel(channel_id)
+
+    if not channel:
+        raise ValueError(f"Cannot get channel (id={channel}).")
+
+    if not isinstance(channel, Messageable):
+        raise ValueError(
+            f"{channel.name} (id={channel_id}, type={type(channel)}) is not messageable."
+        )
+
+    messages = await channel.history(
+        limit=None, after=after, before=before, oldest_first=True
+    ).flatten()
+
+    return messages

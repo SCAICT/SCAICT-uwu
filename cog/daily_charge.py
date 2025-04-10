@@ -9,7 +9,7 @@ import discord
 from discord.ext import commands
 
 # Local imports
-from cog.downtime import get_downtime_list, write_downtime_list
+from cog.downtime import get_downtime_list, write_downtime_list, get_history
 from cog.core.sql import write, read, mysql_connection
 from cog.sql_abstract import UserRecord
 
@@ -43,8 +43,13 @@ class Charge(commands.Cog):
         ).start
         # TODO: now() or end but with some condition
         latest_downtime_end = datetime.now()
-        messages = await self.get_history(
-            after=earliest_downtime_start, before=latest_downtime_end
+
+        charge_channel_id = get_channels()["everyDayCharge"]
+        messages = await get_history(
+            self.bot,
+            charge_channel_id,
+            after=earliest_downtime_start,
+            before=latest_downtime_end,
         )
 
         # TODO: cache the last_charged date
@@ -80,6 +85,7 @@ class Charge(commands.Cog):
                         cursor,
                         user_data.charge_combo,
                         user_data.point,
+                        is_forgivable=True,
                     )
 
                     # TODO: send the message together, or there may have problem about send but not modify
@@ -95,18 +101,6 @@ class Charge(commands.Cog):
             write_downtime_list(restored_downtime_list)
 
         # commit and close the connection
-
-    async def get_history(self, *, after: datetime, before: datetime | None = None):
-        if before is None:
-            before = datetime.now()
-        charge_channel_id = get_channels()["everyDayCharge"]
-        charge_channel: discord.TextChannel = self.bot.get_channel(
-            charge_channel_id
-        )  # pyright: ignore[reportAssignmentType]
-        messages = await charge_channel.history(
-            limit=None, after=after, before=before, oldest_first=True
-        ).flatten()
-        return messages
 
     def embed_channel_error(self):
         embed = discord.Embed(color=0xFF0000)
@@ -155,6 +149,31 @@ class Charge(commands.Cog):
 
         return embed
 
+    def is_forgivable(self, user: discord.User | discord.Member) -> bool:
+        # TODO: implement by add a table column called `is_forgivable` to control
+        """Return if user cannot charge due to downtime
+
+        For example, if downtime is from 2025-03-14 09:03:00 to 2025-04-11 21:00:00,
+        return True for all users who have charged between 2025-03-13(yesterday) to 2025-03-14(downtime.start),
+        if is_forgivable is True, you won't loss combo.
+        but after next charge, is_forgivable will be False,
+        because user will execute not at downtime, if downtime is correct
+        """
+        user_data = UserRecord.from_sql(user.id)
+
+        if user_data is None or user_data.charge_combo == 1:
+            return False
+
+        last_charge = user_data.last_charge
+        downtime_list = get_downtime_list()
+
+        return any(
+            downtime.start.date() - timedelta(days=1)
+            <= last_charge.date()
+            <= downtime.start.date()
+            for downtime in downtime_list
+        )
+
     # TODO: inherit a MySQLCursorAbstract to add method about these or consider to add self.cursor
     def reward(
         self,
@@ -164,10 +183,12 @@ class Charge(commands.Cog):
         cursor,
         orig_combo: int,
         orig_point: int,
+        is_forgivable: bool = False,
     ):
         combo = (
             1
-            if executed_at.date() - last_charge.date() > timedelta(days=1)
+            if is_forgivable
+            or (executed_at.date() - last_charge.date() > timedelta(days=1))
             else orig_combo + 1
         )
         point = orig_point + 5
@@ -231,7 +252,10 @@ class Charge(commands.Cog):
             point: int = read(
                 user.id, "point", cursor
             )  # pyright: ignore[reportAssignmentType]
-            self.reward(user, last_charge, now, cursor, combo, point)
+
+            is_forgivable = self.is_forgivable(user)
+
+            self.reward(user, last_charge, now, cursor, combo, point, is_forgivable)
 
             embed = self.embed_successful(point, combo, user)
             await interaction.response.send_message(embed=embed)
