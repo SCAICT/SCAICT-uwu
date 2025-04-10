@@ -6,7 +6,7 @@ from dataclasses import dataclass, is_dataclass, fields
 from typing import Generic, TypeVar
 
 from cog.core.sql import fetchone_by_primary_key, write, mysql_connection
-from cog.singleton import SingletonMeta
+from cog.core.singleton import SingletonMeta
 
 
 # TODO: extend if we need to judge the unset value is nullable

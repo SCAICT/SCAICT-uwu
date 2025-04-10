@@ -9,9 +9,9 @@ import discord
 from discord.ext import commands
 
 # Local imports
-from cog.downtime import get_downtime_list, write_downtime_list, get_history
+from cog.core.downtime import get_downtime_list, write_downtime_list, get_history
 from cog.core.sql import write, read, mysql_connection
-from cog.sql_abstract import UserRecord
+from cog.core.sql_abstract import UserRecord
 
 
 # TODO: won't be strange after localization is implemented
