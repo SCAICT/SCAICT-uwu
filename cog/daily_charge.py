@@ -264,6 +264,4 @@ class Charge(commands.Cog):
 
 
 async def setup(bot: discord.Bot):
-    cog = Charge(bot)
-    await cog.restore_downtime_point()
-    bot.add_cog(cog)
+    bot.add_cog(Charge(bot))

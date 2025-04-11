@@ -8,6 +8,7 @@ import discord
 # Local imports
 from channel_check import update_channel  # update_channel程式從core目錄底下引入
 from channel_check import change_status  # update_channel程式從core目錄底下引入
+from cog.daily_charge import Charge
 
 intt = discord.Intents.default()
 intt.members = True
@@ -31,6 +32,7 @@ async def on_ready():
 
     bot.loop.create_task(update_channel(bot))
     bot.loop.create_task(change_status(bot))
+    bot.loop.create_task(Charge(bot).restore_downtime_point())
 
 
 if __name__ == "__main__":
