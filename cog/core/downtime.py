@@ -8,7 +8,7 @@ import os
 from discord import Bot
 from discord.abc import Messageable
 
-DATETIME_FORMAT = "%y-%m-%d %H:%M:%S"
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 DOWNTIME_PATH = f"{os.getcwd()}/DataBase/downtime.json"
 
 
