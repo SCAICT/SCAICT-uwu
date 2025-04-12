@@ -9,7 +9,7 @@ from discord.abc import Messageable
 
 from cog.core.safe_write import safe_open_w
 
-DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S%z"
 DOWNTIME_PATH = f"{os.getcwd()}/DataBase/downtime.json"
 
 
@@ -20,10 +20,15 @@ class Downtime:
     end: datetime = field(default_factory=datetime.now)
     is_restored: bool = False
 
+    def __post_init__(self):
+        if self.end.tzinfo is None:
+            self.end.astimezone()
+
     def __contains__(self, timestamp: datetime):
-        start = self.start
-        end = self.end or datetime.now()
-        return start <= timestamp <= end
+        if self.end.tzinfo is None:  # XXX: True when self.end is set after init
+            self.end = self.end.astimezone()
+
+        return self.start <= timestamp <= self.end
 
     @staticmethod
     def from_str(
@@ -73,6 +78,7 @@ async def get_history(
 ):
     if before is None:
         before = datetime.now()
+
     channel: Messageable = bot.get_channel(channel_id)
 
     if not channel:
@@ -83,6 +89,7 @@ async def get_history(
             f"{channel.name} (id={channel_id}, type={type(channel)}) is not messageable."
         )
 
+    # if datetime is naive, it is assumed to be local time
     messages = await channel.history(
         limit=None, after=after, before=before, oldest_first=True
     ).flatten()
