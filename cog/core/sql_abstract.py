@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from collections import UserDict
 from datetime import datetime, date
 from dataclasses import dataclass, is_dataclass, fields
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from cog.core.sql import fetchone_by_primary_key, write, mysql_connection
 from cog.core.singleton import SingletonMeta
@@ -23,9 +23,10 @@ class Unsettable:
         value = super().__getattribute__(name)
         if value is UNSET:
             raise UnsetError(f"Attribute '{name}' is not set")
+        return value
 
     def is_unset(self, attr_name):
-        return super().__getattribute__(attr_name) == UNSET
+        return super().__getattribute__(attr_name) is UNSET
 
 
 class UnsetError(Exception):
@@ -60,14 +61,23 @@ class AttributeKeyedDict(UserDict, Generic[DataclassT]):
 
 
 def is_protected_name(name: str) -> bool:
-    return name.startswith("_") and not name.startswith("__")
+    return name.startswith("_") and not name.startswith("__") and not name.endswith("_")
 
 
 class ProtectedAttrReadOnlyMixin:
+    def __getattribute__(self, name: str) -> Any:
+        return super().__getattribute__(name)
+
     def __setattr__(self, name: str, value):
         is_protected = is_protected_name(name)
-        is_set = name in self.__dict__
-        if is_protected and is_set:
+        if not is_protected or self.__dict__ is None:
+            return super().__setattr__(name, value)
+
+        is_unset = self.is_unset(name) if isinstance(self, Unsettable) else False
+
+        is_init = (name in self.__dict__) or not is_unset
+
+        if is_protected and is_init:
             raise AttributeError(
                 f"The protected attribute `{name}` should be read-only after initialization."
             )
@@ -101,7 +111,12 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
     today_comments: int = UNSET  # pyright: ignore[reportAssignmentType]
     admkey: str | None = UNSET  # pyright: ignore[reportAssignmentType]
 
-    _protected: bool = False  # readonly after init
+    # if true, readonly after init (default: False)
+    _protected: bool = UNSET  # pyright: ignore[reportAssignmentType]
+
+    def __post_init__(self):
+        if self._protected is UNSET:
+            self._protected = False
 
     # won't place default value unless use default() to ensure safety
     @staticmethod
@@ -136,9 +151,11 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
             _protected=True, **data  # pyright: ignore[reportArgumentType]
         )
 
-        assert any(
-            record.is_unset(field.name) for field in fields(record)
-        ), "SQL is not return all fields"
+        for field in fields(record):
+            if record.is_unset(field.name):
+                raise Exception(  # pylint: disable=broad-exception-raised
+                    f"SQL is not return all fields. (`{field.name}`=`{getattr(record, field.name)}`)"
+                )
 
         return record
 
