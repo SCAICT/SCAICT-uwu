@@ -10,8 +10,9 @@ YUEVUWU = 545234619729969152
 
 SKIP = False
 try:
-    mysql_connection()
-except (RuntimeError, MySQLError):
+    with mysql_connection() as _:
+        pass
+except (RuntimeError, MySQLError, TypeError):
     SKIP = True
 
 

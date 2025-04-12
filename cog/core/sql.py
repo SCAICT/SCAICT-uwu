@@ -24,6 +24,9 @@ def mysql_connection():
         cursor = connection.cursor()
         yield (connection, cursor)
         connection.commit()
+    except TypeError:
+        print("Please setup .env correctly.")
+        raise
     except MySQLError:
         if connection:
             connection.rollback()
