@@ -8,6 +8,8 @@ from typing import cast
 # Third-party imports
 import discord
 from discord.ext import commands
+from discord.user import _UserTag
+from mysql.connector.abstracts import MySQLCursorAbstract
 
 # Local imports
 from cog.core.downtime import get_downtime_list, write_downtime_list, get_history
@@ -83,18 +85,19 @@ class Charge(commands.Cog):
                         author,
                         last_charge,
                         created_time,
-                        cursor,
                         user_data.charge_combo,
                         user_data.point,
+                        user_data.ticket,
+                        cursor,
                         is_forgivable=True,
                     )
-                    
+
                     # TODO: send the message together, or there may have problem about send but not modify
                     embed = self.embed_successful(
                         delta_record.point, delta_record.charge_combo, author
                     )
                     await message.reply(embed=embed, silent=True)
-                    
+
                     connection.commit()
             # end loop
             # modify all "is_restored" of each data from datelist
@@ -152,7 +155,8 @@ class Charge(commands.Cog):
 
         return embed
 
-    def is_forgivable(self, user: discord.User | discord.Member) -> bool:
+    @staticmethod
+    def is_forgivable(last_charge: datetime) -> bool:
         # TODO: implement by add a table column called `is_forgivable` to control
         """Return if user cannot charge due to downtime
 
@@ -162,14 +166,7 @@ class Charge(commands.Cog):
         but after next charge, is_forgivable will be False,
         because user will execute not at downtime, if downtime is correct
         """
-        user_data = UserRecord.from_sql(user.id)
-
-        if user_data is None:
-            return False
-
-        last_charge = user_data.last_charge
         downtime_list = get_downtime_list()
-
         return any(
             downtime.start.date() - timedelta(days=1)
             <= last_charge.date()
@@ -177,43 +174,79 @@ class Charge(commands.Cog):
             for downtime in downtime_list
         )
 
+    @staticmethod
+    def is_cross_day(last_charge: datetime, executed_at: datetime):
+        assert executed_at >= last_charge
+        return executed_at.date() - last_charge.date() > timedelta(days=1)
+
+    @staticmethod
+    def is_already_charged(last_charge: datetime, executed_at: datetime):
+        assert executed_at >= last_charge
+        return executed_at.date() == last_charge.date()
+
     # TODO: inherit a MySQLCursorAbstract to add method about these or consider to add self.cursor
+    @staticmethod
     def reward(
-        self,
-        user: discord.User | discord.Member,
+        user_or_uid: _UserTag | int,
         last_charge: datetime,
         executed_at: datetime,
-        cursor,
         orig_combo: int,
         orig_point: int,
+        orig_ticket: int,
+        cursor: MySQLCursorAbstract | None = None,
         is_forgivable: bool = False,
+        testing: bool = False,
     ) -> UserRecord:
-        delta_record = UserRecord(user.id)
+
+        if testing:
+            if not isinstance(user_or_uid, int):
+                raise ValueError("You should give a UID during test.")
+            uid = user_or_uid
+            # TODO: emulate cursor
+            if cursor is not None:
+                raise ValueError("Database should not be changed during test.")
+        else:
+            if not isinstance(user_or_uid, _UserTag):
+                raise ValueError(
+                    "You should give a User or Member object, or other object inherit _UserTag, to get id."
+                )
+            uid = user_or_uid.id
+
+            if cursor is None:
+                raise ValueError("You should give a cursor for writing data to sql.")
+
+        delta_record = UserRecord(uid)
 
         combo = (
             1
-            if not is_forgivable
-            and (executed_at.date() - last_charge.date() > timedelta(days=1))
+            if not is_forgivable and Charge.is_cross_day(last_charge, executed_at)
             else orig_combo + 1
         )
         point = orig_point + 5
+
+        ticket = orig_ticket
         if combo % 7 == 0:
-            ticket = read(user.id, "ticket", cursor)
+            ticket += 4
+            delta_record.ticket = ticket
             # refactor with UserRecord.to_sql
-            write(user.id, "ticket", ticket + 4, cursor)
-            delta_record.ticket = ticket + 4
-        write(user.id, "last_charge", executed_at, cursor)
-        write(user.id, "charge_combo", combo, cursor)
-        write(user.id, "point", point, cursor)
+            if not testing:
+                write(uid, "ticket", ticket, cursor)
 
         delta_record.last_charge = executed_at
         delta_record.charge_combo = combo
         delta_record.point = point
 
+        if not testing:
+            write(uid, "last_charge", executed_at, cursor)
+            write(uid, "charge_combo", combo, cursor)
+            write(uid, "point", point, cursor)
+
         # 紀錄log
         # TODO: record both executed time and datetime.now() after logger is implemented
         # pylint: disable-next = line-too-long
-        print(f"{user.id},{user} Get 5 point by daily_charge {datetime.now()}")
+        if not testing:
+            user = user_or_uid
+            print(f"{uid},{user} Get 5 point by daily_charge {datetime.now()}")
 
         return delta_record
 
@@ -252,7 +285,7 @@ class Charge(commands.Cog):
             now = datetime.now().replace(microsecond=0)
 
             last_charge = self.get_last_charged(user, cursor)
-            already_charged = now.date() == last_charge.date()
+            already_charged = self.is_already_charged(last_charge, now)
 
             if already_charged:
                 embed = self.embed_already_charged(user)
@@ -266,10 +299,15 @@ class Charge(commands.Cog):
             point: int = read(
                 user.id, "point", cursor
             )  # pyright: ignore[reportAssignmentType]
+            ticket: int = read(
+                user.id, "ticket", cursor
+            )  # pyright: ignore[reportAssignmentType]
 
-            is_forgivable = self.is_forgivable(user)
+            is_forgivable = self.is_forgivable(last_charge)
 
-            self.reward(user, last_charge, now, cursor, combo, point, is_forgivable)
+            self.reward(
+                user, last_charge, now, combo, point, ticket, cursor, is_forgivable
+            )
 
             embed = self.embed_successful(point, combo, user)
             await interaction.response.send_message(embed=embed)
