@@ -59,7 +59,7 @@ class Charge(commands.Cog):
             ), "Unsafe operation at restoring downtime point due to commit automatically."
 
             for message in messages:
-                created_time: datetime = message.created_at
+                created_time: datetime = message.created_at.astimezone()
                 author = message.author
 
                 assert self.bot.user, "Bot was not logged in."
