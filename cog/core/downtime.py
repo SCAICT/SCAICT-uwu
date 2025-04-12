@@ -22,7 +22,7 @@ class Downtime:
 
     def __post_init__(self):
         if self.end.tzinfo is None:
-            self.end.astimezone()
+            self.end = self.end.astimezone()
 
     def __contains__(self, timestamp: datetime):
         if self.end.tzinfo is None:  # XXX: True when self.end is set after init
