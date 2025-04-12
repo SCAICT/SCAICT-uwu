@@ -1,9 +1,10 @@
 import unittest
 
+from mysql.connector.errors import Error as MySQLError
+
 from cog.core.sql import mysql_connection
 from cog.core.sql_abstract import UserRecord
 
-from mysql.connector.errors import Error as MySQLError
 
 YUEVUWU = 545234619729969152
 

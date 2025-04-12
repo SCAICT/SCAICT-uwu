@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime
 
-from ..daily_charge import Charge
-from ..core.sql_abstract import UserRecord
+from cog.daily_charge import Charge
+from cog.core.sql_abstract import UserRecord
 
 YUEVUWU = 1
 PANBOYU = 2
