@@ -158,7 +158,7 @@ class Charge(commands.Cog):
         """
         user_data = UserRecord.from_sql(user.id)
 
-        if user_data is None or user_data.charge_combo == 1:
+        if user_data is None:
             return False
 
         last_charge = user_data.last_charge
