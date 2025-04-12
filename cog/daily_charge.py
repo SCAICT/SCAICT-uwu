@@ -275,5 +275,5 @@ class Charge(commands.Cog):
             await interaction.response.send_message(embed=embed)
 
 
-async def setup(bot: discord.Bot):
+def setup(bot: discord.Bot):
     bot.add_cog(Charge(bot))
