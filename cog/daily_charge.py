@@ -125,7 +125,7 @@ class Charge(commands.Cog):
             stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 
         embed = discord.Embed(
-            title="{user.name}剛剛充電了！",
+            title=f"{user.name}剛剛充電了！",
             description="",
             color=0x14E15C,
         )
