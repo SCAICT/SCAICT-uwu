@@ -192,7 +192,7 @@ class Charge(commands.Cog):
 
         combo = (
             1
-            if is_forgivable
+            if not is_forgivable
             or (executed_at.date() - last_charge.date() > timedelta(days=1))
             else orig_combo + 1
         )
