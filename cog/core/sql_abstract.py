@@ -171,7 +171,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
 
         for field in fields(record):
             if record.is_unset(field.name):
-                raise Exception(  # pylint: disable=broad-exception-raised
+                raise Exception(
                     f"SQL is not return all fields. (`{field.name}`=`{getattr(record, field.name)}`)"
                 )
 
