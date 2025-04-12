@@ -15,10 +15,6 @@ from cog.core.sql import write, read, mysql_connection
 from cog.core.sql_abstract import UserRecord
 
 
-# TODO: won't be strange after localization is implemented
-MSG_JUST_CHARGE = "{username}剛剛充電了！"
-
-
 def get_channels():  # 取得特殊用途頻道的清單，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
     with open(
         f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
@@ -128,7 +124,7 @@ class Charge(commands.Cog):
             stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 
         embed = discord.Embed(
-            title=MSG_JUST_CHARGE.format(user.name),
+            title="{user.name}剛剛充電了！",
             description="",
             color=0x14E15C,
         )
