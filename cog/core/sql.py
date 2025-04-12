@@ -19,6 +19,8 @@ def mysql_connection():
 
     try:
         connection = cast(CMySQLConnection, connect())
+        if connection is None:
+            raise RuntimeError("Cannot connect to database")
         cursor = connection.cursor()
         yield (connection, cursor)
         connection.commit()
