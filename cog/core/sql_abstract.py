@@ -118,6 +118,23 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
         if self.is_unset("_protected"):
             self._protected = False
 
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, UserRecord):
+            return False
+
+        for field in fields(UserRecord):
+            is_unset_a = self.is_unset(field.name)
+            is_unset_b = value.is_unset(field.name)
+            if is_unset_a != is_unset_b:
+                return False
+
+            if (is_unset_a == is_unset_b == False) and (
+                getattr(self, field.name) != getattr(value, field.name)
+            ):
+                return False
+
+        return True
+
     # won't place default value unless use default() to ensure safety
     # TODO: UserRecord.from_sql(uid).or_default() or UserRecord.from_sql_or_default(uid)
     @staticmethod
