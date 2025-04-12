@@ -74,9 +74,11 @@ class Charge(commands.Cog):
                     message.created_at in downtime
                     for downtime in unprocessed_downtime_list
                 ):
-                    user_data = UserRecord.from_sql(author.id) or UserRecord.default(author.id)
+                    user_data = UserRecord.from_sql(author.id) or UserRecord.default(
+                        author.id
+                    )
 
-                    self.reward(
+                    delta_record = self.reward(
                         author,
                         last_charge,
                         created_time,
@@ -88,7 +90,7 @@ class Charge(commands.Cog):
 
                     # TODO: send the message together, or there may have problem about send but not modify
                     embed = self.embed_successful(
-                        user_data.point, user_data.charge_combo, author
+                        delta_record.point, delta_record.charge_combo, author
                     )
                     await message.reply(embed=embed, silent=True)
             # end loop
@@ -182,7 +184,9 @@ class Charge(commands.Cog):
         orig_combo: int,
         orig_point: int,
         is_forgivable: bool = False,
-    ):
+    ) -> UserRecord:
+        delta_record = UserRecord(user.id)
+
         combo = (
             1
             if is_forgivable
@@ -194,14 +198,21 @@ class Charge(commands.Cog):
             ticket = read(user.id, "ticket", cursor)
             # refactor with UserRecord.to_sql
             write(user.id, "ticket", ticket + 4, cursor)
+            delta_record.ticket = ticket + 4
         write(user.id, "last_charge", executed_at, cursor)
         write(user.id, "charge_combo", combo, cursor)
         write(user.id, "point", point, cursor)
+
+        delta_record.last_charge = executed_at
+        delta_record.charge_combo = combo
+        delta_record.point = point
 
         # 紀錄log
         # TODO: record both executed time and datetime.now() after logger is implemented
         # pylint: disable-next = line-too-long
         print(f"{user.id},{user} Get 5 point by daily_charge {datetime.now()}")
+
+        return delta_record
 
     # TODO: inherit a MySQLCursorAbstract to add method about these or consider to add self.cursor
     def get_last_charged(self, user: discord.User | discord.Member, cursor):

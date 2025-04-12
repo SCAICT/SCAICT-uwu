@@ -119,6 +119,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
             self._protected = False
 
     # won't place default value unless use default() to ensure safety
+    # TODO: UserRecord.from_sql(uid).or_default() or UserRecord.from_sql_or_default(uid)
     @staticmethod
     def default(uid):
         return UserRecord(
