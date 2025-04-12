@@ -51,11 +51,12 @@ class Charge(commands.Cog):
 
         # TODO: cache the last_charged date
         # cached_change: UserDict = UserDict()
-        with mysql_connection() as cursor:
+        with mysql_connection() as c:
+            connection, cursor = c
             # XXX: check with a better method, because the module on the running machine have no `_connection` attribute :skull:
-            # assert (
-            #     cursor._connection.autocommit is False
-            # ), "Unsafe operation at restoring downtime point due to commit automatically."
+            assert (
+                connection.autocommit is False
+            ), "Unsafe operation at restoring downtime point due to commit automatically."
 
             for message in messages:
                 created_time: datetime = message.created_at
@@ -87,12 +88,14 @@ class Charge(commands.Cog):
                         user_data.point,
                         is_forgivable=True,
                     )
-
+                    
                     # TODO: send the message together, or there may have problem about send but not modify
                     embed = self.embed_successful(
                         delta_record.point, delta_record.charge_combo, author
                     )
                     await message.reply(embed=embed, silent=True)
+                    
+                    connection.commit()
             # end loop
             # modify all "is_restored" of each data from datelist
             restored_downtime_list = [
@@ -241,7 +244,8 @@ class Charge(commands.Cog):
             # End connection instead of return
             return
 
-        with mysql_connection() as cursor:  # SQL 會話
+        with mysql_connection() as c:  # SQL 會話
+            _, cursor = c
             user = interaction.user
 
             # get now time and combo

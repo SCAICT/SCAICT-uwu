@@ -166,7 +166,8 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
         self.to_sql_unsafe()
 
     def to_sql_unsafe(self):
-        with mysql_connection() as cursor:
+        with mysql_connection() as c:
+            _, cursor = c
             for field in fields(self):
                 if is_protected_name(field.name):  # _protected
                     continue

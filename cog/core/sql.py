@@ -1,5 +1,6 @@
 from __future__ import annotations
 from contextlib import contextmanager
+from typing import cast
 
 from mysql.connector.connection_cext import CMySQLConnection
 from mysql.connector.cursor_cext import CMySQLCursor
@@ -17,9 +18,9 @@ def mysql_connection():
     cursor: CMySQLCursor | None = None
 
     try:
-        connection = connect()
+        connection = cast(CMySQLConnection, connect())
         cursor = connection.cursor()
-        yield cursor
+        yield (connection, cursor)
         connection.commit()
     except MySQLError:
         if connection:
@@ -53,7 +54,8 @@ def link_sql():
 
 
 def fetchone_by_primary_key(table: str, key_name: str, value: MySQLConvertibleType):
-    with mysql_connection() as cursor:
+    with mysql_connection() as c:
+        _, cursor = c
         query = f"SELECT * FROM `{table}` WHERE `{key_name}` = %s"
         cursor.execute(query, (value,))
         result = cursor.fetchall()
