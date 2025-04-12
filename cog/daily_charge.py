@@ -52,9 +52,10 @@ class Charge(commands.Cog):
         # TODO: cache the last_charged date
         # cached_change: UserDict = UserDict()
         with mysql_connection() as cursor:
-            assert (
-                cursor._connection.autocommit is False
-            ), "Unsafe operation at restoring downtime point due to commit automatically."
+            # XXX: check with a better method, because the module on the running machine have no `_connection` attribute :skull:
+            # assert (
+            #     cursor._connection.autocommit is False
+            # ), "Unsafe operation at restoring downtime point due to commit automatically."
 
             for message in messages:
                 created_time: datetime = message.created_at
