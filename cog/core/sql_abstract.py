@@ -75,7 +75,7 @@ class ProtectedAttrReadOnlyMixin:
 
         is_unset = self.is_unset(name) if isinstance(self, Unsettable) else False
 
-        is_init = (name in self.__dict__) or not is_unset
+        is_init = (name in self.__dict__) and not is_unset
 
         if is_protected and is_init:
             raise AttributeError(
@@ -115,7 +115,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
     _protected: bool = UNSET  # pyright: ignore[reportAssignmentType]
 
     def __post_init__(self):
-        if self._protected is UNSET:
+        if self.is_unset("_protected"):
             self._protected = False
 
     # won't place default value unless use default() to ensure safety
