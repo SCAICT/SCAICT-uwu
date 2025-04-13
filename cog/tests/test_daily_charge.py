@@ -70,7 +70,7 @@ class TestIsCrossDay(unittest.TestCase):
                     )
                 )
         for last_charge, executed_at in test_cases_false:
-            with self.subTest(last_charge=last_charge, now=executed_at):
+            with self.subTest(last_charge=last_charge, executed_at=executed_at):
                 self.assertFalse(
                     Charge.is_cross_day(
                         datetime.strptime(last_charge, "%Y-%m-%d %H:%M:%S"),
