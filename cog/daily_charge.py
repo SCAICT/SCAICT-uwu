@@ -305,11 +305,11 @@ class Charge(commands.Cog):
 
             is_forgivable = self.is_forgivable(last_charge)
 
-            self.reward(
+            changed = self.reward(
                 user, last_charge, now, combo, point, ticket, cursor, is_forgivable
             )
 
-            embed = self.embed_successful(point, combo, user)
+            embed = self.embed_successful(changed.point, changed.charge_combo, user)
             await interaction.response.send_message(embed=embed)
 
 
