@@ -186,6 +186,7 @@ class Charge(commands.Cog):
 
     # TODO: inherit a MySQLCursorAbstract to add method about these or consider to add self.cursor
     @staticmethod
+    # pylint: disable-next = too-many-positional-arguments
     def reward(
         user_or_uid: _UserTag | int,
         last_charge: datetime,

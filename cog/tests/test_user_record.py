@@ -18,7 +18,7 @@ except (RuntimeError, MySQLError, TypeError):
 
 class TestFromSQL(unittest.TestCase):
     @unittest.skipIf(SKIP, "Failed to connect to database.")
-    def test_YuevUwU_exist(self):
+    def test_yuevuwu_exist(self):
         data = UserRecord.from_sql(YUEVUWU)
         self.assertIsNotNone(data)
         print(data)

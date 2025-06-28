@@ -152,7 +152,6 @@ def send(target_user_id):
                     "error_details": request_admin.get("details"),
                 }
             )
-        print(gift_type, count)
         # 送禮物
         user_name = user_data["user"]["username"]
         try:

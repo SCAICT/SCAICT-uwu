@@ -1,3 +1,7 @@
+# Currently the database column naming is a mess,\
+# let's keep that mess for now and probably fix them later.
+# pylint: disable = invalid-name, too-many-instance-attributes, broad-exception-raised
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections import UserDict
