@@ -20,13 +20,13 @@ class TestLanguageTagFactory(unittest.TestCase):
         self.language_tag_factory = None
 
     def test_get(self) -> None:
-        language_tag: LanguageTag = self.language_tag_factory.get("zh-Hant")
+        language_tag: LanguageTag = self.language_tag_factory.get_tag(tag="zh-Hant")
 
         self.assertEqual(language_tag.get_bcp_47_tag(), "zh-Hant")
         self.assertEqual(language_tag.get_system_message_tag(), "zh-hant")
         self.assertEqual(language_tag.get_discord_code(), "zh-TW")
 
-        language_tag = self.language_tag_factory.get("zh-hant")
+        language_tag = self.language_tag_factory.get_tag(tag="zh-hant")
 
         self.assertEqual(language_tag.get_bcp_47_tag(), "zh-Hant")
         self.assertEqual(language_tag.get_system_message_tag(), "zh-hant")
@@ -34,7 +34,7 @@ class TestLanguageTagFactory(unittest.TestCase):
 
     def test_get_by_discord_code(self) -> None:
         language_tag: LanguageTag | None = (
-            self.language_tag_factory.get_by_discord_code("zh-TW")
+            self.language_tag_factory.get_by_discord_code(code="zh-TW")
         )
 
         self.assertIsNotNone(language_tag)

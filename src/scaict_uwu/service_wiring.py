@@ -9,7 +9,7 @@ from typing import Callable
 from .core.config.config import Config
 from .core.config.config_factory import ConfigFactory
 from .libs.language.language_tag_factory import LanguageTagFactory
-from .service_container import ServiceContainer
+from .services import Services
 
 
 def get_wiring() -> dict[str, Callable]:
@@ -22,19 +22,19 @@ def get_wiring() -> dict[str, Callable]:
     """
 
     return {
-        "Config": get_config,
-        "ConfigFactory": get_config_factory,
-        "LanguageTagFactory": get_language_tag_factory,
+        "Config": _get_config,
+        "ConfigFactory": _get_config_factory,
+        "LanguageTagFactory": _get_language_tag_factory,
     }
 
 
-def get_config(services: ServiceContainer) -> Config:
+def _get_config(services: Services, /) -> Config:
     return services.get_config_factory().get()
 
 
-def get_config_factory(services: ServiceContainer) -> ConfigFactory:
+def _get_config_factory(services: Services, /) -> ConfigFactory:
     return ConfigFactory()
 
 
-def get_language_tag_factory(services: ServiceContainer) -> LanguageTagFactory:
+def _get_language_tag_factory(services: Services, /) -> LanguageTagFactory:
     return LanguageTagFactory()

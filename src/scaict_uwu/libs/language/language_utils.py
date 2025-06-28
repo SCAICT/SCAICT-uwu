@@ -135,7 +135,7 @@ class LanguageUtils:
         }
 
     @classmethod
-    def get_discord_code_to_bcp_47_mapping(cls, /) -> dict:
+    def get_discord_code_to_bcp_47_mapping(cls) -> dict:
         """
         Get the mapping of Discord locale code to BCP 47 language tag.
 
@@ -146,7 +146,7 @@ class LanguageUtils:
         return {v: k for k, v in cls.get_discord_code_mapping().items()}
 
     @staticmethod
-    def to_bcp_47_case(tag: str, /) -> str:
+    def to_bcp_47_case(*, tag: str) -> str:
         """
         Convert language tag string to BCP 47 letter case.
 
@@ -183,7 +183,7 @@ class LanguageUtils:
         return "-".join(tag_bcp_47_case_subtags)
 
     @classmethod
-    def to_bcp_47(cls, tag: str, /) -> str:
+    def to_bcp_47(cls, *, tag: str) -> str:
         """
         Normalize language tag string to BCP 47 language tag string, with
         letter case formatting and deprecated code replacements (for example,
@@ -204,10 +204,10 @@ class LanguageUtils:
 
                 break
 
-        return cls.to_bcp_47_case(tag)
+        return cls.to_bcp_47_case(tag=tag)
 
     @classmethod
-    def is_supported_discord_code(cls, code: str, /) -> bool:
+    def is_supported_discord_code(cls, *, code: str) -> bool:
         """
         Check if the given code is a supported Discord locale code.
 
@@ -221,7 +221,7 @@ class LanguageUtils:
         return code in cls.get_supported_discord_codes()
 
     @classmethod
-    def get_discord_code(cls, tag: str, /) -> str | None:
+    def get_discord_code(cls, *, tag: str) -> str | None:
         """
         Get the Discord locale code from BCP 47 language tag.
 
@@ -236,13 +236,13 @@ class LanguageUtils:
 
         code = cls.get_discord_code_mapping().get(tag, tag)
 
-        if cls.is_supported_discord_code(code):
+        if cls.is_supported_discord_code(code=code):
             return code
 
         return None
 
     @classmethod
-    def get_from_discord_code(cls, code: str, /) -> str:
+    def get_from_discord_code(cls, *, code: str) -> str:
         """
         Get the BCP 47 language tag from Discord locale code.
 

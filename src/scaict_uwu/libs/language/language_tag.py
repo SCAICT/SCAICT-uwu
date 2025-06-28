@@ -24,7 +24,7 @@ class LanguageTag:
     _tag (str): The BCP 47 language subtag of the LanguageTag object.
     """
 
-    def __init__(self, tag: str, /) -> None:
+    def __init__(self, *, tag: str) -> None:
         """
         Parameters:
             tag (str): BCP 47 language tag.
@@ -63,7 +63,7 @@ class LanguageTag:
                 corresponding supported Discord locale code.
         """
 
-        return LanguageUtils.get_discord_code(self._tag)
+        return LanguageUtils.get_discord_code(tag=self._tag)
 
     def get_fallbacks(self) -> list[str]:
         """
