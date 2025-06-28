@@ -190,11 +190,6 @@ class CTF(Build):
                             case == 1 and response_flag.lower() == answer.lower()
                         ):
                             # 判斷是否重複回答
-                            # pylint: disable-next = line-too-long
-                            cursor.execute(
-                                "UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;",
-                                (question_id, user_id),
-                            )
                             cursor.execute(
                                 "SELECT solved FROM ctf_history WHERE data_id=%s AND uid=%s;",
                                 (question_id, user_id),
@@ -211,7 +206,13 @@ class CTF(Build):
                                     ephemeral=True, embeds=[embed]
                                 )
                                 return
+
                             # else 未曾回答過，送獎勵
+                            # pylint: disable-next = line-too-long
+                            cursor.execute(
+                                "UPDATE ctf_history SET solved=1 WHERE data_id=%s AND uid=%s;",
+                                (question_id, user_id),
+                            )
                             # pylint: disable-next = line-too-long
                             cursor.execute(
                                 "SELECT score FROM ctf_data WHERE id=%s;",

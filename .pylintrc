@@ -454,7 +454,8 @@ disable=raw-checker-failed,
         too-many-arguments,
         too-many-statements,
         too-many-return-statements,
-        broad-exception-caught
+        broad-exception-caught,
+        fixme
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -580,6 +581,7 @@ contextmanager-decorators=contextlib.contextmanager
 # system, and so shouldn't trigger E1101 when accessed. Python regular
 # expressions are accepted.
 # generated-members=
+generated-members=discord
 
 # Tells whether to warn about missing members when the owner of the attribute
 # is inferred to be None.

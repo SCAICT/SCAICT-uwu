@@ -41,7 +41,7 @@ github_redirect_uri = os.getenv("GITHUB_REDIRECT_URI")
 github_discord_redirect_uri = os.getenv("GITHUB_DISCORD_REDIRECT_URI")
 discord_token = os.getenv("DISCORD_TOKEN")
 send_gift_role = os.getenv("SEND_GIFT_ROLE")
-guild_ID = os.getenv("GUILD_ID")
+guild_id = os.getenv("GUILD_ID")
 # 將字串轉換為列表
 if send_gift_role:
     send_gift_role = [str(role_id) for role_id in send_gift_role.split(",")]
@@ -86,7 +86,7 @@ def listt():
     )  # <class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
     api_admin_id = api_admin.get("id")
     headers = {"Authorization": f"Bot {discord_token}"}
-    url = f"https://discord.com/api/v10/guilds/{guild_ID}/members/{api_admin_id}"
+    url = f"https://discord.com/api/v10/guilds/{guild_id}/members/{api_admin_id}"
     response = requests.get(url, headers=headers, timeout=10)
     user_data = response.json()
     if response.status_code != 200:
@@ -116,7 +116,7 @@ def send(target_user_id):
         )  # <class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
         api_admin_id = api_admin.get("id")
         api_admin_name = api_admin.get("name")
-        discord_api = Apis(discord_token, guild_ID)
+        discord_api = Apis(discord_token, guild_id)
         request_admin = discord_api.get_user(api_admin_id)
         gift_type = request.args.get("gift_type", "電電點")  # 預設為"電電點"
         gift_amount = request.args.get("count", 1)  # 預設數量為1
@@ -152,11 +152,12 @@ def send(target_user_id):
                     "error_details": request_admin.get("details"),
                 }
             )
+        print(gift_type, count)
         # 送禮物
         user_name = user_data["user"]["username"]
         try:
             new_gift = Gift(
-                discord_token, guild_ID, target_user_id
+                discord_token, guild_id, target_user_id
             )  # create a new gift object
             if new_gift.dm_room is None:
                 return jsonify(

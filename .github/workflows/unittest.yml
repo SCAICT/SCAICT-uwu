@@ -26,4 +26,5 @@ jobs:
           pip install -e .[dev]
       - name: Analysing the code with Pylint
         run: |
+          python -m unittest $(git ls-files 'cog/tests/*.py')
           python -m unittest $(git ls-files 'tests/unittest/*.py')
