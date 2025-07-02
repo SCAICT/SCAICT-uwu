@@ -84,7 +84,7 @@ def write(user_id, user_prop: str, value, cursor, table: str = "user") -> None:
     """
     # 建立連線
 
-    cursor.execute(f'SELECT `uid` {user_prop} FROM `{table}` WHERE `uid`="{user_id}"')
+    cursor.execute(f'SELECT `uid` FROM `{table}` WHERE `uid`="{user_id}"')
     ret = cursor.fetchall()
     if len(ret) == 0:  # 找不到 新增一份
         cursor.execute(f"INSERT INTO `{table}`(uid) VALUE({user_id})")
