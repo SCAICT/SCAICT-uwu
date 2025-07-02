@@ -5,7 +5,7 @@ attrs == 25.3.0
 blinker == 1.9.0
 certifi == 2025.6.15
 charset-normalizer == 3.4.1
-click == 8.1.8
+click == 8.2.1
 colorama == 0.4.6
 flask == 3.1.1
 frozenlist == 1.7.0
