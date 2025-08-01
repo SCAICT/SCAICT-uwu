@@ -28,5 +28,17 @@
     "theme": "2月主題課程-基礎演算法",
     "teacher": "kuei",
     "time": "2025/2/23"
+  },
+  "April_Cource": {
+    "name": "4月主題課程",
+    "theme": "4月主題課程 -  3D動畫、動態設計",
+    "teacher": "陳奕呈",
+    "time": "114/4/20"
+  },
+  "April_Course": {
+    "name": "4月主題課程",
+    "theme": "4月主題課程 -  3D動畫、動態設計",
+    "teacher": "陳奕呈",
+    "time": "114/4/20"
   }
 }
