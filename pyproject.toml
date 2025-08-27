@@ -5,7 +5,7 @@
 name = "scaict-uwu"
 # PEP 440
 # @see https://sethmlarson.dev/pep-440
-version = "0.1.9.dev0"
+version = "0.2.0"
 description = "A cat living in SCAICT Discord server."
 readme.file = "README.md"
 readme.content-type = "text/markdown"
@@ -20,23 +20,37 @@ authors = [
 	{ name = "Winston Sung" },
 ]
 classifiers = [
+	"Development Status :: 4 - Beta",
+	"Environment :: Console",
+	"Environment :: Web Environment",
+	"Framework :: Flask",
+	"Framework :: Pytest",
+	"Intended Audience :: Developers",
+	"Intended Audience :: Education",
+	"Intended Audience :: Information Technology",
 	"License :: OSI Approved :: Apache Software License",
+	"Natural Language :: Chinese (Traditional)",
+	"Operating System :: OS Independent",
+	"Programming Language :: JavaScript",
+	"Programming Language :: Python",
 	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
 	"Programming Language :: Python :: 3.11",
+	"Programming Language :: SQL",
 ]
 urls.repository = "https://github.com/SCAICT/SCAICT-uwu.git"
 urls.issues = "https://github.com/SCAICT/SCAICT-uwu/issues"
 # Lock file: requirements.txt
 dependencies = [
-	"flask == 3.0.3",
-	"mysql-connector-python == 9.1.0",
-	"py-cord == 2.6.0",
-	"python-dotenv == 1.0.1",
-	"requests == 2.32.3",
+	"flask == 3.1.2",
+	"mysql-connector-python == 9.4.0",
+	"py-cord == 2.6.1",
+	"python-dotenv == 1.1.1",
+	"requests == 2.32.5",
 ]
 # Lock file: requirements_dev.txt
 optional-dependencies.dev = [
-	"black == 24.8.0",
-	"pylint == 3.2.6",
-	"pytest == 8.3.2",
+	"black == 25.1.0",
+	"pylint == 3.3.8",
+	"pytest == 8.4.1",
 ]
