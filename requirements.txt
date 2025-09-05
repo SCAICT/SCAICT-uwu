@@ -18,6 +18,6 @@ mysql-connector-python == 9.1.0
 py-cord == 2.6.0
 python-dotenv == 1.0.1
 requests == 2.32.3
-urllib3 == 2.2.2
+urllib3 == 2.5.0
 werkzeug == 3.0.4
 yarl == 1.9.4
