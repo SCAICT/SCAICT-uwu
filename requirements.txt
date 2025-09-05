@@ -19,5 +19,5 @@ py-cord == 2.6.0
 python-dotenv == 1.0.1
 requests == 2.32.4
 urllib3 == 2.5.0
-werkzeug == 3.0.4
+werkzeug == 3.0.6
 yarl == 1.9.4
