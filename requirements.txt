@@ -11,7 +11,7 @@ flask == 3.0.3
 frozenlist == 1.4.1
 idna == 3.7
 itsdangerous == 2.2.0
-jinja2 == 3.1.4
+jinja2 == 3.1.6
 markupsafe == 2.1.5
 multidict == 6.0.5
 mysql-connector-python == 9.1.0
