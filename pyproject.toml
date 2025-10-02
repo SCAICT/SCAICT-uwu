@@ -10,7 +10,10 @@ description = "A cat living in SCAICT Discord server."
 readme.file = "README.md"
 readme.content-type = "text/markdown"
 requires-python = "== 3.11.*"
-license.file = "LICENSE"
+license = "Apache-2.0"
+license-files = [
+	"LICENSE",
+]
 # Use Git committer/author name here
 authors = [
 	{ name = "ChiuDeYuan" },
