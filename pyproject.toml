@@ -31,7 +31,6 @@ classifiers = [
 	"Intended Audience :: Developers",
 	"Intended Audience :: Education",
 	"Intended Audience :: Information Technology",
-	"License :: OSI Approved :: Apache Software License",
 	"Natural Language :: Chinese (Traditional)",
 	"Operating System :: OS Independent",
 	"Programming Language :: JavaScript",
