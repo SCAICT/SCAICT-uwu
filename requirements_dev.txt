@@ -1,5 +1,5 @@
 astroid == 3.3.11
-black == 25.1.0
+black == 25.9.0
 click == 8.3.0
 colorama == 0.4.6
 dill == 0.4.0
