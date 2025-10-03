@@ -54,5 +54,5 @@ dependencies = [
 optional-dependencies.dev = [
 	"black == 25.9.0",
 	"pylint == 3.3.8",
-	"pytest == 8.4.1",
+	"pytest == 8.4.2",
 ]
