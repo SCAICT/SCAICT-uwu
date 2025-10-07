@@ -13,7 +13,7 @@ idna == 3.10
 itsdangerous == 2.2.0
 jinja2 == 3.1.6
 markupsafe == 3.0.3
-multidict == 6.6.4
+multidict == 6.7.0
 mysql-connector-python == 9.4.0
 propcache == 0.4.0
 py-cord == 2.6.1
