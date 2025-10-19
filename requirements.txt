@@ -9,7 +9,7 @@ click == 8.3.0
 colorama == 0.4.6
 flask == 3.1.2
 frozenlist == 1.8.0
-idna == 3.10
+idna == 3.11
 itsdangerous == 2.2.0
 jinja2 == 3.1.6
 markupsafe == 3.0.3
