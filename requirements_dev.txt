@@ -1,4 +1,4 @@
-astroid == 3.3.11
+astroid == 4.0.1
 black == 25.9.0
 click == 8.3.0
 colorama == 0.4.6
@@ -11,6 +11,6 @@ packaging == 25.0
 pathspec == 0.12.1
 platformdirs == 4.5.0
 pluggy == 1.6.0
-pylint == 3.3.9
+pylint == 4.0.2
 pytest == 8.4.2
 tomlkit == 0.13.3
