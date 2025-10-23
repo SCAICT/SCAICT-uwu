@@ -26,17 +26,17 @@ class ServiceContainer:
 
     # Wiring module functions
 
-    def load_wiring_module(self, /, module) -> None:
+    def load_wiring_module(self, *, module) -> None:
         try:
             self.apply_wiring(service_instantiators=module.get_wiring())
         except AttributeError:
             sys.exit("InvalidWiringModuleException")
 
-    def load_wiring_modules(self, /, modules: list) -> None:
+    def load_wiring_modules(self, *, modules: list) -> None:
         for module in modules:
             self.load_wiring_module(module=module)
 
-    def apply_wiring(self, /, service_instantiators: dict[str, Callable]) -> None:
+    def apply_wiring(self, *, service_instantiators: dict[str, Callable]) -> None:
         for name, instantiator in service_instantiators.items():
             self.define_instantiator(name=name, instantiator=instantiator)
 
@@ -46,16 +46,16 @@ class ServiceContainer:
         # Convert dict_keys to list
         return list(self._service_instantiators.keys())
 
-    def has_instantiator(self, /, name: str) -> bool:
+    def has_instantiator(self, *, name: str) -> bool:
         return name in self._service_instantiators
 
-    def define_instantiator(self, /, name: str, instantiator: Callable) -> None:
+    def define_instantiator(self, *, name: str, instantiator: Callable) -> None:
         if self.has_instantiator(name=name):
             sys.exit(f"ServiceAlreadyDefinedException {name}")
 
         self._service_instantiators[name] = instantiator
 
-    def redefine_instantiator(self, /, name: str, instantiator: Callable) -> None:
+    def redefine_instantiator(self, *, name: str, instantiator: Callable) -> None:
         if not self.has_instantiator(name=name):
             sys.exit(f"NoSuchServiceException {name}")
 
@@ -80,7 +80,7 @@ class ServiceContainer:
 
         return self._service_instantiators[name](services=self)
 
-    def get_service(self, /, name: str):
+    def get_service(self, *, name: str):
         if name not in self._services:
             self._services[name] = self.create_service(name=name)
 

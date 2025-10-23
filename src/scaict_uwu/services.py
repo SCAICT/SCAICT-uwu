@@ -2,6 +2,9 @@
 Module for SCAICT-uwu service locator.
 """
 
+# Third-party imports
+import discord
+
 # Local imports
 from .core.config.config import Config
 from .core.config.config_factory import ConfigFactory
@@ -23,6 +26,12 @@ class Services(ServiceContainer):
 
     def get_config_factory(self) -> ConfigFactory:
         return self.get_service(name="ConfigFactory")
+
+    def get_discord_bot(self) -> discord.Bot:
+        return self.get_service(name="DiscordBot")
+
+    def get_discord_intents(self) -> discord.Intents:
+        return self.get_service(name="DiscordIntents")
 
     def get_language_tag_factory(self) -> LanguageTagFactory:
         return self.get_service(name="LanguageTagFactory")
