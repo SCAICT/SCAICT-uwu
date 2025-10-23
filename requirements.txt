@@ -14,7 +14,7 @@ itsdangerous == 2.2.0
 jinja2 == 3.1.6
 markupsafe == 3.0.3
 multidict == 6.7.0
-mysql-connector-python == 9.4.0
+mysql-connector-python == 9.5.0
 propcache == 0.4.1
 py-cord == 2.6.1
 python-dotenv == 1.1.1
