@@ -14,7 +14,7 @@ TIMESTAMP="$(date +%Y-%m-%dT%H-%M-%S)"
 START_COMMAND="flask run"
 
 # Simulate Ctrl-C (SIGINT) instead of SIGKILL to exit as safely as possible
-screen -S bot -X stuff "\003"
+screen -S store -X stuff "\003"
 
 mkdir -p "${LOG_DIR}" || exit 1
 test -w "${LOG_DIR}" || { \
@@ -31,7 +31,7 @@ echo "HINT: 如果你看見 [screen is terminating], 那麼很遺憾的這個處
 screen -S store -L -Logfile "${LOG_DIR}/Log_${TIMESTAMP}.log" \
     bash -c "echo TIPS: You can detach with Ctrl-A D;
         echo which won\'t kill the process;
-        echo and you can reattach to observer the output and interact with util-bot-reattach.sh; \
+        echo and you can reattach to observer the output and interact with util-store-reattach.sh; \
         echo 您可以透過 Ctrl-A D 脫離這個界面，並且不會殺死這個處理程序;
-        echo 之後也可以透過 util-bot-reattach.sh 重新回來觀察輸出與互動;
+        echo 之後也可以透過 util-store-reattach.sh 重新回來觀察輸出與互動;
         ${START_COMMAND}"
