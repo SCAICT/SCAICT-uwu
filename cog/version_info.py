@@ -16,7 +16,7 @@ class VersionInfo(commands.Cog):
     Current hardcoded workaround
     """
 
-    _SCAICT_UWU_VERSION_DATE: str = "2025-11-03"
+    _SCAICT_UWU_VERSION_DATE: str = "2025-11-03 (UTC)"
     """
     Current hardcoded workaround
     """
@@ -123,10 +123,8 @@ class VersionInfo(commands.Cog):
         return discord.Embed(
             color=0xFF24CF,
             footer=discord.EmbedFooter(
-                text=(
-                    datetime.datetime.now(tz=datetime.timezone.utc).strftime(
-                        "%Y-%m-%d %H:%M:%S (UTC)"
-                    )
+                text=datetime.datetime.now(tz=datetime.timezone.utc).strftime(
+                    format="%Y-%m-%d %H:%M:%S (UTC)"
                 )
             ),
         )
@@ -140,7 +138,7 @@ class VersionInfo(commands.Cog):
         ), "Interaction may be in PING interactions, so that interaction.user is invalid."
         assert interaction.channel, "There are no channel returned from interation."
 
-        await interaction.response.send_message(embeds=self.embed_version_info())
+        await interaction.response.send_message(embeds=self.embeds_version_info())
 
 
 def setup(bot: discord.Bot):
