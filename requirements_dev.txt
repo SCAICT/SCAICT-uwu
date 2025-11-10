@@ -1,4 +1,4 @@
-astroid == 4.0.1
+astroid == 4.0.2
 black == 25.9.0
 click == 8.3.0
 colorama == 0.4.6
