@@ -12,5 +12,5 @@ pathspec == 0.12.1
 platformdirs == 4.5.0
 pluggy == 1.6.0
 pylint == 4.0.2
-pytest == 9.0.0
+pytest == 9.0.1
 tomlkit == 0.13.3
