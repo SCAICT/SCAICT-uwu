@@ -1,14 +1,16 @@
 # Contributing
 
-If you wish to contribute to the SCAICT-uwu, feel free to fork the repository
-and submit a pull request.
+If you wish to contribute to SCAICT-uwu, feel free to fork the repository and
+submit a pull request.
 
-All development happens on the `development` branch. Make sure to submit pull
-requests in the correct branch.
+All development happens on the `dev` branch. Make sure to submit pull requests
+in the correct branch.
 
 ## Coding conventions
 
 ### File formatting
+
+For Python files, we currently use the Black formatter.
 
 #### Indentation
 
@@ -33,37 +35,6 @@ All text files must be encoded with UTF-8 without a
 [Byte Order Mark](https://en.wikipedia.org/wiki/Byte_order_mark).
 
 Do not use Microsoft Notepad to edit files, as it always inserts a BOM.
-
-#### Whitespace
-
-The general whitespace style for Python would be:
-
-```py
-statement # Inline comments
-```
-
-```py
-if condition and condition or condition:
-```
-
-```py
-if (
-    condition and
-    condition or
-    condition
-):
-```
-
-```py
-def function_name(arg_1: type = "value 1", arg_2: type) -> type:
-```
-
-```py
-def function_name(
-    arg_1: type = "value 1",
-    arg_2: type
-) -> type:
-```
 
 #### Trailing whitespace
 
