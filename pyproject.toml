@@ -19,8 +19,12 @@ authors = [
 	{ name = "ChiuDeYuan" },
 	{ name = "Each Chen" },
 	{ name = "Elvis Mao" },
-	{ name = "os24" },
+	{ name = "Hu Kai-hsiang" },
+	{ name = "Larryeng" },
+	{ name = "osga24" },
 	{ name = "Winston Sung" },
+	{ name = "YuevUwU" },
+	{ name = "伊藤蒼太" },
 ]
 classifiers = [
 	"Development Status :: 4 - Beta",
