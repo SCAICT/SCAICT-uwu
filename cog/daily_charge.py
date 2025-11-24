@@ -19,7 +19,7 @@ from cog.core.sql_abstract import UserRecord
 
 def get_channels():  # 取得特殊用途頻道的清單，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
     with open(
-        f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+        f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
     ) as file:
         return json.load(file)["SCAICT-alpha"]["channel"]
 
@@ -128,7 +128,7 @@ class Charge(commands.Cog):
     def embed_successful(self, point, combo, user: discord.User | discord.Member):
         # 讀表符ID
         with open(
-            f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+            f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
         ) as file:
             stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 

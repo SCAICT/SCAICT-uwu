@@ -16,7 +16,7 @@ def open_json():
     # open configuration file
     os.chdir("./")
     with open(
-        f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+        f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
     ) as file:
         global_settings = json.load(file)
     return global_settings
