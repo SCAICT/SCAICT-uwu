@@ -3,12 +3,13 @@ This is the module for the class for all system messages.
 """
 
 # Local imports
-from ..language.language_tag import LanguageTag
+from .language_tag import LanguageTag
 
 
-class Message:
+class SystemMessage:
     """
-    The Message class deals with fetching and processing of system messages.
+    The SystemMessage class deals with fetching and processing of system\
+        messages.
     """
 
     _use_lang: str | None = None

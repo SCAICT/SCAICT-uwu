@@ -7,7 +7,7 @@ from typing import ClassVar
 
 # Local imports
 from .language_tag import LanguageTag
-from .language_utils import LanguageUtils
+from .utils import LanguageUtils
 
 
 class LanguageTagFactory:

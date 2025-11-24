@@ -6,10 +6,10 @@ Module for SCAICT-uwu service locator.
 import discord
 
 # Local imports
-from .core.config.config import Config
-from .core.config.config_factory import ConfigFactory
+from .config.config import Config
+from .config.factory import ConfigFactory
 from .libs.language.language_tag_factory import LanguageTagFactory
-from .libs.services.service_container import ServiceContainer
+from .libs.services.container import ServiceContainer
 
 
 class Services(ServiceContainer):

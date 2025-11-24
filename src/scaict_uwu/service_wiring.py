@@ -9,8 +9,8 @@ from typing import Callable
 import discord
 
 # Local imports
-from .core.config.config import Config
-from .core.config.config_factory import ConfigFactory
+from .config.config import Config
+from .config.factory import ConfigFactory
 from .libs.language.language_tag_factory import LanguageTagFactory
 from .services import Services
 

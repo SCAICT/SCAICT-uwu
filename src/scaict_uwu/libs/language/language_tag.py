@@ -2,7 +2,7 @@
 This is the module for the class for all languages.
 """
 
-from .language_utils import LanguageUtils
+from .utils import LanguageUtils
 
 
 class LanguageTag:
