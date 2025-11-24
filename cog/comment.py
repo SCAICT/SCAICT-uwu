@@ -20,7 +20,7 @@ from cog.core.sql import link_sql
 
 try:
     with open(
-        f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+        f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
     ) as file:
         stickers = json.load(file)["SCAICT-alpha"]["stickers"]
 except FileNotFoundError:
@@ -48,7 +48,7 @@ def get_channels():  # 要特殊用途頻道的列表，這裡會用來判斷是
     # os.chdir("./")
     try:
         with open(
-            f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+            f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
         ) as config_file:
             return json.load(config_file)["SCAICT-alpha"]["channel"]
     except FileNotFoundError:

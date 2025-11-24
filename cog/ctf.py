@@ -20,7 +20,7 @@ from cog.core.sql import end as end_sql
 from cog.core.sql import link_sql
 
 with open(
-    f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+    f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
 ) as server_config:
     stickers = json.load(server_config)["SCAICT-alpha"]["stickers"]
 
@@ -28,7 +28,7 @@ with open(
 def get_ctf_makers() -> dict:
     try:
         with open(
-            f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+            f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
         ) as file:
             return json.load(file)
     except FileNotFoundError:

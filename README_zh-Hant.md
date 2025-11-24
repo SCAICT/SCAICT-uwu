@@ -28,7 +28,7 @@
    pip install -r requirements.txt
    ```
 
-4. 在 `DataBase/server.config.json` 中設定頻道。
+4. 在 `database/server.config.json` 中設定頻道。
 5. 啟動 SQL 伺服器。
 6. 在 Breadcrumbs SCAICT-uwu 的 `cog/core/sql_acc.py` 中設定 SQL 伺服器。
 7. 執行 Flask。
@@ -65,7 +65,7 @@
   }
   ```
 
-* `DataBase/slot.json`：
+* `database/slot.json`：
 
   設定老虎機的中獎機率。
 

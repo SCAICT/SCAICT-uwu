@@ -88,7 +88,7 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
    pip install -r requirements.txt
    ```
 
-4. Configure the channels in `DataBase/server.config.json`.
+4. Configure the channels in `database/server.config.json`.
 5. Start the SQL server.
 6. Configure the SQL server in `cog/core/sql_acc.py` within Breadcrumbs SCAICT-uwu.
 7. Run Flask.
@@ -125,7 +125,7 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
   }
   ```
 
-* `DataBase/slot.json`:
+* `database/slot.json`:
 
   Configures the jackpot probabilities for the slot machine.
 

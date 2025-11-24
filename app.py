@@ -360,7 +360,7 @@ def slot():
 @app.route("/productList")
 def product_list():
     # send pure JSON data
-    with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding="utf-8") as file:
+    with open(f"{os.getcwd()}/database/products.json", "r", encoding="utf-8") as file:
         products = json.load(file)
     return products
 
@@ -374,7 +374,7 @@ def buy_product():
     product_id = request.json.get("id")  # Convert product_id to a string
     if not product_id:
         return "無法讀取商品 ID"
-    with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding="utf-8") as file:
+    with open(f"{os.getcwd()}/database/products.json", "r", encoding="utf-8") as file:
         products = json.load(file)
     # Check in the json array products.products for the product with the id
     product = next((p for p in products["products"] if p["id"] == product_id), None)
@@ -400,7 +400,7 @@ def buy_product():
     write(discord_user["id"], "point", user_points, cursor)
     end(connection, cursor)
     product["stock"] -= 1
-    with open(f"{os.getcwd()}/DataBase/products.json", "w", encoding="utf-8") as file:
+    with open(f"{os.getcwd()}/database/products.json", "w", encoding="utf-8") as file:
         json.dump(products, file)
     return "購買成功！"
 
@@ -418,7 +418,7 @@ def roll_slot() -> list:
     if not user_id_exists(discord_user["id"], "user", cursor):
         end(connection, cursor)
         return "使用者不存在"
-    with open(f"{os.getcwd()}/DataBase/products.json", "r", encoding="utf-8") as file:
+    with open(f"{os.getcwd()}/database/products.json", "r", encoding="utf-8") as file:
         products = json.load(file)
     # Check in the json array products.products for the product with the id
 
@@ -434,7 +434,7 @@ def roll_slot() -> list:
             "這位好駭客，burp suite 是不能突破我的" if num_draws not in (1, 10) else ""
         )
         return "抽獎券不足\n" + easter_egg
-    with open(f"{os.getcwd()}/DataBase/slot.json", "r", encoding="utf-8") as file:
+    with open(f"{os.getcwd()}/database/slot.json", "r", encoding="utf-8") as file:
         slot_json = json.load(file)
     for _ in range(num_draws):
         result = random.choices(

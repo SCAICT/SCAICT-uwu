@@ -12,7 +12,9 @@ from build.build import Build
 
 def get_courses():
     try:
-        with open(f"{os.getcwd()}/DataBase/clas.json", "r", encoding="utf-8") as file:
+        with open(
+            f"{os.getcwd()}/database/courses.json", "r", encoding="utf-8"
+        ) as file:
             data = json.load(file)
         return data
     except (FileNotFoundError, json.JSONDecodeError):
@@ -30,7 +32,7 @@ def search_data(code):
 def add_data(code, new_data):
     data = get_courses()
     data[code] = new_data
-    with open(f"{os.getcwd()}/DataBase/clas.json", "w", encoding="utf-8") as file:
+    with open(f"{os.getcwd()}/database/courses.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=2, ensure_ascii=False)
 
 

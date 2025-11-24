@@ -6,7 +6,7 @@ import json
 from cog.core.sql import link_sql
 from cog.core.sql import end
 
-with open("./DataBase/ctf.json", "r", encoding="utf-8") as file:
+with open("./database/ctf.json", "r", encoding="utf-8") as file:
     # code to read and process the file goes here
     file = json.load(file)
     connection, cursor = link_sql()

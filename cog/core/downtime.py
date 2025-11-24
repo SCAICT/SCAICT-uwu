@@ -10,7 +10,7 @@ from discord.abc import Messageable
 from cog.core.safe_write import safe_open_w
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S%z"
-DOWNTIME_PATH = f"{os.getcwd()}/DataBase/downtime.json"
+DOWNTIME_PATH = f"{os.getcwd()}/database/downtime.json"
 
 
 @dataclass

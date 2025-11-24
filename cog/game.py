@@ -20,7 +20,7 @@ def get_channels():
     """
     try:
         with open(
-            f"{os.getcwd()}/DataBase/server.config.json", "r", encoding="utf-8"
+            f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
         ) as file:
             return json.load(file)["SCAICT-alpha"]
     except FileNotFoundError:
