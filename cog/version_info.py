@@ -11,7 +11,7 @@ from discord.ext import commands
 
 
 class VersionInfo(commands.Cog):
-    _SCAICT_UWU_VERSION_NUMBER: str = "0.1.13"
+    _SCAICT_UWU_VERSION_NUMBER: str = "0.1.14.dev0"
     """
     Current hardcoded workaround
     """
