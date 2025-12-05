@@ -28,51 +28,20 @@ class VersionInfo(commands.Cog):
     Current hardcoded workaround
     """
 
+    _SCAICT_UWU_IMAGE = (
+        "https://github.com/SCAICT/SCAICT-uwu/blob/851186b/uwu.png?raw=true"
+    )
+    """
+    Current hardcoded workaround
+    """
+
     def __init__(self, bot: discord.Bot) -> None:
         self.bot = bot
 
-    def embeds_version_info(self) -> list[discord.Embed]:
+    def _embed_version_info(self) -> discord.Embed:
         """
-        List of version information embeds.
+        The version information embed.
         """
-
-        return [
-            self.embed_version_info_title(),
-            self.embed_installed_software(),
-            # self.embed_installed_packages(),
-            self.embed_version_info_footer(),
-        ]
-
-    def embed_version_info_title(self) -> discord.Embed:
-        """
-        Main title embed of the version information embeds.
-        """
-
-        bot_avatar = self.bot.user.avatar
-
-        if bot_avatar is None:
-            bot_avatar = self.bot.user.default_avatar
-
-        return discord.Embed(
-            color=0xFF24CF,
-            title="版本資訊",
-            thumbnail=bot_avatar.url,
-        )
-
-    def embed_installed_software(self) -> discord.Embed:
-        """
-        == Installed software ==
-
-        * scaict_uwu: version_num (git_hash_to-do)\\ndate
-        * python
-        * pip
-        * mysql
-        """
-
-        embed = discord.Embed(
-            color=0xFF24CF,
-            title="已安裝的軟體",
-        )
 
         # TODO: Git hash
         # process = subprocess.Popen(
@@ -82,52 +51,69 @@ class VersionInfo(commands.Cog):
         # )
         # git_head_hash = process.communicate()[0].strip()
 
-        embed.add_field(
-            name="中電喵",
-            value=self._SCAICT_UWU_VERSION,
-            inline=False,
+        # == Installed software ==
+        #
+        # '''scaict_uwu'''
+        # version_num (git_hash_to-do)
+        # date
+        #
+        # '''python'''
+        # version
+        #
+        # '''pip''' <!-- To-do -->
+        # version
+        #
+        # '''mysql''' <!-- To-do -->
+        # version
+        #
+        # == Installed packages == <!-- To-do -->
+        description = (
+            "### 已安裝的軟體\n\n"
+            + "**中電喵**\n"
+            + self._SCAICT_UWU_VERSION
+            + "\n\n"
+            + "**Python**\n"
+            + sys.version
+            # + "\n\n"
+            # + "### 已安裝的套件"
         )
-        embed.add_field(
-            name="Python",
-            value=sys.version,
-            inline=False,
-        )
-
-        return embed
-
-    # def embed_installed_packages(self) -> discord.Embed:
-    #     """
-    #     == Installed packages ==
-    #     py-cord
-    #     ...
-    #     """
-
-    #     embed = discord.Embed(
-    #         color=0xFF24CF,
-    #         title=f"已安裝的套件",
-    #     )
-
-    #     embed.add_field(
-    #         name="package_name".lower,
-    #         value="package_version",
-    #         inline=True,
-    #     )
-
-    #     return embed
-
-    def embed_version_info_footer(self) -> discord.Embed:
-        """
-        Main footer of the version information embeds.
-        """
 
         return discord.Embed(
             color=0xFF24CF,
+            title="版本資訊",
+            description=description,
+            fields=self._embed_fields_installed_packages(),
+            author=discord.EmbedAuthor(
+                name="中電喵",
+                icon_url=self.bot.user.display_avatar.url,
+            ),
+            thumbnail=self._SCAICT_UWU_IMAGE,
             footer=discord.EmbedFooter(
                 text=datetime.datetime.now(tz=datetime.timezone.utc).strftime(
                     format="%Y-%m-%d %H:%M:%S (UTC)"
                 )
             ),
         )
+
+    def _embed_fields_installed_packages(self) -> list[discord.EmbedField] | None:
+        """
+        flask: version,   mysql-connector-python: version,
+        py-cord: version, ...
+        """
+
+        # fields = []
+
+        # TODO:
+        # fields.append(
+        #     discord.EmbedField(
+        #         name="package_name".lower,
+        #         value="package_version",
+        #         inline=True,
+        #     )
+        # )
+
+        # return fields
+        return None
 
     @discord.slash_command(name="version_info", description="版本資訊")
     async def version_info(self, interaction) -> None:
@@ -138,7 +124,7 @@ class VersionInfo(commands.Cog):
         ), "Interaction may be in PING interactions, so that interaction.user is invalid."
         assert interaction.channel, "There are no channel returned from interation."
 
-        await interaction.response.send_message(embeds=self.embeds_version_info())
+        await interaction.response.send_message(embed=self._embed_version_info())
 
 
 def setup(bot: discord.Bot):
