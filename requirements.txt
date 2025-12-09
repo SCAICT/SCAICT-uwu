@@ -19,6 +19,6 @@ propcache == 0.4.1
 py-cord == 2.6.1
 python-dotenv == 1.2.1
 requests == 2.32.5
-urllib3 == 2.5.0
+urllib3 == 2.6.1
 werkzeug == 3.1.4
 yarl == 1.22.0
