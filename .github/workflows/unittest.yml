@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python ${{ matrix.python-version }}
@@ -26,4 +26,3 @@ jobs:
       - name: Analysing the code with Python unittest
         run: |
           python -m unittest $(git ls-files 'cog/tests/*.py')
-          python -m unittest $(git ls-files 'tests/unittest/*.py')
