@@ -1,6 +1,167 @@
 """
-This is the module for the class for language utilities.
+This is the module for languages.
 """
+
+# Standard imports
+# Prevents runtime evaluation of type hints
+from __future__ import annotations
+
+from functools import cached_property
+from typing import ClassVar
+
+
+class LanguageTag:
+    """
+    The LanguageTag class deals with language data.
+
+    Note:
+        This class is designed to be instantiated through LanguageTagFactory\
+        rather than directly.
+
+        Example:
+            language_tag_factory = LanguageTagFactory()
+            tag = language_tag_factory.get("zh-Hant")
+            tag = language_tag_factory.get_by_discord_code("zh-TW")
+    """
+
+    def __init__(self, *, tag: str) -> None:
+        """
+        Parameters:
+            tag (str): BCP 47 language tag.
+        """
+
+        self._tag: str = tag
+        """
+        The BCP 47 language subtag of the LanguageTag object.
+        """
+
+    @cached_property
+    def bcp_47_tag(self) -> str:
+        """
+        Get the BCP 47 language tag of the LanguageTag object.
+
+        Returns:
+            str: The BCP 47 language tag.
+        """
+
+        return self._tag
+
+    @cached_property
+    def system_message_tag(self) -> str:
+        """
+        Get the system message language tag of the LanguageTag object.
+
+        Returns:
+            str: The system message language tag.
+        """
+
+        return self._tag.lower()
+
+    @cached_property
+    def discord_code(self) -> str | None:
+        """
+        Get the Discord locale code of the LanguageTag object.
+
+        See <https://discord.com/developers/docs/reference#locales>
+
+        Returns:
+            (str | None): The Discord locale code. Return None when there is no\
+                corresponding supported Discord locale code.
+        """
+
+        return LanguageUtils.get_discord_code(tag=self._tag)
+
+    @cached_property
+    def fallbacks(self) -> list[str]:
+        """
+        Get the language fallback chain of the LanguageTag object.
+
+        Returns:
+            list[str]: The list containing BCP 47 language tags of the language\
+                fallback chain.
+        """
+
+        return []
+
+
+class LanguageTagFactory:
+    """
+    The LanguageTagFactory class deals with LanguageTag object creations.
+    """
+
+    _tags: ClassVar[dict[str, LanguageTag]] = {}
+    """
+    _tags (dict): The LanguageTag objects.
+    """
+
+    def _get_tag_internal(self, *, tag: str) -> LanguageTag:
+        """
+        Get LanguageTag object by normalized BCP 47 language tag.
+
+        Parameters:
+            tag (str): Normalized BCP 47 language tag.
+
+        Returns:
+            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+                language tag.
+        """
+
+        if tag not in self._tags:
+            self._tags[tag] = LanguageTag(tag=tag)
+
+        return self._tags[tag]
+
+    def get_tag(self, *, tag: str) -> LanguageTag:
+        """
+        Get LanguageTag object by normalized BCP 47 language tag.
+
+        Parameters:
+            tag (str): Normalized BCP 47 language tag.
+
+        Returns:
+            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+                language tag.
+        """
+
+        tag = LanguageUtils.to_bcp_47_case(tag=tag)
+
+        return self._get_tag_internal(tag=tag)
+
+    def get_by_unnormalized(self, *, tag: str) -> LanguageTag:
+        """
+        Get LanguageTag object by unnormalized BCP 47 language tag.
+
+        Parameters:
+            tag (str): Unnormalized BCP 47 language tag.
+
+        Returns:
+            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+                language tag.
+        """
+
+        tag = LanguageUtils.to_bcp_47(tag=tag)
+
+        return self._get_tag_internal(tag=tag)
+
+    def get_by_discord_code(self, *, code: str) -> LanguageTag | None:
+        """
+        Get LanguageTag object by Discord locale code.
+
+        Parameters:
+            code (str): Discord locale code.
+
+        Returns:
+            (LanguageTag | None): The LanguageTag object of the corresponding\
+                Discord locale code. Return None when is not a supported\
+                Discord locale code.
+        """
+
+        if code not in LanguageUtils.get_supported_discord_codes():
+            return None
+
+        tag = LanguageUtils.get_from_discord_code(code=code)
+
+        return self._get_tag_internal(tag=tag)
 
 
 class LanguageUtils:
@@ -254,3 +415,60 @@ class LanguageUtils:
         """
 
         return cls.get_discord_code_to_bcp_47_mapping().get(code, code)
+
+
+class SystemMessage:
+    """
+    The SystemMessage class deals with fetching and processing of system\
+        messages.
+    """
+
+    _use_lang: str | None = None
+    """
+    _use_lang (str|None): The language tag of the language for the system\
+        message to use.
+    """
+
+    _in_lang: str | None = None
+    """
+    _in_lang (str|None): The language tag of the language that the system\
+        message actually used.
+    """
+
+    def __init__(
+        self,
+        key: str,
+        params: list,
+        use_lang: LanguageTag | None,
+    ) -> None:
+        """
+        Set the language tag of the language that the message expected to use.
+
+        Parameters:
+            key (str): Message key.
+            params (list): Message parameters.
+            use_lang: (Language|None): Language to use (None: defaults to\
+                current user language).
+        """
+
+    def set_lang(self, lang_tag: str) -> None:
+        """
+        Set the language tag of the language that the message expected to use.
+
+        Parameters:
+            lang_tag (str): The language tag of the language that the message\
+                expected to use.
+        """
+
+        self._use_lang = lang_tag
+
+    def get_lang(self) -> str:
+        """
+        Get the final language tag of the language that the message used or\
+            falls back to.
+
+        Returns:
+            str: Description of return value.
+        """
+
+        return self._use_lang or self._in_lang or ""

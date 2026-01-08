@@ -3,11 +3,16 @@ Unit test for LanguageTagFactory using unittest.
 """
 
 # Standard imports
+# Prevents runtime evaluation of type hints
+from __future__ import annotations
+
 import unittest
 
 # Local imports
-from scaict_uwu.libs.language.language_tag import LanguageTag
-from scaict_uwu.libs.language.language_tag_factory import LanguageTagFactory
+from scaict_uwu.libs.language import (
+    LanguageTag,
+    LanguageTagFactory,
+)
 
 
 class TestLanguageTagFactory(unittest.TestCase):

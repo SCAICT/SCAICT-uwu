@@ -1,5 +1,5 @@
 """
-Entry point for Discord bot using Pycord.
+User
 """
 
 # Standard imports
@@ -7,7 +7,13 @@ Entry point for Discord bot using Pycord.
 from __future__ import annotations
 
 
-def run() -> None:
+class User:
     """
-    TODO: Complete this
+    User data class
+    """
+
+
+class UserFactory:
+    """
+    User factory
     """

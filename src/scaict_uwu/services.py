@@ -2,15 +2,25 @@
 Module for SCAICT-uwu service container.
 """
 
+# Standard imports
+# Prevents runtime evaluation of type hints
+from __future__ import annotations
+
 # Third-party imports
 import discord
 
 # Local imports
-from .config.config import Config
-from .config.factory import ConfigFactory
-from .libs.language.language_tag_factory import LanguageTagFactory
-from .libs.services.container import ServiceContainer
-from .libs.services.service import Service
+from scaict_uwu.core.config import (
+    Config,
+    ConfigFactory,
+)
+from scaict_uwu.libs.language import (
+    LanguageTagFactory,
+)
+from scaict_uwu.libs.services import (
+    Service,
+    ServiceContainer,
+)
 
 
 class Services(ServiceContainer):
