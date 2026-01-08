@@ -2,6 +2,10 @@
 This is the module for the class for all languages.
 """
 
+# Standard imports
+from functools import cached_property
+
+# Local imports
 from .utils import LanguageUtils
 
 
@@ -19,20 +23,19 @@ class LanguageTag:
             tag = language_tag_factory.get_by_discord_code("zh-TW")
     """
 
-    _tag: str
-    """
-    _tag (str): The BCP 47 language subtag of the LanguageTag object.
-    """
-
     def __init__(self, *, tag: str) -> None:
         """
         Parameters:
             tag (str): BCP 47 language tag.
         """
 
-        self._tag = tag
+        self._tag: str = tag
+        """
+        The BCP 47 language subtag of the LanguageTag object.
+        """
 
-    def get_bcp_47_tag(self) -> str:
+    @cached_property
+    def bcp_47_tag(self) -> str:
         """
         Get the BCP 47 language tag of the LanguageTag object.
 
@@ -42,7 +45,8 @@ class LanguageTag:
 
         return self._tag
 
-    def get_system_message_tag(self) -> str:
+    @cached_property
+    def system_message_tag(self) -> str:
         """
         Get the system message language tag of the LanguageTag object.
 
@@ -52,7 +56,8 @@ class LanguageTag:
 
         return self._tag.lower()
 
-    def get_discord_code(self) -> str | None:
+    @cached_property
+    def discord_code(self) -> str | None:
         """
         Get the Discord locale code of the LanguageTag object.
 
@@ -65,7 +70,8 @@ class LanguageTag:
 
         return LanguageUtils.get_discord_code(tag=self._tag)
 
-    def get_fallbacks(self) -> list[str]:
+    @cached_property
+    def fallbacks(self) -> list[str]:
         """
         Get the language fallback chain of the LanguageTag object.
 

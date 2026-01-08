@@ -3,85 +3,85 @@ Module for service container.
 """
 
 # Standard imports
-import sys
-from typing import Callable
+# Prevents runtime evaluation of type hints
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Callable, Self
+
+# Local imports
+from .errors.no_such_service_error import NoSuchServiceError
+from .errors.service_already_defined_error import ServiceAlreadyDefinedError
+
+# Conditional imports
+if TYPE_CHECKING:
+    from .service import Service
 
 
 class ServiceContainer:
     """
-    Service locator for services.
+    Service container for services instantiators and locators.
     """
 
-    _services: dict = {}
-    """
-    """
+    def __init__(self):
+        self.services: dict[str, Service] = {}
+        """
+        Created services.
+        """
 
-    _service_instantiators: dict[str, Callable] = {}
-    """
-    """
+    def apply_wiring(self, *, services: dict[str, Service]) -> None:
+        """
+        Parameters:
+            services (dict[str, Service]):
+        """
 
-    _services_being_created: dict[str, bool] = {}
-    """
-    """
+        for service in services.values():
+            self.define_service(service=service)
 
-    # Wiring module functions
+    def has_service(self, *, name: str) -> bool:
+        """
+        Returns:
+            bool:
+        """
 
-    def load_wiring_module(self, *, module) -> None:
-        try:
-            self.apply_wiring(service_instantiators=module.get_wiring())
-        except AttributeError:
-            sys.exit("InvalidWiringModuleException")
+        return name in self.services
 
-    def load_wiring_modules(self, *, modules: list) -> None:
-        for module in modules:
-            self.load_wiring_module(module=module)
+    def define_service(self, *, service: Service) -> None:
+        """
+        Parameters:
+            service (Service):
+        """
 
-    def apply_wiring(self, *, service_instantiators: dict[str, Callable]) -> None:
-        for name, instantiator in service_instantiators.items():
-            self.define_instantiator(name=name, instantiator=instantiator)
+        name: str = service.name
 
-    # Service instantiator functions
+        if self.has_service(name=name):
+            raise ServiceAlreadyDefinedError(name=name)
 
-    def get_instantiator_names(self) -> list:
-        # Convert dict_keys to list
-        return list(self._service_instantiators.keys())
+        self.services[name] = service
 
-    def has_instantiator(self, *, name: str) -> bool:
-        return name in self._service_instantiators
+    def redefine_service_instantiator(
+        self, *, name: str, instantiator: Callable[[Self], Any]
+    ) -> None:
+        """
+        Parameters:
+            name (str):
+            instantiator (Callable[[Self], Any]):
+        """
 
-    def define_instantiator(self, *, name: str, instantiator: Callable) -> None:
-        if self.has_instantiator(name=name):
-            sys.exit(f"ServiceAlreadyDefinedException {name}")
+        if not self.has_service(name=name):
+            raise NoSuchServiceError(name=name)
 
-        self._service_instantiators[name] = instantiator
+        self.services[name].redefine_instantiator(instantiator=instantiator)
 
-    def redefine_instantiator(self, *, name: str, instantiator: Callable) -> None:
-        if not self.has_instantiator(name=name):
-            sys.exit(f"NoSuchServiceException {name}")
+    def get(self, *, name: str) -> Any:
+        """
+        Parameters:
+            name (str):
 
-        if name in self._services:
-            sys.exit(f"CannotReplaceActiveServiceException {name}")
+        Returns:
+            Any:
+        """
 
-        self._service_instantiators[name] = instantiator
+        if not self.has_service(name=name):
+            raise NoSuchServiceError(name=name)
 
-    # Service functions
-
-    def create_service(self, /, name: str):
-        if not self.has_instantiator(name=name):
-            sys.exit("NoSuchServiceException $name")
-
-        if name in self._services_being_created:
-            sys.exit(
-                "RecursiveServiceDependencyException "
-                + "Circular dependency when creating service!"
-            )
-
-        self._services_being_created[name] = True
-
-        return self._service_instantiators[name](services=self)
-
-    def get_service(self, *, name: str):
-        if name not in self._services:
-            self._services[name] = self.create_service(name=name)
-
-        return self._services[name]
+        return self.services[name].get_instance(services=self)
