@@ -1,4 +1,4 @@
-name: Black
+name: Sync dependency lock files
 
 on:
   pull_request:
@@ -7,18 +7,13 @@ on:
 
 jobs:
   build:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == true
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.12"]
     steps:
-      - if: github.event_name != 'pull_request'
+      - name: Checkout
         uses: actions/checkout@v6
-      - if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
@@ -28,13 +23,14 @@ jobs:
       - name: Setup venv
         run: |
           uv venv
-      - name: Install dependencies
+      - name: Check uv.lock is in-sync with pyproject.toml
         run: |
-          uv pip sync pylock.toml
-          uv pip install -e .[dev]
-      - name: Formatting the code with Black
+          uv lock --locked
+      - name: Sync dependencies
         run: |
-          uv run black $(git ls-files '*.py')
+          uv export -o pylock.toml
+          uv export --no-dev -o requirements.txt
+          uv export --only-group dev -o requirements_dev.txt
       - name: Git config
         run: |
           git config --local user.name "github-actions[bot]"
@@ -48,4 +44,4 @@ jobs:
           git add * || true
       - name: Git commit & push
         run: |
-          git diff-index --quiet HEAD || ( git commit -m "Format \"$(git show -s --format=%s)\" using Black" && git push )
+          git diff-index --quiet HEAD || ( git commit --amend --no-edit && git push --force-with-lease )

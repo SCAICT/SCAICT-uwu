@@ -11,20 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.12"]
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Setup venv
+        run: |
+          uv venv
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements_dev.txt
-          pip install -e .[dev]
+          uv pip sync pylock.toml
+          uv pip install -e .[dev]
       - name: Analysing the code with Python unittest
         run: |
-          python -m unittest $(git ls-files 'cog/tests/*.py')
-          python -m unittest $(git ls-files 'tests/unittest/*.py')
+          uv run python -m unittest $(git ls-files 'cog/tests/*.py')
+          uv run python -m unittest $(git ls-files 'tests/unittest/*.py')
