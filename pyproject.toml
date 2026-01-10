@@ -9,7 +9,7 @@ version = "0.2.0.dev0"
 description = "A cat living in SCAICT Discord server."
 readme.file = "README.md"
 readme.content-type = "text/markdown"
-requires-python = ">=3.11, <3.13"
+requires-python = ">=3.12, <3.13"
 license = "Apache-2.0"
 license-files = [
 	"LICENSE",
@@ -41,7 +41,6 @@ classifiers = [
 	"Programming Language :: Python",
 	"Programming Language :: Python :: 3",
 	"Programming Language :: Python :: 3 :: Only",
-	"Programming Language :: Python :: 3.11",
 	"Programming Language :: Python :: 3.12",
 	"Programming Language :: SQL",
 ]
