@@ -1,0 +1,95 @@
+name: Postcommit
+
+permissions:
+  actions: write
+  contents: write
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  postcommit:
+    name: Postcommit
+    runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: "3.12"
+    steps:
+      - uses: actions/checkout@v6
+      - name: Delete cancelled runs in the same concurrency group
+        env:
+          BRANCH_NAME: "${{ github.head_ref || github.ref_name }}"
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run list \
+            --workflow "${{ github.workflow }}" \
+            --branch "$BRANCH_NAME" \
+            --status cancelled \
+            --json databaseId \
+            --jq ".[].databaseId | select(. != ${{ github.run_id }})" \
+            | xargs -I{} gh run delete {}
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Setup venv with Python ${{ env.PYTHON_VERSION }}
+        run: |
+          uv venv --python ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          uv sync --dev --locked
+      - name: Git config
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Formatting the code with Black
+        run: |
+          git ls-files '*.py' | xargs -r uv run black
+      - name: Git diff Black changes
+        run: |
+          git diff HEAD || true
+      - name: Git add Black changes
+        run: |
+          git ls-files '*.py' | xargs -r git add
+      - id: commit_black
+        name: Git commit Black changes
+        run: |
+          if git diff-index --quiet HEAD; then
+            echo "committed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "Formatting using Black"
+            echo "committed=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Check uv.lock is in-sync with pyproject.toml
+        run: |
+          uv lock --check
+      - name: Sync dependencies
+        run: |
+          uv export --no-dev -o requirements.txt
+          uv export --only-dev -o requirements_dev.txt
+      - name: Git diff
+        run: |
+          git diff HEAD || true
+      - name: Git add
+        run: |
+          git add requirements.txt requirements_dev.txt
+      - id: commit_uv_sync
+        name: Git commit sync dependency files
+        run: |
+          if git diff-index --quiet HEAD; then
+            echo "committed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "Sync dependencies using uv"
+            echo "committed=true" >> $GITHUB_OUTPUT
+          fi 
+      - name: Git push
+        if: steps.commit_black.outputs.committed == 'true' || steps.commit_uv_sync.outputs.committed == 'true'
+        run: |
+          git push
