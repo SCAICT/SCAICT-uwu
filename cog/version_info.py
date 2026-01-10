@@ -11,12 +11,12 @@ from discord.ext import commands
 
 
 class VersionInfo(commands.Cog):
-    _SCAICT_UWU_VERSION_NUMBER: str = "0.1.14.dev0"
+    _SCAICT_UWU_VERSION_NUMBER: str = "0.1.14"
     """
     Current hardcoded workaround
     """
 
-    _SCAICT_UWU_VERSION_DATE: str = "2025-12-05 (UTC)"
+    _SCAICT_UWU_VERSION_DATE: str = "2026-01-11 (UTC)"
     """
     Current hardcoded workaround
     """
