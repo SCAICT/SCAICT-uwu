@@ -1,0 +1,49 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="哎呀！您所查找的頁面不存在，請檢查網址或返回首頁。"
+        />
+        <title>找不到頁面</title>
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                background: #000;
+                height: 100svh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                gap: 1rem;
+            }
+            p {
+                color: #fff;
+            }
+            img {
+                width: 100%;
+                max-width: 800px;
+                display: block;
+                pointer-events: none;
+            }
+        </style>
+    </head>
+    <body>
+        <img src="/static/404.jpg" alt="" />
+        <p>哎呀！您所查找的頁面不存在，請檢查網址或返回首頁。</p>
+        <script>
+            document.addEventListener("click", function () {
+                window.location.href = "/";
+            });
+        </script>
+    </body>
+</html>

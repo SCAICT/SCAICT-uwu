@@ -1,0 +1,20 @@
+{
+    "population": [
+        "all same",
+        "all different",
+        "one pair",
+        "lightning"
+    ],
+    "weights": [
+        10,
+        20,
+        20,
+        30
+    ],
+    "get": {
+        "all same": 20,
+        "all different": 5,
+        "one pair": 10,
+        "lightning": 50
+    }
+}

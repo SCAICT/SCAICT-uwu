@@ -1,0 +1,49 @@
+# Editors
+*~
+\#*#
+.#*
+.*.swp
+.project
+*.orig
+## Visual Studio Code
+*.vscode/
+
+# Install & usage
+## Python
+**/__pycache__
+*.egg-info/
+build/lib/
+## Linux
+flakLog.out
+nohup.out
+pointLog.out
+## Configuration files
+.env
+# python 虛擬環境
+bin/
+envuwu/
+env-uwu/
+lib/
+lib64
+pyvenv.cfg
+### Ignore token
+### 如果你的token.json已經被追蹤可以執行:
+### 1. git rm --cached token.json
+### 2. git update-index --assume-unchanged token.json
+### 這兩個指令
+token.json
+
+# Testing
+**/test.py
+
+# Operating systems
+## Mac OS X
+.DS_Store
+## Windows
+Thumbs.db
+
+# Misc
+read.txt
+
+# Docker
+docker-compose.override.yml
