@@ -11,6 +11,13 @@ from scaict_uwu.core.config import (
     ConfigNames,
     ConfigSchema,
 )
+from scaict_uwu.core.maintenance.maintenance import (
+    MaintenanceScript,
+    MaintenanceParameters,
+)
+from scaict_uwu.core.maintenance.scripts import (
+    MaintenanceScriptUpdate,
+)
 from scaict_uwu.core.user import (
     User,
     UserFactory,
@@ -27,11 +34,4 @@ from scaict_uwu.libs.services import (
     Service,
     ServiceAlreadyDefinedError,
     ServiceContainer,
-)
-from scaict_uwu.maintenance.maintenance import (
-    MaintenanceScript,
-    MaintenanceParameters,
-)
-from scaict_uwu.maintenance.scripts import (
-    MaintenanceScriptUpdate,
 )

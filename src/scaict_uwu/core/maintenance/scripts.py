@@ -7,7 +7,7 @@ Maintenance scripts
 from __future__ import annotations
 
 # Local imports
-from scaict_uwu.maintenance.maintenance import MaintenanceScript
+from scaict_uwu.core.maintenance.maintenance import MaintenanceScript
 
 
 class MaintenanceScriptUpdate(MaintenanceScript):
