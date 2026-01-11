@@ -120,6 +120,90 @@ Below only new and removed languages are listed.
 
 * …
 
+## SCAICT-uwu 0.1.14
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.14
+
+#### New configuration in 0.1.14
+
+* …
+
+#### Changed configuration in 0.1.14
+
+* …
+
+#### Removed configuration in 0.1.14
+
+* …
+
+### New user-facing features in 0.1.14
+
+* …
+
+### New features for sysadmins in 0.1.14
+
+* …
+
+### New developer features in 0.1.14
+
+* …
+
+### External dependency changes in 0.1.14
+
+#### New external dependencies in 0.1.14
+
+* …
+
+#### New development-only external dependencies in 0.1.14
+
+* …
+
+#### Changed external dependencies in 0.1.14
+
+* …
+
+#### Changed development-only external dependencies in 0.1.14
+
+* …
+
+#### Removed external dependencies in 0.1.14
+
+* …
+
+### Bug fixes in 0.1.14
+
+* …
+
+### API changes in 0.1.14
+
+* …
+
+### API internal changes in 0.1.14
+
+* …
+
+### Languages updated in 0.1.14
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.14
+
+* …
+
+### Deprecations in 0.1.14
+
+* …
+
+### Other changes in 0.1.14
+
+* …
+
 ## SCAICT-uwu 0.1.13
 
 This is a maintenance release of SCAICT-uwu 0.1 version.
