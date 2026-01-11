@@ -48,18 +48,18 @@ classifiers = [
 urls.repository = "https://github.com/SCAICT/SCAICT-uwu.git"
 urls.issues = "https://github.com/SCAICT/SCAICT-uwu/issues"
 dependencies = [
-	"flask == 3.1.2",
-	"mysql-connector-python == 9.5.0",
-	"py-cord == 2.6.1",
-	"python-dotenv == 1.2.1",
-	"requests == 2.32.5",
+	"flask==3.1.2",
+	"mysql-connector-python==9.5.0",
+	"py-cord==2.6.1",
+	"python-dotenv==1.2.1",
+	"requests==2.32.5",
 ]
 
 [dependency-groups]
 dev = [
-	"black == 25.12.0",
-	"pylint == 4.0.4",
-	"pytest == 9.0.2",
+	"black==25.12.0",
+	"pylint==4.0.4",
+	"pytest==9.0.2",
 ]
 
 [tool.uv]
