@@ -18,12 +18,14 @@ jobs:
     name: Postcommit
     runs-on: ubuntu-latest
     env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ env.BRANCH_NAME }}
       - name: Delete cancelled runs in the same concurrency group
         env:
-          BRANCH_NAME: "${{ github.head_ref || github.ref_name }}"
           GH_TOKEN: ${{ github.token }}
         run: |
           gh run list \
@@ -92,4 +94,4 @@ jobs:
       - name: Git push
         if: steps.commit_black.outputs.committed == 'true' || steps.commit_uv_sync.outputs.committed == 'true'
         run: |
-          git push
+          git push origin HEAD
