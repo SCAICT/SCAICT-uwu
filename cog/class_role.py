@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 # Standard imports
 import json
 import os
+from typing import TYPE_CHECKING
 
 # Third-party imports
 import discord
@@ -8,6 +11,10 @@ from discord.ext import commands
 
 # Local imports
 from build.build import Build
+
+
+if TYPE_CHECKING:
+    from typing import Self
 
 
 def get_courses():
@@ -110,6 +117,22 @@ class ClassRole(Build):
                         await interaction.response.send_message(
                             embed=embed, ephemeral=True
                         )
+
+                def clear_items(self) -> Self:
+                    """
+                    Clear all InputText from the modal.
+
+                    This should be implemented by the parent class in Pycord.
+                    However, we're now fixing it here as a workaround.
+                    """
+
+                    try:
+                        self._children.clear()
+                        self.__weights.clear()
+                    except ValueError:
+                        pass
+
+                    return self
 
             await interaction.response.send_modal(TokenModal(title="請輸入課程代碼"))
 

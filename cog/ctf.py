@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 # Standard imports
 from datetime import datetime
 import json
 import os
 import random
 import traceback
+from typing import TYPE_CHECKING
 
 # Third-party imports
 import discord
@@ -18,6 +21,11 @@ from cog.core.sql import write
 # 用於結束和SQL資料庫的會話，平常都用end()，但和 Discord 指令變數名稱衝突，所以這裡改名
 from cog.core.sql import end as end_sql
 from cog.core.sql import link_sql
+
+
+if TYPE_CHECKING:
+    from typing import Self
+
 
 with open(
     f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
@@ -273,6 +281,22 @@ class CTF(Build):
                         )
                         print(f"Error: {exception}\n{traceback_str}")
                     end_sql(connection, cursor)  # 結束SQL會話
+
+                def clear_items(self) -> Self:
+                    """
+                    Clear all InputText from the modal.
+
+                    This should be implemented by the parent class in Pycord.
+                    However, we're now fixing it here as a workaround.
+                    """
+
+                    try:
+                        self._children.clear()
+                        self.__weights.clear()
+                    except ValueError:
+                        pass
+
+                    return self
 
             await interaction.response.send_modal(
                 SubmitModal(title="你找到 flag 了嗎？")
