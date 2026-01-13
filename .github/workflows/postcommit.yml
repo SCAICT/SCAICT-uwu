@@ -24,17 +24,6 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ env.BRANCH_NAME }}
-      - name: Delete cancelled runs in the same concurrency group
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh run list \
-            --workflow "${{ github.workflow }}" \
-            --branch "$BRANCH_NAME" \
-            --status cancelled \
-            --json databaseId \
-            --jq ".[].databaseId | select(. != ${{ github.run_id }})" \
-            | xargs -I{} gh run delete {}
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v6
         with:
@@ -95,3 +84,14 @@ jobs:
         if: steps.commit_black.outputs.committed == 'true' || steps.commit_uv_sync.outputs.committed == 'true'
         run: |
           git push origin HEAD
+      - name: Delete cancelled runs in the same concurrency group
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run list \
+            --workflow "${{ github.workflow }}" \
+            --branch "$BRANCH_NAME" \
+            --status cancelled \
+            --json databaseId \
+            --jq ".[].databaseId | select(. != ${{ github.run_id }})" \
+            | xargs -I{} gh run delete {}

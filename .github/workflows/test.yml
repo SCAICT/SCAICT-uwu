@@ -18,22 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v6
-      - name: Delete cancelled runs in the same concurrency group
-        if: matrix.python-version == '3.12'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TARGET_SHA: "${{ github.event.pull_request.head.sha || github.sha }}"
-        run: |
-          gh run list \
-            --workflow "${{ github.workflow }}" \
-            --commit "$TARGET_SHA" \
-            --status cancelled \
-            --json databaseId \
-            --jq ".[].databaseId | select(. != ${{ github.run_id }})" \
-            | xargs -I{} gh run delete {}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
@@ -48,13 +35,26 @@ jobs:
           uv sync --dev --locked
       - name: Analysing the code with Pylint
         run: |
-          uv run pylint $(git ls-files '*.py')
+          git ls-files '*.py' | xargs -r uv run pylint
+      - name: Delete cancelled runs in the same concurrency group
+        if: matrix.python-version == '3.12'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: "${{ github.event.pull_request.head.sha || github.sha }}"
+        run: |
+          gh run list \
+            --workflow "${{ github.workflow }}" \
+            --commit "$TARGET_SHA" \
+            --status cancelled \
+            --json databaseId \
+            --jq ".[].databaseId | select(. != ${{ github.run_id }})" \
+            | xargs -I{} gh run delete {}
   pytest:
     name: Pytest
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python ${{ matrix.python-version }}
