@@ -12,7 +12,6 @@ from discord.ext import commands
 # Local imports
 from build.build import Build
 
-
 if TYPE_CHECKING:
     from typing import Self
 

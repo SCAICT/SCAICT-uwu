@@ -5,7 +5,6 @@ from mysql.connector.errors import Error as MySQLError
 from cog.core.sql import mysql_connection
 from cog.core.sql_abstract import UserRecord
 
-
 YUEVUWU = 545234619729969152
 
 skip = False
