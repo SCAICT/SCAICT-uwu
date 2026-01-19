@@ -22,7 +22,6 @@ from cog.core.sql import write
 from cog.core.sql import end as end_sql
 from cog.core.sql import link_sql
 
-
 if TYPE_CHECKING:
     from typing import Self
 

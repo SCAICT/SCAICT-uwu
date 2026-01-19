@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 
-
 load_dotenv(f"{os.getcwd()}/.env")
 DB_USER = os.getenv("MYSQL_USER")
 DB_PASSWORD = os.getenv("MYSQL_PASSWORD")
