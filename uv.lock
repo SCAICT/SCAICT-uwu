@@ -770,7 +770,7 @@ wheels = [
 
 [[package]]
 name = "scaict-uwu"
-version = "0.1.15.dev0"
+version = "0.1.15"
 source = { virtual = "." }
 dependencies = [
     { name = "flask" },
