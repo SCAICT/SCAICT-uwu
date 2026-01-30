@@ -1,140 +1,21 @@
 # SCAICT-uwu 0.1
 
-## SCAICT-uwu 0.1 development branch
-
-THIS IS NOT A RELEASE YET
-
-The `development` branch is a beta-quality development branch. Use it at your
-own risk!
-
-### Configuration changes for system administrators
-
-#### New configuration
-
-* …
-
-#### Changed configuration
-
-* …
-
-#### Removed configuration
-
-* …
-
-### New user-facing features
-
-* …
-
-### New features for sysadmins
-
-* …
-
-### New developer features
-
-* …
-
-### External dependency changes
-
-#### New external dependencies
-
-* …
-
-#### New development-only external dependencies
-
-* …
-
-#### Changed external dependencies
-
-* …
-
-#### Changed development-only external dependencies
-
-* …
-
-#### Removed external dependencies
-
-* …
-
-### Bug fixes
-
-* …
-
-### API changes
-
-* …
-
-### API internal changes
-
-* …
-
-### Languages updated
-
-SCAICT-uwu now supports 1 language. Localisations are updated regularly.
-
-Below only new and removed languages are listed.
-
-* …
-
-### Breaking changes
-
-* …
-
-### Deprecations
-
-* …
-
-### Other changes
-
-* …
-
 ## SCAICT-uwu 0.1.15
 
 This is a maintenance release of SCAICT-uwu 0.1 version.
-
-### Configuration changes for system administrators in 0.1.15
-
-#### New configuration in 0.1.15
-
-* …
-
-#### Changed configuration in 0.1.15
-
-* …
-
-#### Removed configuration in 0.1.15
-
-* …
-
-### New user-facing features in 0.1.15
-
-* …
-
-### New features for sysadmins in 0.1.15
-
-* …
 
 ### New developer features in 0.1.15
 
 * Updated `SECURITY.md`, pointed to GitHub's Security Reporting page.
 * (#367, #371) Enabled experimental Python 3.13 support.
   * Added Python 3.13 to `pyproject.toml` `project.classifiers`.
-* …
 
 ### External dependency changes in 0.1.15
-
-#### New external dependencies in 0.1.15
-
-* …
-
-#### New development-only external dependencies in 0.1.15
-
-* …
 
 #### Changed external dependencies in 0.1.15
 
 * (#385) Upgraded multidict from 6.7.0 to 6.7.1.
 * (#371) Upgraded py-cord from 2.6.1 to 2.7.0.
-* …
 
 #### Changed development-only external dependencies in 0.1.15
 
@@ -143,47 +24,20 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 * (#383) Upgraded packaging from 25.0 to 26.0.
 * (#375, #387) Upgraded pathspec from 0.12.1 to 1.0.4.
 * (#373) Upgraded tomlkit from 0.13.3 to 0.14.0.
-* …
-
-#### Removed external dependencies in 0.1.15
-
-* …
 
 ### Bug fixes in 0.1.15
 
 * Fixed duplicated pull requests from Dependabot.
 * Fixed postcommit CI.
 * (#371) Fixed `discord.ui.Modal` abstract method clear_items in Pycord 2.7.0.
-* …
-
-### API changes in 0.1.15
-
-* …
-
-### API internal changes in 0.1.15
-
-* …
 
 ### Languages updated in 0.1.15
 
 SCAICT-uwu now supports 1 language. Localisations are updated regularly.
 
-Below only new and removed languages are listed.
-
-* …
-
-### Breaking changes in 0.1.15
-
-* …
-
-### Deprecations in 0.1.15
-
-* …
-
 ### Other changes in 0.1.15
 
 * Follow `uv add` whitespace style for dependencies.
-* …
 
 ## SCAICT-uwu 0.1.14
 
