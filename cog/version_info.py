@@ -16,7 +16,7 @@ class VersionInfo(commands.Cog):
     Current hardcoded workaround
     """
 
-    _SCAICT_UWU_VERSION_DATE: str = "2025-11-03 (UTC)"
+    _SCAICT_UWU_VERSION_DATE: str = "2026-03-25 (UTC)"
     """
     Current hardcoded workaround
     """
