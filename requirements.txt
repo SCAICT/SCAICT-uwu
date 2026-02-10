@@ -435,9 +435,9 @@ propcache==0.4.1 \
     # via
     #   aiohttp
     #   yarl
-py-cord==2.7.0 \
-    --hash=sha256:6f947e6b08ae2884777a3fcb1150d7c0df14c4461e8015ed3d2f29c081e79dfd \
-    --hash=sha256:7f5badc55f6cd80bac0e65e77a10a3aaac17bc7932c2088035dd925900a4c29e
+py-cord==2.7.1 \
+    --hash=sha256:100935f37e77ba8ac1e3eff0b180e6d69bcac083de81d4c83d42327d9a2eddee \
+    --hash=sha256:d95301226f0642f6f3b23e21c31987ebbe23fdb7007cbc8143b010eb6780dec1
     # via scaict-uwu
 python-dotenv==1.2.1 \
     --hash=sha256:42667e897e16ab0d66954af0e60a9caa94f0fd4ecf3aaf6d2d260eec1aa36ad6 \
