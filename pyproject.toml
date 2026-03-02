@@ -58,7 +58,7 @@ dependencies = [
 	"flask==3.1.2",
 	"mysql-connector-python==9.5.0",
 	"py-cord==2.7.0",
-	"python-dotenv==1.2.1",
+	"python-dotenv==1.2.2",
 	"requests==2.32.5",
 ]
 
