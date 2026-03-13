@@ -64,7 +64,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-	"black==26.1.0",
+	"black==26.3.1",
 	"pylint==4.0.4",
 	"pytest==9.0.2",
 ]
