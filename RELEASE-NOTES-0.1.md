@@ -140,7 +140,7 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 #### Changed development-only external dependencies in 0.1.15
 
-* (#375) Upgraded black from 25.12.0 to 26.1.0.
+* (#375, #425) Upgraded black from 25.12.0 to 26.3.1.
 * (#378) Upgraded dill from 0.4.0 to 0.4.1.
 * (#409) (0.2.x branch only) Upgraded hatchling from 1.28.0 to 1.29.0.
 * (#402) Upgraded isort from 7.0.0 to 8.0.0.
