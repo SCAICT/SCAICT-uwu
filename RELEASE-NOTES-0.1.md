@@ -132,16 +132,23 @@ This is a maintenance release of SCAICT-uwu 0.1 version.
 
 #### Changed external dependencies in 0.1.15
 
+* (#400) Upgraded flask from 3.1.2 to 3.1.3.
 * (#385) Upgraded multidict from 6.7.0 to 6.7.1.
-* (#371) Upgraded py-cord from 2.6.1 to 2.7.0.
+* (#382) Upgraded mysql-connector-python from 9.5.0 to 9.6.0.
+* (#371, #394) Upgraded py-cord from 2.6.1 to 2.7.1.
 * …
 
 #### Changed development-only external dependencies in 0.1.15
 
 * (#375) Upgraded black from 25.12.0 to 26.1.0.
 * (#378) Upgraded dill from 0.4.0 to 0.4.1.
+* (#409) (0.2.x branch only) Upgraded hatchling from 1.28.0 to 1.29.0.
+* (#402) Upgraded isort from 7.0.0 to 8.0.0.
 * (#383) Upgraded packaging from 25.0 to 26.0.
 * (#375, #387) Upgraded pathspec from 0.12.1 to 1.0.4.
+* (#412) Upgraded platformdirs from 4.5.1 to 4.9.2.
+* (#406) Upgraded pylint from 4.0.4 to 4.0.5.
+* (#390) Upgraded pytokens from 0.3.0 to 0.4.1.
 * (#373) Upgraded tomlkit from 0.13.3 to 0.14.0.
 * …
 
@@ -183,6 +190,7 @@ Below only new and removed languages are listed.
 ### Other changes in 0.1.15
 
 * Follow `uv add` whitespace style for dependencies.
+* (#407) Dropped Sync issues to Notion GitHub Actions CI workflow.
 * …
 
 ## SCAICT-uwu 0.1.14
