@@ -59,7 +59,7 @@ dependencies = [
 	"mysql-connector-python==9.6.0",
 	"py-cord==2.7.1",
 	"python-dotenv==1.2.1",
-	"requests==2.32.5",
+	"requests==2.33.1",
 ]
 
 [dependency-groups]
