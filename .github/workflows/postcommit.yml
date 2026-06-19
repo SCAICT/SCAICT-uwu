@@ -21,7 +21,7 @@ jobs:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       PYTHON_VERSION: "3.12"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ env.BRANCH_NAME }}
       - name: Set up Python ${{ env.PYTHON_VERSION }}
