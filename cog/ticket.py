@@ -31,7 +31,10 @@ class Ticket(Build):
             embed.add_field(name="將於幾秒後刪除", value=" ", inline=False)
             await interaction.response.send_message(embed=embed)
             await asyncio.sleep(3)
-            await interaction.channel.delete()
+            try:
+                await interaction.channel.delete()
+            except discord.Forbidden:
+                await interaction.followup.send("我沒有權限刪除頻道！")
 
     ## close button
     class CloseView(discord.ui.View):
@@ -46,24 +49,33 @@ class Ticket(Build):
         )
         # pylint: disable-next = unused-argument
         async def button_callback(self, button, interaction):
-            user = interaction.user
             channel = interaction.channel
 
-            # 這裡可以加入你的權限處理邏輯
-            # 這裡是一個範例：將使用者的檢視權限設定為 False
+            # 收回頻道中所有成員（即開單者）的檢視權限，
+            # 而不是按下按鈕的人，避免管理員代關時把自己鎖在外面
+            try:
+                for target in list(channel.overwrites):
+                    if isinstance(target, discord.Member) and not target.bot:
+                        await channel.set_permissions(target, read_messages=False)
+            except discord.Forbidden:
+                await interaction.response.send_message(
+                    "我沒有權限關閉這個頻道，請檢查機器人的身分組權限！",
+                    ephemeral=True,
+                )
+                return
+
             embed = discord.Embed(color=0xFF0A0A)
             embed.add_field(name="已成功關閉頻道", value=" ", inline=False)
             await channel.send(embed=embed)
-            await channel.set_permissions(user, read_messages=False)
 
-            # 回覆使用者，表示已完成操作
-
+            # 通知管理員確認並刪除頻道；找不到 root 身分組時不 tag，
+            # 避免整個互動失敗
             role = discord.utils.get(interaction.guild.roles, name="root")
             embed = discord.Embed(color=0xFFF700)
             embed.add_field(name="請確認並刪除頻道", value=" ", inline=False)
             await interaction.response.send_message(
-                role.mention, embed=embed, view=Ticket.DelView()
-            )  # 修改這裡，使用 Ticket.DelView()
+                role.mention if role else None, embed=embed, view=Ticket.DelView()
+            )
 
     ## create ticket button
     class TicketView(discord.ui.View):
