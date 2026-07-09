@@ -15,6 +15,11 @@
         },
         "stickers": {
             "zap": "<:zap:1215646859067138128>"
+        },
+        "perk": {
+            "customRolePrice": 500,
+            "customRoleDays": 30,
+            "chatNickPrice": 200
         }
     }
 }
