@@ -8,7 +8,6 @@
 
 住在中電會 Discord 伺服器的貓咪
 
-[![同步代辦事項至 Notion](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml/badge.svg?event=issues)](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml)
 [![官方網站](https://img.shields.io/website?label=官方網站&&url=https%3A%2F%2Fscaict.org%2F)](https://scaict.org/)
 [![中電商店](https://img.shields.io/website?label=中電商店&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://store.scaict.org/)
 [![加入 Discord 伺服器](https://img.shields.io/discord/959823904266944562?label=Discord&logo=discord&)](https://dc.scaict.org)
