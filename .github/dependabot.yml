@@ -5,11 +5,11 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     target-branch: "dev"
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     target-branch: "dev"
