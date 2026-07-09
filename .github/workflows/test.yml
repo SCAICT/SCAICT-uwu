@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   uv_list_upgrade:
-    name: Pylint
+    name: uv list upgradable dependencies
     runs-on: ubuntu-latest
     strategy:
       matrix:
