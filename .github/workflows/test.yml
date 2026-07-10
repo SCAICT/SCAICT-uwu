@@ -32,6 +32,7 @@ jobs:
           uv venv --python ${{ matrix.python-version }}
       - name: Analysing upgradable dependencies with uv
         run: |
+          uv tree --outdated
           uv lock --upgrade
       - name: Print diff using Git
         run: |
