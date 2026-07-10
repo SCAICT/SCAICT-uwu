@@ -956,15 +956,15 @@ wheels = [
 
 [[package]]
 name = "py-cord"
-version = "2.7.1"
+version = "2.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/56/74d5a2c9e9c23c449a999b89abeaa2a77a2be56017d001218556d5886960/py_cord-2.7.1.tar.gz", hash = "sha256:100935f37e77ba8ac1e3eff0b180e6d69bcac083de81d4c83d42327d9a2eddee", size = 1132229, upload-time = "2026-02-09T08:54:59.949Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/24/73/02ad1b5ced7685e2868c25d574edc6b4eb154a214cf4caf36270480fc65c/py_cord-2.8.0.tar.gz", hash = "sha256:57a7efefa80e7f6ef890fbfc054d686782c347c9e4d86fa7c91f7ae5285b353f", size = 1173848, upload-time = "2026-05-18T13:02:09.092Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/ee/38f9707fd4d7381dea3257a5278de9d23f62d3b2781702b293ead12c0671/py_cord-2.7.1-py3-none-any.whl", hash = "sha256:d95301226f0642f6f3b23e21c31987ebbe23fdb7007cbc8143b010eb6780dec1", size = 1207918, upload-time = "2026-02-09T08:54:58.428Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/52/cd690a9103b3deadc5c047d3823b750a9afd61c35e57373bbd9e5dbd765f/py_cord-2.8.0-py3-none-any.whl", hash = "sha256:24f9180b4df432ddef732e388a905aa7d9cdf8f2f26318f18a193bccb2d7f642", size = 1264552, upload-time = "2026-05-18T13:02:06.959Z" },
 ]
 
 [[package]]
@@ -1202,7 +1202,7 @@ requires-dist = [
     { name = "google-genai", specifier = "==2.10.0" },
     { name = "mysql-connector-python", specifier = "==9.6.0" },
     { name = "openai", specifier = "==2.44.0" },
-    { name = "py-cord", specifier = "==2.7.1" },
+    { name = "py-cord", specifier = "==2.8.0" },
     { name = "python-dotenv", specifier = "==1.2.1" },
     { name = "requests", specifier = "==2.32.5" },
 ]

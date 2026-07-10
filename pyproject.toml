@@ -59,7 +59,7 @@ dependencies = [
 	"google-genai==2.10.0",
 	"mysql-connector-python==9.6.0",
 	"openai==2.44.0",
-	"py-cord==2.7.1",
+	"py-cord==2.8.0",
 	"python-dotenv==1.2.1",
 	"requests==2.32.5",
 ]
