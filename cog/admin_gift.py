@@ -1,19 +1,19 @@
 # Standard imports
-from datetime import datetime
+import datetime
 import traceback
 
 # Third-party imports
 import discord
-from discord.ext import commands
+import discord.ext.commands
 
 # Local imports
-from build.build import Build
-from cog.core.sql import link_sql, read, write, end
-from cog.core.sendgift import send_gift_button
+import build.build
+import cog.core.sendgift
+import cog.core.sql
 
 
-class SendGift(Build):
-    @commands.Cog.listener()
+class SendGift(build.build.Build):
+    @discord.ext.commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.Gift())
 
@@ -27,16 +27,18 @@ class SendGift(Build):
         # 發送獎勵
         @staticmethod
         def __reward(uid: int, username: str, bonus_type: str, bonus: int) -> None:
-            connection, cursor = link_sql()
-            current_point = read(uid, bonus_type, cursor)
-            write(uid, bonus_type, current_point + bonus, cursor)
-            end(connection, cursor)
-            print(f"{uid} {username} get {bonus} {bonus_type} by Gift {datetime.now()}")
+            connection, cursor = cog.core.sql.link_sql()
+            current_point = cog.core.sql.read(uid, bonus_type, cursor)
+            cog.core.sql.write(uid, bonus_type, current_point + bonus, cursor)
+            cog.core.sql.end(connection, cursor)
+            print(
+                f"{uid} {username} get {bonus} {bonus_type} by Gift {datetime.datetime.now()}"
+            )
 
         # 存資料庫存取按鈕屬性(包括獎勵類型、數量)
         def __get_btn_attr(self, btn_id: int):
             try:
-                connection, cursor = link_sql()
+                connection, cursor = cog.core.sql.link_sql()
                 cursor.execute(
                     f"SELECT type, count FROM `gift` WHERE `btnID`={btn_id} and `received`=0"
                 )
@@ -44,7 +46,7 @@ class SendGift(Build):
                 if len(ret) == 0:
                     return None, None
                 cursor.execute(f"UPDATE `gift` SET `received`=1 WHERE `btnID`={btn_id}")
-                end(connection, cursor)
+                cog.core.sql.end(connection, cursor)
                 return ret[0][0], ret[0][1]  # type, count
             except Exception as e:
                 print(e)
@@ -64,7 +66,7 @@ class SendGift(Build):
                 await ctx.response.edit_message(view=self)
                 button.disabled = True  # 關閉按鈕，避免重複點擊
                 print(
-                    f"{ctx.user.id},{ctx.user} throw error by get_gift {datetime.now()}"
+                    f"{ctx.user.id},{ctx.user} throw error by get_gift {datetime.datetime.now()}"
                 )
                 return await ctx.respond(
                     "好像出了點問題，你可能已經領過或伺服器內部錯誤。若有異議請在收到此訊息兩天內截圖此畫面提交客服單回報",
@@ -85,11 +87,11 @@ class SendGift(Build):
     async def send_dm_gift(
         self,
         ctx,
-        target_str: discord.Option(
+        target_str: str = discord.Option(
             str, "發送對象（用半形逗號分隔多個使用者名稱）", required=True
         ),
-        gift_type: discord.Option(str, "送禮內容", choices=["電電點", "抽獎券"]),
-        count: discord.Option(int, "數量"),
+        gift_type: str = discord.Option(str, "送禮內容", choices=["電電點", "抽獎券"]),
+        count: int = discord.Option(int, "數量"),
     ) -> None:
         if not ctx.author.guild_permissions.administrator:
             await ctx.respond("你沒有權限使用這個指令！", ephemeral=True)
@@ -126,7 +128,7 @@ class SendGift(Build):
                     return
             # DM 一個 Embed 和領取按鈕
             for target_user in target_users:
-                await send_gift_button(
+                await cog.core.sendgift.send_gift_button(
                     self, target_user, gift_type, count, manager.name
                 )
             # 管理者介面提示
@@ -138,5 +140,5 @@ class SendGift(Build):
             await ctx.respond(f"伺服器內部出現錯誤：{e}", ephemeral=True)
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(SendGift(bot))

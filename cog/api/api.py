@@ -1,6 +1,3 @@
-# Standard imports
-# import json
-
 # Third-party imports
 import requests
 

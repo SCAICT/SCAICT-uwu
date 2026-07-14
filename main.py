@@ -3,12 +3,11 @@ import os
 
 # Third-party imports
 import discord
-from dotenv import load_dotenv
+import dotenv
 
 # Local imports
-from channel_check import update_channel  # update_channel程式從core目錄底下引入
-from channel_check import change_status  # update_channel程式從core目錄底下引入
-from cog.daily_charge import Charge
+import channel_check  # update_channel程式從core目錄底下引入
+import cog.daily_charge
 
 intt = discord.Intents.default()
 intt.members = True
@@ -44,12 +43,12 @@ async def unload(ctx, extension):
 async def on_ready():
     print(f"✅ {bot.user} is online")
 
-    bot.loop.create_task(update_channel(bot))
-    bot.loop.create_task(change_status(bot))
-    bot.loop.create_task(Charge(bot).restore_downtime_point())
+    bot.loop.create_task(channel_check.update_channel(bot))
+    bot.loop.create_task(channel_check.change_status(bot))
+    bot.loop.create_task(cog.daily_charge.Charge(bot).restore_downtime_point())
 
 
 if __name__ == "__main__":
-    load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
+    dotenv.load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
     bot_token = os.getenv("DISCORD_TOKEN")
     bot.run(bot_token)

@@ -3,10 +3,10 @@ import json
 import os
 
 # Third-party imports
-from dotenv import load_dotenv
+import dotenv
 import requests
 
-load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
+dotenv.load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
 guild_id = os.getenv("GUILD_ID")
 api_key = os.getenv("DISCORD_TOKEN")
 headers = {

@@ -44,15 +44,22 @@ Developers should avoid adding trailing whitespace.
 
 Lines should be broken with a line break at maximum 80 characters.
 
-#### Import order
+#### Imports
 
 Imports should use the following order first, then the alphabetical order:
 
 ```py
+# Future statements
+
 # Standard imports
+
 # Third-party imports
+
 # Local imports
 ```
+
+Only use `from ... import ...` in future statements; otherwise always use
+`import package.subpackage.module` only.
 
 See
 [wrong-import-order / C0411](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/wrong-import-order.html)

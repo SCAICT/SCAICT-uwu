@@ -1,30 +1,35 @@
+# Future statements
 from __future__ import annotations
-from dataclasses import dataclass, field
-from datetime import datetime
+
+# Standard imports
+import dataclasses
+import datetime
 import json
 import os
 
-from discord import Bot
-from discord.abc import Messageable
+# Third-party imports
+import discord
+import discord.abc
 
-from cog.core.safe_write import safe_open_w
+# Local imports
+import cog.core.safe_write
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S%z"
 DOWNTIME_PATH = f"{os.getcwd()}/database/downtime.json"
 
 
-@dataclass
+@dataclasses.dataclass
 class Downtime:
-    start: datetime
+    start: datetime.datetime
     # TODO: will Downtime.end be None?
-    end: datetime = field(default_factory=datetime.now)
+    end: datetime.datetime = dataclasses.field(default_factory=datetime.datetime.now)
     is_restored: bool = False
 
     def __post_init__(self):
         if self.end.tzinfo is None:
             self.end = self.end.astimezone()
 
-    def __contains__(self, timestamp: datetime):
+    def __contains__(self, timestamp: datetime.datetime):
         if self.end.tzinfo is None:  # XXX: True when self.end is set after init
             self.end = self.end.astimezone()
 
@@ -34,11 +39,11 @@ class Downtime:
     def from_str(
         start_str: str, end_str: str | None = None, is_restored=False
     ) -> Downtime:
-        start = datetime.strptime(start_str, DATETIME_FORMAT)
+        start = datetime.datetime.strptime(start_str, DATETIME_FORMAT)
         if end_str:
-            end = datetime.strptime(end_str, DATETIME_FORMAT)
+            end = datetime.datetime.strptime(end_str, DATETIME_FORMAT)
         else:
-            end = datetime.now()
+            end = datetime.datetime.now()
         return Downtime(start, end, is_restored)
 
     @staticmethod
@@ -51,8 +56,8 @@ class Downtime:
 
     def to_dict(self) -> dict[str, str | bool]:
         return {
-            "start": datetime.strftime(self.start, DATETIME_FORMAT),
-            "end": datetime.strftime(self.end, DATETIME_FORMAT),
+            "start": datetime.datetime.strftime(self.start, DATETIME_FORMAT),
+            "end": datetime.datetime.strftime(self.end, DATETIME_FORMAT),
             "is_restored": self.is_restored,
         }
 
@@ -69,22 +74,26 @@ def get_downtime_list() -> list[Downtime]:
 
 
 def write_downtime_list(downtime_list: list[Downtime]):
-    with safe_open_w(DOWNTIME_PATH, encoding="utf-8") as file:
+    with cog.core.safe_write.safe_open_w(DOWNTIME_PATH, encoding="utf-8") as file:
         json.dump([downtime.to_dict() for downtime in downtime_list], file, indent=4)
 
 
 async def get_history(
-    bot: Bot, channel_id, *, after: datetime, before: datetime | None = None
+    bot: discord.Bot,
+    channel_id,
+    *,
+    after: datetime.datetime,
+    before: datetime.datetime | None = None,
 ):
     if before is None:
-        before = datetime.now()
+        before = datetime.datetime.now()
 
-    channel: Messageable = bot.get_channel(channel_id)
+    channel: discord.abc.Messageable = bot.get_channel(channel_id)
 
     if not channel:
         raise ValueError(f"Cannot get channel (id={channel}).")
 
-    if not isinstance(channel, Messageable):
+    if not isinstance(channel, discord.abc.Messageable):
         raise ValueError(
             f"{channel.name} (id={channel_id}, type={type(channel)}) is not messageable."
         )

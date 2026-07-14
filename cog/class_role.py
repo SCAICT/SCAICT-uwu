@@ -1,19 +1,17 @@
+# Future statements
 from __future__ import annotations
 
 # Standard imports
 import json
 import os
-from typing import TYPE_CHECKING
+import typing
 
 # Third-party imports
 import discord
-from discord.ext import commands
+import discord.ext.commands
 
 # Local imports
-from build.build import Build
-
-if TYPE_CHECKING:
-    from typing import Self
+import build.build
 
 
 def get_courses():
@@ -42,8 +40,8 @@ def add_data(code, new_data):
         json.dump(data, file, indent=2, ensure_ascii=False)
 
 
-class ClassRole(Build):
-    @commands.Cog.listener()
+class ClassRole(build.build.Build):
+    @discord.ext.commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(self.TokenVerifyButton())
 
@@ -117,7 +115,7 @@ class ClassRole(Build):
                             embed=embed, ephemeral=True
                         )
 
-                def clear_items(self) -> Self:
+                def clear_items(self) -> typing.Self:
                     """
                     Clear all InputText from the modal.
 
@@ -160,5 +158,5 @@ class ClassRole(Build):
             )
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(ClassRole(bot))

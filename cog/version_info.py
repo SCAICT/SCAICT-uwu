@@ -3,14 +3,14 @@ import datetime
 
 # import subprocess
 import sys
-from typing import cast
+import typing
 
 # Third-party imports
 import discord
-from discord.ext import commands
+import discord.ext.commands
 
 
-class VersionInfo(commands.Cog):
+class VersionInfo(discord.ext.commands.Cog):
     _SCAICT_UWU_VERSION_NUMBER: str = "0.1.15"
     """
     Current hardcoded workaround
@@ -117,7 +117,7 @@ class VersionInfo(commands.Cog):
 
     @discord.slash_command(name="version_info", description="版本資訊")
     async def version_info(self, interaction) -> None:
-        interaction = cast(discord.Interaction, interaction)
+        interaction = typing.cast(discord.Interaction, interaction)
 
         assert (
             interaction.user

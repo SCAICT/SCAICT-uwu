@@ -1,17 +1,11 @@
-# Standard imports
-# import csv
-# from datetime import datetime, timedelta
-# import json
-# import os
-
 # Third-party imports
 import discord
-from build.build import Build
 
 # Local imports
+import build.build
 
 
-class ManagerCommand(Build):
+class ManagerCommand(build.build.Build):
     @discord.slash_command(name="reload", description="你是管理員才讓你用")
     async def reload(self, ctx, package):
         if not ctx.author.guild_permissions.administrator:
@@ -24,14 +18,14 @@ class ManagerCommand(Build):
     async def announce(
         self,
         ctx,
-        channel: discord.Option(
+        channel: discord.abc.GuildChannel = discord.Option(
             discord.abc.GuildChannel,
             "要發布到的頻道",
             # 一般文字頻道與公告頻道都可以選
             channel_types=[discord.ChannelType.text, discord.ChannelType.news],
         ),
-        content: discord.Option(str, "公告內容，輸入 \\n 可換行"),
-        ping: discord.Option(
+        content: str = discord.Option(str, "公告內容，輸入 \\n 可換行"),
+        ping: str = discord.Option(
             str,
             "要不要標註大家",
             choices=["不標註", "@here", "@everyone"],
@@ -69,5 +63,5 @@ class ManagerCommand(Build):
         await ctx.respond(f"公告已發布到 {channel.mention}！", ephemeral=True)
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(ManagerCommand(bot))
