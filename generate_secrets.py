@@ -1,3 +1,4 @@
+# Standard imports
 import os
 
 # Generate a random byte string

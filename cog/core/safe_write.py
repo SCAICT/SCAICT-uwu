@@ -1,9 +1,10 @@
+# Standard imports
+import contextlib
 import os
 import tempfile
-from contextlib import contextmanager
 
 
-@contextmanager
+@contextlib.contextmanager
 def safe_open_w(file: str | os.PathLike[str], *, encoding: str | None):
     dirpath, basename = os.path.split(file)
 

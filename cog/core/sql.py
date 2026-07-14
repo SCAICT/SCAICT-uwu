@@ -1,24 +1,30 @@
+# Future statements
 from __future__ import annotations
-from contextlib import contextmanager
-from typing import cast
 
-from mysql.connector.connection_cext import CMySQLConnection
-from mysql.connector.cursor_cext import CMySQLCursor
-from mysql.connector.types import MySQLConvertibleType
-from mysql.connector.errors import Error as MySQLError
+# Standard imports
+import contextlib
+import typing
+
+# Third-party imports
+import mysql.connector.connection_cext
+import mysql.connector.cursor_cext
+import mysql.connector.types
+import mysql.connector.errors
 
 # Local imports
-from .secret import connect
+import cog.core.secret
 
 
 # TODO: replace link_sql()
-@contextmanager
+@contextlib.contextmanager
 def mysql_connection():
-    connection: CMySQLConnection | None = None
-    cursor: CMySQLCursor | None = None
+    connection: mysql.connector.connection_cext.CMySQLConnection | None = None
+    cursor: mysql.connector.cursor_cext.CMySQLCursor | None = None
 
     try:
-        connection = cast(CMySQLConnection, connect())
+        connection = typing.cast(
+            mysql.connector.connection_cext.CMySQLConnection, cog.core.secret.connect()
+        )
         if connection is None:
             raise RuntimeError("Cannot connect to database")
         cursor = connection.cursor()
@@ -27,7 +33,7 @@ def mysql_connection():
     except TypeError:
         print("Please setup .env correctly.")
         raise
-    except MySQLError:
+    except mysql.connector.errors.Error:
         if connection:
             connection.rollback()
         raise
@@ -45,7 +51,7 @@ def end(connection, cursor):  # 結束和SQL資料庫的會話
 
 
 def link_sql():
-    connection = connect()
+    connection = cog.core.secret.connect()
     cursor = connection.cursor()
     return connection, cursor
 
@@ -58,7 +64,9 @@ def link_sql():
 # end(connection.cursor)
 
 
-def fetchone_by_primary_key(table: str, key_name: str, value: MySQLConvertibleType):
+def fetchone_by_primary_key(
+    table: str, key_name: str, value: mysql.connector.types.MySQLConvertibleType
+):
     with mysql_connection() as c:
         _, cursor = c
         query = f"SELECT * FROM `{table}` WHERE `{key_name}` = %s"

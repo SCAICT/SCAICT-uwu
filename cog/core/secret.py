@@ -2,10 +2,10 @@
 import os
 
 # Third-party imports
-from dotenv import load_dotenv
+import dotenv
 import mysql.connector
 
-load_dotenv(f"{os.getcwd()}/.env")
+dotenv.load_dotenv(f"{os.getcwd()}/.env")
 DB_USER = os.getenv("MYSQL_USER")
 DB_PASSWORD = os.getenv("MYSQL_PASSWORD")
 DB_NAME = os.getenv("MYSQL_DATABASE")

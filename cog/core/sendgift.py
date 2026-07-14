@@ -1,6 +1,7 @@
 # Third-party imports
 import discord
 
+# Local imports
 from cog.core.sql import link_sql, end
 
 

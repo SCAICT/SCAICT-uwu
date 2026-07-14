@@ -1,20 +1,19 @@
 # Standard imports
-# import csv
-from datetime import datetime, timedelta
+import datetime
 import json
 import os
-from typing import cast
+import typing
 
 # Third-party imports
 import discord
-from discord.ext import commands
-from discord.user import _UserTag
-from mysql.connector.abstracts import MySQLCursorAbstract
+import discord.ext.commands
+import discord.user
+import mysql.connector.abstracts
 
 # Local imports
-from cog.core.downtime import get_downtime_list, write_downtime_list, get_history
-from cog.core.sql import write, read, mysql_connection
-from cog.core.sql_abstract import UserRecord
+import cog.core.downtime
+import cog.core.sql
+import cog.core.sql_abstract
 
 
 def get_channels():  # 取得特殊用途頻道的清單，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
@@ -24,12 +23,12 @@ def get_channels():  # 取得特殊用途頻道的清單，這裡會用來判斷
         return json.load(file)["SCAICT-alpha"]["channel"]
 
 
-class Charge(commands.Cog):
+class Charge(discord.ext.commands.Cog):
     def __init__(self, bot: discord.Bot):
         self.bot = bot
 
     async def restore_downtime_point(self):
-        downtime_list = get_downtime_list()
+        downtime_list = cog.core.downtime.get_downtime_list()
         unprocessed_downtime_list = list(
             filter(lambda x: not x.is_restored, downtime_list)
         )
@@ -41,10 +40,10 @@ class Charge(commands.Cog):
             unprocessed_downtime_list, key=lambda downtime: downtime.start
         ).start
         # TODO: now() or end but with some condition
-        latest_downtime_end = datetime.now()
+        latest_downtime_end = datetime.datetime.now()
 
         charge_channel_id = get_channels()["everyDayCharge"]
-        messages = await get_history(
+        messages = await cog.core.downtime.get_history(
             self.bot,
             charge_channel_id,
             after=earliest_downtime_start,
@@ -53,7 +52,7 @@ class Charge(commands.Cog):
 
         # TODO: cache the last_charged date
         # cached_change: UserDict = UserDict()
-        with mysql_connection() as c:
+        with cog.core.sql.mysql_connection() as c:
             connection, cursor = c
             # XXX: check with a better method, because the module on the running machine have no `_connection` attribute :skull:
             assert (
@@ -61,7 +60,7 @@ class Charge(commands.Cog):
             ), "Unsafe operation at restoring downtime point due to commit automatically."
 
             for message in messages:
-                created_time: datetime = message.created_at.astimezone()
+                created_time: datetime.datetime = message.created_at.astimezone()
                 author = message.author
 
                 assert self.bot.user, "Bot was not logged in."
@@ -77,9 +76,9 @@ class Charge(commands.Cog):
                     message.created_at in downtime
                     for downtime in unprocessed_downtime_list
                 ):
-                    user_data = UserRecord.from_sql(author.id) or UserRecord.default(
+                    user_data = cog.core.sql_abstract.UserRecord.from_sql(
                         author.id
-                    )
+                    ) or cog.core.sql_abstract.UserRecord.default(author.id)
 
                     delta_record = self.reward(
                         author,
@@ -104,7 +103,7 @@ class Charge(commands.Cog):
             restored_downtime_list = [
                 downtime.marked_as_restored() for downtime in downtime_list
             ]
-            write_downtime_list(restored_downtime_list)
+            cog.core.downtime.write_downtime_list(restored_downtime_list)
 
         # commit and close the connection
 
@@ -156,7 +155,7 @@ class Charge(commands.Cog):
         return embed
 
     @staticmethod
-    def is_forgivable(last_charge: datetime) -> bool:
+    def is_forgivable(last_charge: datetime.datetime) -> bool:
         # TODO: implement by add a table column called `is_forgivable` to control
         """Return if user cannot charge due to downtime
 
@@ -166,21 +165,23 @@ class Charge(commands.Cog):
         but after next charge, is_forgivable will be False,
         because user will execute not at downtime, if downtime is correct
         """
-        downtime_list = get_downtime_list()
+        downtime_list = cog.core.downtime.get_downtime_list()
         return any(
-            downtime.start.date() - timedelta(days=1)
+            downtime.start.date() - datetime.timedelta(days=1)
             <= last_charge.date()
             <= downtime.start.date()
             for downtime in downtime_list
         )
 
     @staticmethod
-    def is_cross_day(last_charge: datetime, executed_at: datetime):
+    def is_cross_day(last_charge: datetime.datetime, executed_at: datetime.datetime):
         assert executed_at >= last_charge
-        return executed_at.date() - last_charge.date() > timedelta(days=1)
+        return executed_at.date() - last_charge.date() > datetime.timedelta(days=1)
 
     @staticmethod
-    def is_already_charged(last_charge: datetime, executed_at: datetime):
+    def is_already_charged(
+        last_charge: datetime.datetime, executed_at: datetime.datetime
+    ):
         assert executed_at >= last_charge
         return executed_at.date() == last_charge.date()
 
@@ -188,16 +189,16 @@ class Charge(commands.Cog):
     @staticmethod
     # pylint: disable-next = too-many-positional-arguments
     def reward(
-        user_or_uid: _UserTag | int,
-        last_charge: datetime,
-        executed_at: datetime,
+        user_or_uid: discord.user._UserTag | int,
+        last_charge: datetime.datetime,
+        executed_at: datetime.datetime,
         orig_combo: int,
         orig_point: int,
         orig_ticket: int,
-        cursor: MySQLCursorAbstract | None = None,
+        cursor: mysql.connector.abstracts.MySQLCursorAbstract | None = None,
         is_forgivable: bool = False,
         testing: bool = False,
-    ) -> UserRecord:
+    ) -> cog.core.sql_abstract.UserRecord:
 
         if testing:
             if not isinstance(user_or_uid, int):
@@ -207,7 +208,8 @@ class Charge(commands.Cog):
             if cursor is not None:
                 raise ValueError("Database should not be changed during test.")
         else:
-            if not isinstance(user_or_uid, _UserTag):
+            # pylint: disable-next = protected-access
+            if not isinstance(user_or_uid, discord.user._UserTag):
                 raise ValueError(
                     "You should give a User or Member object, or other object inherit _UserTag, to get id."
                 )
@@ -216,7 +218,7 @@ class Charge(commands.Cog):
             if cursor is None:
                 raise ValueError("You should give a cursor for writing data to sql.")
 
-        delta_record = UserRecord(uid)
+        delta_record = cog.core.sql_abstract.UserRecord(uid)
 
         combo = (
             1
@@ -231,39 +233,39 @@ class Charge(commands.Cog):
             delta_record.ticket = ticket
             # refactor with UserRecord.to_sql
             if not testing:
-                write(uid, "ticket", ticket, cursor)
+                cog.core.sql.write(uid, "ticket", ticket, cursor)
 
         delta_record.last_charge = executed_at
         delta_record.charge_combo = combo
         delta_record.point = point
 
         if not testing:
-            write(uid, "last_charge", executed_at, cursor)
-            write(uid, "charge_combo", combo, cursor)
-            write(uid, "point", point, cursor)
+            cog.core.sql.write(uid, "last_charge", executed_at, cursor)
+            cog.core.sql.write(uid, "charge_combo", combo, cursor)
+            cog.core.sql.write(uid, "point", point, cursor)
 
         # 紀錄log
         # TODO: record both executed time and datetime.now() after logger is implemented
         # pylint: disable-next = line-too-long
         if not testing:
             user = user_or_uid
-            print(f"{uid},{user} Get 5 point by daily_charge {datetime.now()}")
+            print(f"{uid},{user} Get 5 point by daily_charge {datetime.datetime.now()}")
 
         return delta_record
 
     # TODO: inherit a MySQLCursorAbstract to add method about these or consider to add self.cursor
     def get_last_charged(self, user: discord.User | discord.Member, cursor):
-        last_charge = read(
+        last_charge = cog.core.sql.read(
             user.id, "last_charge", cursor
         )  # SQL回傳型態：<class 'datetime.date'>
         # strptime轉型後：<class 'datetime.datetime'>
-        last_charge = datetime.strptime(str(last_charge), "%Y-%m-%d %H:%M:%S")
+        last_charge = datetime.datetime.strptime(str(last_charge), "%Y-%m-%d %H:%M:%S")
 
         return last_charge
 
     @discord.slash_command(name="charge", description="每日充電")
     async def charge(self, interaction):
-        interaction = cast(discord.Interaction, interaction)
+        interaction = typing.cast(discord.Interaction, interaction)
 
         assert (
             interaction.user
@@ -278,12 +280,12 @@ class Charge(commands.Cog):
             # End connection instead of return
             return
 
-        with mysql_connection() as c:  # SQL 會話
+        with cog.core.sql.mysql_connection() as c:  # SQL 會話
             _, cursor = c
             user = interaction.user
 
             # get now time and combo
-            now = datetime.now().replace(microsecond=0)
+            now = datetime.datetime.now().replace(microsecond=0)
 
             last_charge = self.get_last_charged(user, cursor)
             already_charged = self.is_already_charged(last_charge, now)
@@ -294,13 +296,13 @@ class Charge(commands.Cog):
 
                 return
 
-            combo: int = read(
+            combo: int = cog.core.sql.read(
                 user.id, "charge_combo", cursor
             )  # 連續登入 # pyright: ignore[reportAssignmentType]
-            point: int = read(
+            point: int = cog.core.sql.read(
                 user.id, "point", cursor
             )  # pyright: ignore[reportAssignmentType]
-            ticket: int = read(
+            ticket: int = cog.core.sql.read(
                 user.id, "ticket", cursor
             )  # pyright: ignore[reportAssignmentType]
 

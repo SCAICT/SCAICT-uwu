@@ -3,26 +3,26 @@ For Build.
 """
 
 # Third-party imports
-from discord import Bot
-from discord.ext.commands import Cog
+import discord
+import discord.ext.commands
 
 
-class Build(Cog):
+class Build(discord.ext.commands.Cog):
     """
     Attributes:
-        bot (Bot): Instance of discord.Bot.
+        bot (discord.Bot): Instance of discord.Bot.
     """
 
-    bot: Bot
+    bot: discord.Bot
     """
-    bot (Bot): Instance of discord.Bot.
+    bot (discord.Bot): Instance of discord.Bot.
     """
 
-    def __init__(self, bot: Bot) -> None:
+    def __init__(self, bot: discord.Bot) -> None:
         """
         Constructor function.
 
         Parameters:
-            bot (Bot): Instance of discord.Bot.
+            bot (discord.Bot): Instance of discord.Bot.
         """
         self.bot = bot

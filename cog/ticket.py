@@ -3,15 +3,15 @@ import asyncio
 
 # Third-party imports
 import discord
-from discord.ext import commands
+import discord.ext.commands
 
 # Local imports
-from build.build import Build
+import build.build
 
 
 # ticket 頻道
-class Ticket(Build):
-    @commands.Cog.listener()
+class Ticket(build.build.Build):
+    @discord.ext.commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(self.TicketView())
         self.bot.add_view(self.CloseView())
@@ -189,5 +189,5 @@ class Ticket(Build):
             await ctx.respond(embed=embed, view=Ticket.TicketView())
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(Ticket(bot))

@@ -1,30 +1,22 @@
+# Future statements
 from __future__ import annotations
 
 # Standard imports
-from datetime import datetime
+import datetime
 import json
 import os
 import random
 import traceback
-from typing import TYPE_CHECKING
+import typing
 
 # Third-party imports
 import discord
-from discord.ext import commands
-from discord.commands import Option
+import discord.commands
+import discord.ext.commands
 
 # Local imports
-from build.build import Build
-from cog.core.sql import read
-from cog.core.sql import write
-
-# 用於結束和SQL資料庫的會話，平常都用end()，但和 Discord 指令變數名稱衝突，所以這裡改名
-from cog.core.sql import end as end_sql
-from cog.core.sql import link_sql
-
-if TYPE_CHECKING:
-    from typing import Self
-
+import build.build
+import cog.core.sql
 
 with open(
     f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
@@ -51,8 +43,8 @@ def generate_ctf_id() -> str:
     return str(random.randint(100000000000000000, 999999999999999999))
 
 
-class CTF(Build):
-    @commands.Cog.listener()
+class CTF(build.build.Build):
+    @discord.ext.commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.CTFView())
 
@@ -82,7 +74,7 @@ class CTF(Build):
 
                 async def callback(self, interaction: discord.Interaction) -> None:
                     try:
-                        connection, cursor = link_sql()  # SQL 會話
+                        connection, cursor = cog.core.sql.endlink_sql()  # SQL 會話
                         question_id = interaction.message.embeds[0].footer.text.split(
                             ": "
                         )[1]
@@ -101,25 +93,25 @@ class CTF(Build):
                             "None" if end == "NULL" else end
                         )  # 有些版本的 mysql-connector-python 會回傳NULL，統一轉成None
                         # 判斷是否在作答時間內
-                        current_time = datetime.now()
+                        current_time = datetime.datetime.now()
                         if (
-                            datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+                            datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
                             > current_time
                         ):
                             await interaction.response.send_message(
                                 "答題時間尚未開始！", ephemeral=True
                             )
-                            end_sql(connection, cursor)
+                            cog.core.sql.end(connection, cursor)
                             return
                         if (
                             end != "None"
-                            and datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
+                            and datetime.datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
                             < current_time
                         ):
                             await interaction.response.send_message(
                                 "目前不在作答時間內！", ephemeral=True
                             )
-                            end_sql(connection, cursor)
+                            cog.core.sql.end(connection, cursor)
                             return
 
                         user_id = interaction.user.id
@@ -158,7 +150,7 @@ class CTF(Build):
                                 await interaction.response.send_message(
                                     "你已經回答超過限制次數了喔！", ephemeral=True
                                 )
-                                end_sql(connection, cursor)
+                                cog.core.sql.end(connection, cursor)
                                 return
 
                         # 更新作答次數，包括總表和個人表
@@ -227,14 +219,14 @@ class CTF(Build):
                             )
                             reward = int(cursor.fetchone()[0])
                             # cursor.execute("USE Discord;") # 換資料庫存取電電點
-                            current_point = read(user_id, "point", cursor)
+                            current_point = cog.core.sql.read(user_id, "point", cursor)
                             new_point = current_point + reward
                             # 更新使用者電電點
-                            write(user_id, "point", new_point, cursor)
+                            cog.core.sql.write(user_id, "point", new_point, cursor)
                             # 更新作答狀態
                             # log
                             print(
-                                f"{user_id}, {nickname} Get {reward} by ctf, {str(datetime.now())}"
+                                f"{user_id}, {nickname} Get {reward} by ctf, {str(datetime.datetime.now())}"
                             )
 
                             embed = discord.Embed(title="答題成功!")
@@ -279,9 +271,9 @@ class CTF(Build):
                             )
                         )
                         print(f"Error: {exception}\n{traceback_str}")
-                    end_sql(connection, cursor)  # 結束SQL會話
+                    cog.core.sql.end(connection, cursor)  # 結束SQL會話
 
-                def clear_items(self) -> Self:
+                def clear_items(self) -> typing.Self:
                     """
                     Clear all InputText from the modal.
 
@@ -307,24 +299,26 @@ class CTF(Build):
     async def create(
         self,
         ctx,
-        title: Option(str, "題目標題", required=True),
-        flag: Option(str, "輸入 flag 解答", required=True),
-        score: Option(int, "分數", required=True, default="20"),
-        limit: Option(int, "限制回答次數", required=False, default="∞"),
-        case: Option(
+        title: str = discord.commands.Option(str, "題目標題", required=True),
+        flag: str = discord.commands.Option(str, "輸入 flag 解答", required=True),
+        score: int = discord.commands.Option(int, "分數", required=True, default="20"),
+        limit: int = discord.commands.Option(
+            int, "限制回答次數", required=False, default="∞"
+        ),
+        case: bool = discord.commands.Option(
             bool, "大小寫忽略", required=False, default=False
         ),  # True:忽略大小寫
         # pylint: disable-next = line-too-long
-        start: Option(
+        start: str = discord.commands.Option(
             str,
-            f"開始作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
+            f"開始作答日期 ({datetime.datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
             required=False,
             default="",
         ),  # 時間格式
         # pylint: disable-next = line-too-long
-        end: Option(
+        end: str = discord.commands.Option(
             str,
-            f"截止作答日期 ({datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
+            f"截止作答日期 ({datetime.datetime.now().strftime('%y-%m-%d %H:%M:%S')})",
             required=False,
             default="",
         ),
@@ -340,7 +334,7 @@ class CTF(Build):
             return
         try:
             await ctx.defer()  # 確保機器人請求不會超時
-            connection, cursor = link_sql()  # SQL 會話
+            connection, cursor = cog.core.sql.link_sql()  # SQL 會話
             # cursor.execute("USE CTF;")
             while True:
                 new_id = generate_ctf_id()
@@ -354,12 +348,12 @@ class CTF(Build):
                     break
             # 轉型成SQL datetime格式 '%Y-%m-%d %H:%M:%S'
             start = (
-                datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
+                datetime.datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
                 if start != ""
-                else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                else datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             )
             end = (
-                f"{datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}"
+                f"{datetime.datetime.strptime(end, '%Y-%m-%d %H:%M:%S')}"
                 if end != ""
                 else "NULL"
             )
@@ -431,17 +425,17 @@ class CTF(Build):
             )
             print(f"Error: {exception}\n{traceback_str}")
 
-        end_sql(connection, cursor)
+        cog.core.sql.end(connection, cursor)
 
     # 刪除題目
     @ctf_commands.command(name="delete", description="刪除題目")
     async def delete_ctf(
         self,
         ctx,
-        qid: discord.Option(str, "欲刪除的題目", required=True),
-        channel_id: discord.Option(str, "題目所在的貼文頻道", required=True),
+        qid: str = discord.Option(str, "欲刪除的題目", required=True),
+        channel_id: str = discord.Option(str, "題目所在的貼文頻道", required=True),
         # 防呆
-        key: discord.Option(str, "輸入該題題目解答", required=True),
+        key: str = discord.Option(str, "輸入該題題目解答", required=True),
     ) -> None:
         role_id = get_ctf_makers()["SCAICT-alpha"]["SP-role"]["CTF_Maker"]
         role = discord.utils.get(ctx.guild.roles, id=role_id)
@@ -449,7 +443,7 @@ class CTF(Build):
             await ctx.respond("你沒有權限刪除題目！", ephemeral=True)
             return
         try:
-            connection, cursor = link_sql()
+            connection, cursor = cog.core.sql.link_sql()
             cursor.execute(
                 "SELECT message_id, title FROM ctf_data WHERE id=%s and flags=%s;",
                 (
@@ -486,12 +480,12 @@ class CTF(Build):
             )
             print(f"Error: {exception}")
             # 删除消息
-        end_sql(connection, cursor)
+        cog.core.sql.end(connection, cursor)
 
     @ctf_commands.command(name="list", description="列出所有題目")
     async def list_all(self, ctx) -> None:
         question_list = ["# **CTF 題目列表:**"]
-        connection, cursor = link_sql()
+        connection, cursor = cog.core.sql.link_sql()
         # cursor.execute("use CTF;")
         cursor.execute("SELECT title, score, id FROM ctf_data")
         ctf_info = cursor.fetchall()
@@ -501,8 +495,8 @@ class CTF(Build):
             )
         question_text = "\n".join(question_list)
         await ctx.respond(question_text)
-        end_sql(connection, cursor)
+        cog.core.sql.end(connection, cursor)
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(CTF(bot))

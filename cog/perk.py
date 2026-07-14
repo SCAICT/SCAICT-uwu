@@ -8,22 +8,18 @@
 """
 
 # Standard imports
-from datetime import datetime
-from datetime import timedelta
+import datetime
 import json
 import os
 import re
 
 # Third-party imports
 import discord
-from discord.ext import commands
-from discord.ext import tasks
+import discord.ext.commands
+import discord.ext.tasks
 
 # Local imports
-from cog.core.sql import end
-from cog.core.sql import link_sql
-from cog.core.sql import read
-from cog.core.sql import write
+import cog.core.sql
 
 
 def get_perk_config():
@@ -122,7 +118,7 @@ def sanitize(text):
     return re.sub(r'["\\\n\r`]', "", text).strip()
 
 
-class Perk(commands.Cog):
+class Perk(discord.ext.commands.Cog):
     """
     電電點數位特權：自訂身分組與中電喵專屬稱呼。
 
@@ -144,8 +140,8 @@ class Perk(commands.Cog):
     async def custom_role(
         self,
         ctx,
-        name: discord.Option(str, "身分組名稱"),
-        color: discord.Option(
+        name: str = discord.Option(str, "身分組名稱"),
+        color: str = discord.Option(
             str,
             "顏色：選預設顏色或輸入六位色碼（例如 F5A9B8）",
             autocomplete=color_autocomplete,
@@ -180,17 +176,17 @@ class Perk(commands.Cog):
         await ctx.defer()
 
         user_id = ctx.author.id
-        connection, cursor = link_sql()
-        point = read(user_id, "point", cursor)
+        connection, cursor = cog.core.sql.link_sql()
+        point = cog.core.sql.read(user_id, "point", cursor)
         if point < ROLE_PRICE:
             await ctx.respond(
                 f"電電點不足！需要 {ROLE_PRICE} 點，你目前只有 {point} 點。"
             )
-            end(connection, cursor)
+            cog.core.sql.end(connection, cursor)
             return
 
         # 已有租借中的身分組就改名續租，否則建立新的
-        role_id = read(user_id, "role_id", cursor, table="custom_role")
+        role_id = cog.core.sql.read(user_id, "role_id", cursor, table="custom_role")
         role = ctx.guild.get_role(role_id) if role_id else None
         try:
             if role is None:
@@ -207,26 +203,30 @@ class Perk(commands.Cog):
             await ctx.author.add_roles(role)
         except discord.Forbidden:
             await ctx.respond("我沒有管理身分組的權限，請聯絡管理員！")
-            end(connection, cursor)
+            cog.core.sql.end(connection, cursor)
             return
 
         # 續租從原到期日往後算，新租從現在起算
-        now = datetime.now()
-        old_expire = read(user_id, "role_expire", cursor, table="custom_role")
+        now = datetime.datetime.now()
+        old_expire = cog.core.sql.read(
+            user_id, "role_expire", cursor, table="custom_role"
+        )
         base = old_expire if old_expire is not None and old_expire > now else now
-        new_expire = base + timedelta(days=ROLE_DAYS)
+        new_expire = base + datetime.timedelta(days=ROLE_DAYS)
 
-        write(user_id, "point", point - ROLE_PRICE, cursor)
-        write(user_id, "role_id", role.id, cursor, table="custom_role")
-        write(
+        cog.core.sql.write(user_id, "point", point - ROLE_PRICE, cursor)
+        cog.core.sql.write(user_id, "role_id", role.id, cursor, table="custom_role")
+        cog.core.sql.write(
             user_id,
             "role_expire",
             new_expire.strftime("%Y-%m-%d %H:%M:%S"),
             cursor,
             table="custom_role",
         )
-        end(connection, cursor)
-        print(f"{user_id}, {ctx.author} rent custom role {role.id} {datetime.now()}")
+        cog.core.sql.end(connection, cursor)
+        print(
+            f"{user_id}, {ctx.author} rent custom role {role.id} {datetime.datetime.now()}"
+        )
 
         # 沒指定顏色時沿用身分組現有的顏色，沒有顏色就用預設綠色
         embed_colour = colour or (
@@ -246,7 +246,7 @@ class Perk(commands.Cog):
         name="chat_nick",
         description=f"用 {NICK_PRICE} 電電點設定中電喵對你的稱呼",
     )
-    async def chat_nick(self, ctx, nickname: discord.Option(str, "想被叫的稱呼")):
+    async def chat_nick(self, ctx, nickname: str = discord.Option(str, "想被叫的稱呼")):
         nickname = sanitize(nickname)
         if not 1 <= len(nickname) <= NICK_MAX_LENGTH:
             await ctx.respond(
@@ -258,19 +258,19 @@ class Perk(commands.Cog):
         await ctx.defer()
 
         user_id = ctx.author.id
-        connection, cursor = link_sql()
-        point = read(user_id, "point", cursor)
+        connection, cursor = cog.core.sql.link_sql()
+        point = cog.core.sql.read(user_id, "point", cursor)
         if point < NICK_PRICE:
             await ctx.respond(
                 f"電電點不足！需要 {NICK_PRICE} 點，你目前只有 {point} 點。"
             )
-            end(connection, cursor)
+            cog.core.sql.end(connection, cursor)
             return
 
-        write(user_id, "point", point - NICK_PRICE, cursor)
-        write(user_id, "nickname", nickname, cursor, table="chat_nick")
-        end(connection, cursor)
-        print(f"{user_id}, {ctx.author} set chat nick {datetime.now()}")
+        cog.core.sql.write(user_id, "point", point - NICK_PRICE, cursor)
+        cog.core.sql.write(user_id, "nickname", nickname, cursor, table="chat_nick")
+        cog.core.sql.end(connection, cursor)
+        print(f"{user_id}, {ctx.author} set chat nick {datetime.datetime.now()}")
 
         embed = discord.Embed(color=0x14E15C)
         embed.add_field(
@@ -279,18 +279,18 @@ class Perk(commands.Cog):
         embed.set_footer(text=f"已扣除 {NICK_PRICE} 電電點，重新購買即可更改")
         await ctx.respond(embed=embed)
 
-    @tasks.loop(minutes=30)
+    @discord.ext.tasks.loop(minutes=30)
     async def expire_check(self):
         """
         回收過期的自訂身分組。
         """
 
         try:
-            connection, cursor = link_sql()
+            connection, cursor = cog.core.sql.link_sql()
             cursor.execute(
                 "SELECT uid, role_id FROM custom_role"
                 " WHERE role_expire IS NOT NULL AND role_expire < %s",
-                (datetime.now(),),
+                (datetime.datetime.now(),),
             )
             expired = cursor.fetchall()
             for user_id, role_id in expired:
@@ -306,8 +306,10 @@ class Perk(commands.Cog):
                         print(f"No permission to delete role {role_id}")
                         continue
                 cursor.execute("DELETE FROM custom_role WHERE uid = %s", (user_id,))
-                print(f"{user_id} custom role {role_id} expired {datetime.now()}")
-            end(connection, cursor)
+                print(
+                    f"{user_id} custom role {role_id} expired {datetime.datetime.now()}"
+                )
+            cog.core.sql.end(connection, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error in expire_check: {exception}")
@@ -317,5 +319,5 @@ class Perk(commands.Cog):
         await self.bot.wait_until_ready()
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(Perk(bot))

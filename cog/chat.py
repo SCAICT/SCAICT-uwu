@@ -7,24 +7,22 @@
 """
 
 # Standard imports
+import collections
 import os
 import time
-from collections import defaultdict
-from collections import deque
 
 # Third-party imports
-from discord.ext import commands
-from dotenv import load_dotenv
-from google import genai
-from google.genai import errors
-from google.genai import types
+import discord.ext.commands
+import dotenv
+import google.genai
+import google.genai.errors
+import google.genai.types
 import openai
 
 # Local imports
-from cog.core.sql import end
-from cog.core.sql import link_sql
+import cog.core.sql
 
-load_dotenv(f"{os.getcwd()}/.env")
+dotenv.load_dotenv(f"{os.getcwd()}/.env")
 
 # 免費額度內每日請求數最多、付費也最便宜的模型
 # 額度與定價見 https://ai.google.dev/pricing
@@ -81,16 +79,16 @@ SYSTEM_PROMPT = (
 if KNOWLEDGE:
     SYSTEM_PROMPT += "\n\n以下是你知道的事實，回答相關問題時以此為準：\n" + KNOWLEDGE
 
-GENERATE_CONFIG = types.GenerateContentConfig(
+GENERATE_CONFIG = google.genai.types.GenerateContentConfig(
     system_instruction=SYSTEM_PROMPT,
     max_output_tokens=MAX_REPLY_TOKENS,
     # 關閉 thinking 以節省 token（flash 系列適用；
     # 若改用 gemini-2.5-pro 需移除這行）
-    thinking_config=types.ThinkingConfig(thinking_budget=0),
+    thinking_config=google.genai.types.ThinkingConfig(thinking_budget=0),
 )
 
 
-class Chat(commands.Cog):
+class Chat(discord.ext.commands.Cog):
     """
     @中電喵 聊天功能。
 
@@ -104,17 +102,21 @@ class Chat(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+        self.client = (
+            google.genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+        )
         self.groq = (
             openai.AsyncOpenAI(base_url=GROQ_BASE_URL, api_key=GROQ_API_KEY)
             if GROQ_API_KEY
             else None
         )
         # 每個頻道各自保留一小段對話歷史，超過上限自動丟棄最舊的
-        self.history = defaultdict(lambda: deque(maxlen=HISTORY_LIMIT))
+        self.history = collections.defaultdict(
+            lambda: collections.deque(maxlen=HISTORY_LIMIT)
+        )
         self.last_used = {}
 
-    @commands.Cog.listener()
+    @discord.ext.commands.Cog.listener()
     async def on_message(self, message):
         # 機器人發言不可當成觸發條件，必須排除
         if message.author.bot:
@@ -204,10 +206,10 @@ class Chat(commands.Cog):
         """
 
         try:
-            connection, cursor = link_sql()
+            connection, cursor = cog.core.sql.link_sql()
             cursor.execute("SELECT nickname FROM chat_nick WHERE uid = %s", (user_id,))
             ret = cursor.fetchall()
-            end(connection, cursor)
+            cog.core.sql.end(connection, cursor)
             if ret and ret[0][0]:
                 return ret[0][0]
         # 資料庫掛掉不該讓聊天功能跟著掛
@@ -291,7 +293,7 @@ class Chat(commands.Cog):
 
         try:
             return await self._generate_gemini(CHAT_MODEL, contents)
-        except errors.APIError as exception:
+        except google.genai.errors.APIError as exception:
             if exception.code not in (429, 500, 503) or FALLBACK_MODEL == CHAT_MODEL:
                 raise
             print(
@@ -301,7 +303,7 @@ class Chat(commands.Cog):
 
         try:
             return await self._generate_gemini(FALLBACK_MODEL, contents)
-        except errors.APIError as exception:
+        except google.genai.errors.APIError as exception:
             if self.groq is None or exception.code not in (429, 500, 503):
                 raise
             print(
@@ -330,10 +332,10 @@ class Chat(commands.Cog):
         display_name = (
             self.get_chat_nick(message.author.id) or message.author.display_name
         )
-        user_content = types.Content(
+        user_content = google.genai.types.Content(
             role="user",
             parts=[
-                types.Part(text=f"{display_name}：{content}"),
+                google.genai.types.Part(text=f"{display_name}：{content}"),
             ],
         )
 
@@ -342,7 +344,7 @@ class Chat(commands.Cog):
                 reply_text, model_used, tokens_in, tokens_out = await self.generate(
                     list(channel_history) + [user_content]
                 )
-        except errors.APIError as exception:
+        except google.genai.errors.APIError as exception:
             if exception.code == 429:
                 # 免費額度的每分鐘上限滿了，約一分鐘後就會恢復
                 await message.reply(
@@ -371,7 +373,9 @@ class Chat(commands.Cog):
         # 對話成立才寫入歷史，讓後續對話有前後文
         channel_history.append(user_content)
         channel_history.append(
-            types.Content(role="model", parts=[types.Part(text=reply_text)])
+            google.genai.types.Content(
+                role="model", parts=[google.genai.types.Part(text=reply_text)]
+            )
         )
 
         # 紀錄 token 用量，方便追蹤免費額度
@@ -384,5 +388,5 @@ class Chat(commands.Cog):
         await message.reply(reply_text[:2000], mention_author=False)
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(Chat(bot))

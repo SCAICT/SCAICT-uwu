@@ -1,14 +1,12 @@
 # Third-party imports
 import discord
-from discord.ext import commands
+import discord.ext.commands
 
 # Local imports
-from cog.core.sql import read
-from cog.core.sql import link_sql
-from cog.core.sql import end
+import cog.core.sql
 
 
-class CheckPoint(commands.Cog):
+class CheckPoint(discord.ext.commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.embed = None
@@ -33,13 +31,13 @@ class CheckPoint(commands.Cog):
 
     @discord.slash_command(name="check_point", description="查看電電點")
     async def check(self, interaction):
-        connection, cursor = link_sql()  # SQL 會話
+        connection, cursor = cog.core.sql.link_sql()  # SQL 會話
         user_id = interaction.user.id
-        combo = read(user_id, "charge_combo", cursor)
-        point = read(user_id, "point", cursor)
+        combo = cog.core.sql.read(user_id, "charge_combo", cursor)
+        point = cog.core.sql.read(user_id, "point", cursor)
         await self.send_message(point, combo, interaction)
-        end(connection, cursor)
+        cog.core.sql.end(connection, cursor)
 
 
-def setup(bot):
+def setup(bot: discord.Bot):
     bot.add_cog(CheckPoint(bot))
