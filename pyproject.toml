@@ -54,7 +54,7 @@ dependencies = [
 	"mysql-connector-python==9.7.0",
 	"openai==2.45.0",
 	"py-cord==2.8.0",
-	"python-dotenv==1.2.1",
+	"python-dotenv==1.2.2",
 	"requests==2.34.2",
 ]
 
