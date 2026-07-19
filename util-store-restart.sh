@@ -11,7 +11,7 @@ LOG_DIR="/var/log/uwuStore"
 TIMESTAMP="$(date +%Y-%m-%dT%H-%M-%S)"
 
 # XXX: We should run with WSGI server
-START_COMMAND="flask run"
+START_COMMAND="uv run flask run"
 
 # Simulate Ctrl-C (SIGINT) instead of SIGKILL to exit as safely as possible
 screen -S store -X stuff "\003"

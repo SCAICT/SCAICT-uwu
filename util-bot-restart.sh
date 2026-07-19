@@ -10,7 +10,7 @@ LOG_DIR="/var/log/Bot_uwu"
 
 TIMESTAMP="$(date +%Y-%m-%dT%H-%M-%S)"
 
-START_COMMAND="python3 ./main.py"
+START_COMMAND="uv run ./main.py"
 
 # Simulate Ctrl-C (SIGINT) instead of SIGKILL to exit as safely as possible
 screen -S bot -X stuff "\003"
