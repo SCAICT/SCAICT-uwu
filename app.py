@@ -66,7 +66,7 @@ def is_safe_redirect_target(target):
     if not target.startswith("/") or target.startswith(("//", "/\\")):
         return False
     parsed = urllib.parse.urlparse(target)
-    return not parsed.scheme and not parsed.netloc
+    return not (parsed.scheme or parsed.netloc)
 
 
 @app.route("/login")
@@ -244,6 +244,10 @@ def callback():
         and time.time() - state_created <= OAUTH_STATE_MAX_AGE_SECONDS
     )
     if not expected_state or provided_state != expected_state or not state_is_fresh:
+        app.logger.warning(
+            "Rejected /callback: invalid or expired OAuth state (ip=%s)",
+            flask.request.remote_addr,
+        )
         flask.abort(403, description="Invalid or expired OAuth state")
 
     # 轉址目標只從 server-side session 取得（/login 時已白名單檢查過），
