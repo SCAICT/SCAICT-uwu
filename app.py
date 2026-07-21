@@ -2,6 +2,8 @@
 import json
 import os
 import random
+import secrets
+import time
 import traceback
 import urllib.parse
 
@@ -17,6 +19,19 @@ app = flask.Flask(__name__)
 dotenv.load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
 
 app.secret_key = os.getenv("SECRET_KEY")
+
+# Session cookie hardening: block JS access, restrict cross-site sending, and
+# require HTTPS in anything but local debug (set FLASK_DEBUG=true locally to
+# test over plain http, e.g. with `flask run`).
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = (
+    os.getenv("FLASK_DEBUG", "false").lower() != "true"
+)
+
+# How long an OAuth "state" nonce (see /login and /callback) stays valid.
+OAUTH_STATE_MAX_AGE_SECONDS = 300
+
 discord_client_id = os.getenv("DISCORD_CLIENT_ID")
 discord_client_secret = os.getenv("DISCORD_CLIENT_SECRET")
 discord_redirect_uri = os.getenv("DISCORD_REDIRECT_URI")
@@ -39,18 +54,44 @@ def not_found_error(error):
     return flask.render_template("404.html"), 404
 
 
+def is_safe_redirect_target(target):
+    """Only allow same-site, relative redirect targets after login.
+
+    Rejects anything that could make the browser leave scaict.org: absolute
+    URLs, protocol-relative URLs ("//evil.com"), and backslash tricks that
+    some browsers still treat as "//" (e.g. "/\\evil.com").
+    """
+    if not target or not isinstance(target, str):
+        return False
+    if not target.startswith("/") or target.startswith(("//", "/\\")):
+        return False
+    parsed = urllib.parse.urlparse(target)
+    return not parsed.scheme and not parsed.netloc
+
+
 @app.route("/login")
 def login():
+    # state 只用來防 CSRF，跟轉址目標完全脫鉤，並且是伺服器產生、一次性、有時效的亂數。
+    state_token = secrets.token_urlsafe(32)
+    flask.session["oauth_state"] = state_token
+    flask.session["oauth_state_created"] = time.time()
+
+    # redirurl 只允許站內相對路徑（白名單邏輯），並存在 server-side session，
+    # 不會被塞進交給 Discord 的 state 參數、也不會被使用者竄改。
     redirurl = flask.request.args.get("redirurl")
+    if is_safe_redirect_target(redirurl):
+        flask.session["oauth_redirect"] = redirurl
+    else:
+        flask.session.pop("oauth_redirect", None)
+
     base_url = "https://discord.com/api/oauth2/authorize"
     params = {
         "client_id": discord_client_id,
         "redirect_uri": discord_redirect_uri,
         "response_type": "code",
         "scope": "identify email",
+        "state": state_token,
     }
-    if redirurl:
-        params["state"] = redirurl
     # 將參數進行 URL 編碼並組合成最終的 URL
     urlencoded = urllib.parse.urlencode(params)
     return flask.redirect(f"{base_url}?{urlencoded}")
@@ -192,7 +233,25 @@ def send(target_user_id):
 @app.route("/callback")
 def callback():
     code = flask.request.args.get("code")
-    redirurl = flask.request.args.get("state")  # 使用 state 作為重定向的目標 URL
+
+    # state 驗證：必須跟 /login 時存進 session 的一次性亂數相符，且沒有過期。
+    # 驗證完立刻 pop 掉，確保不能被重放。
+    expected_state = flask.session.pop("oauth_state", None)
+    state_created = flask.session.pop("oauth_state_created", None)
+    provided_state = flask.request.args.get("state")
+    state_is_fresh = (
+        state_created is not None
+        and time.time() - state_created <= OAUTH_STATE_MAX_AGE_SECONDS
+    )
+    if not expected_state or provided_state != expected_state or not state_is_fresh:
+        flask.abort(403, description="Invalid or expired OAuth state")
+
+    # 轉址目標只從 server-side session 取得（/login 時已白名單檢查過），
+    # 使用者無法透過 state/query string 竄改它。
+    redirurl = flask.session.pop("oauth_redirect", None)
+    if not is_safe_redirect_target(redirurl):
+        redirurl = None
+
     data = {
         "client_id": discord_client_id,
         "client_secret": discord_client_secret,
@@ -233,18 +292,10 @@ def callback():
         user_data["id"], "DCmail", user_data.get("email", "No email provided"), cursor
     )
     cog.core.sql.end(connection, cursor)
-    # 如果 redirurl 存在，將用戶資料作為查詢參數附加到 redirurl 並重定向
-    if redirurl:  # and is_safe_url(redirurl):
-        params = {
-            "username": user_data["username"],
-            "user_id": user_data["id"],
-            "avatar": flask.session["user"]["avatar"],
-            "email": user_data.get("email", "No email provided"),
-            "headers": headers,
-        }
-        urlencoded = urllib.parse.urlencode(params)
-        separator = "&" if "?" in redirurl else "?"
-        return flask.redirect(f"https://{redirurl}{separator}{urlencoded}")
+    # 使用者資料已經存進 session["user"]，目標頁面（站內相對路徑）可以直接讀 session，
+    # 完全不需要、也絕對不能把 email、user id 或 access token 放進轉址網址。
+    if redirurl:
+        return flask.redirect(redirurl)
     # 否則，重定向到 profile 頁面
     return flask.redirect(flask.url_for("profile"))
 
