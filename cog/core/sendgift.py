@@ -2,7 +2,7 @@
 import discord
 
 # Local imports
-from cog.core.sql import link_sql, end
+import cog.core.sql
 
 
 class MessageSendError(Exception):  # 自定義的例外類型
@@ -30,14 +30,14 @@ async def send_gift_button(
         btn_id: int, gift_type: str, count: int, recipient: str
     ) -> None:
         try:
-            connection, cursor = link_sql()
+            connection, cursor = cog.core.sql.link_sql()
             cursor.execute(
                 "INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`,`sender`) VALUES (%s, %s, %s, %s,%s)",
                 (btn_id, gift_type, count, recipient, sender),
             )
-            end(connection, cursor)
+            cog.core.sql.end(connection, cursor)
         except Exception as e:
-            end(connection, cursor)
+            cog.core.sql.end(connection, cursor)
             raise DBError("無法成功插入禮物資料進資料庫") from e
 
     try:
