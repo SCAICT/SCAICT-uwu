@@ -100,6 +100,9 @@ Summary of module.
 Extended description.
 """
 
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import standard_import
 
@@ -116,18 +119,28 @@ class ClassName:
     Extended description.
 
     Attributes:
-        CONST_NAME (int): Description of constant.
-        attr_name (int): Description of attribute.
+        PUBLIC_CONST_NAME (int):
+            Description of public constant.
+        public_attr_name (int):
+            Description of public attribute.
     """
 
-    CONST_NAME = 1
+    PUBLIC_CONST_NAME = 1
+
+    public_attr_name = 1
+
+    _PRIVATE_CONST_NAME = 2
     """
-    CONST_NAME (int): Description of constant.
+    Returns:
+        int:
+            Description of private constant.
     """
 
-    attr_name = 1
+    _private_attr_name = 1
     """
-    attr_name (int): Description of attribute.
+    Returns:
+        int:
+            Description of private attribute.
     """
 
     def method_name(self, param_name: int) -> int:
@@ -137,13 +150,16 @@ class ClassName:
         Extended description.
 
         Parameters:
-            param_name (int): Description of parameter.
+            param_name (int):
+                Description of parameter.
 
         Returns:
-            int: Description of return value.
+            int:
+                Description of return value.
 
         Raises:
-            KeyError: Raises an exception.
+            KeyError:
+                Raises an exception.
         """
 
         print(param_name)
