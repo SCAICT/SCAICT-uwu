@@ -27,7 +27,8 @@ class LanguageTag:
     def __init__(self, *, tag: str) -> None:
         """
         Parameters:
-            tag (str): BCP 47 language tag.
+            tag (str):
+                BCP 47 language tag.
         """
 
         self._tag: str = tag
@@ -41,7 +42,8 @@ class LanguageTag:
         Get the BCP 47 language tag of the LanguageTag object.
 
         Returns:
-            str: The BCP 47 language tag.
+            str:
+                The BCP 47 language tag.
         """
 
         return self._tag
@@ -52,7 +54,8 @@ class LanguageTag:
         Get the system message language tag of the LanguageTag object.
 
         Returns:
-            str: The system message language tag.
+            str:
+                The system message language tag.
         """
 
         return self._tag.lower()
@@ -65,7 +68,8 @@ class LanguageTag:
         See <https://discord.com/developers/docs/reference#locales>
 
         Returns:
-            (str | None): The Discord locale code. Return None when there is no\
+            (str | None):
+                The Discord locale code. Return None when there is no\
                 corresponding supported Discord locale code.
         """
 
@@ -77,7 +81,8 @@ class LanguageTag:
         Get the language fallback chain of the LanguageTag object.
 
         Returns:
-            list[str]: The list containing BCP 47 language tags of the language\
+            list[str]:
+                The list containing BCP 47 language tags of the language\
                 fallback chain.
         """
 
@@ -91,7 +96,8 @@ class LanguageTagFactory:
 
     _tags: typing.ClassVar[dict[str, LanguageTag]] = {}
     """
-    _tags (dict): The LanguageTag objects.
+    _tags (dict):
+        The LanguageTag objects.
     """
 
     def _get_tag_internal(self, *, tag: str) -> LanguageTag:
@@ -99,10 +105,12 @@ class LanguageTagFactory:
         Get LanguageTag object by normalized BCP 47 language tag.
 
         Parameters:
-            tag (str): Normalized BCP 47 language tag.
+            tag (str):
+                Normalized BCP 47 language tag.
 
         Returns:
-            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+            LanguageTag:
+                The LanguageTag object to the corresponding BCP 47\
                 language tag.
         """
 
@@ -116,10 +124,12 @@ class LanguageTagFactory:
         Get LanguageTag object by normalized BCP 47 language tag.
 
         Parameters:
-            tag (str): Normalized BCP 47 language tag.
+            tag (str):
+                Normalized BCP 47 language tag.
 
         Returns:
-            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+            LanguageTag:
+                The LanguageTag object to the corresponding BCP 47\
                 language tag.
         """
 
@@ -132,10 +142,12 @@ class LanguageTagFactory:
         Get LanguageTag object by unnormalized BCP 47 language tag.
 
         Parameters:
-            tag (str): Unnormalized BCP 47 language tag.
+            tag (str):
+                Unnormalized BCP 47 language tag.
 
         Returns:
-            LanguageTag: The LanguageTag object to the corresponding BCP 47\
+            LanguageTag:
+                The LanguageTag object to the corresponding BCP 47\
                 language tag.
         """
 
@@ -148,12 +160,14 @@ class LanguageTagFactory:
         Get LanguageTag object by Discord locale code.
 
         Parameters:
-            code (str): Discord locale code.
+            code (str):
+                Discord locale code.
 
         Returns:
-            (LanguageTag | None): The LanguageTag object of the corresponding\
-                Discord locale code. Return None when is not a supported\
-                Discord locale code.
+            (LanguageTag | None):
+                The LanguageTag object of the corresponding Discord locale\
+                    code.
+                Return None when is not a supported Discord locale code.
         """
 
         if code not in LanguageUtils.get_supported_discord_codes():
@@ -176,8 +190,9 @@ class LanguageUtils:
         normalized BCP 47 language tag prefix.
 
         Returns:
-            dict[str, str]: The mapping of unnormalized BCP 47 language tag\
-                prefix to normalized BCP 47 language tag prefix.
+            dict[str, str]:
+                The mapping of unnormalized BCP 47 language tag prefix to\
+                    normalized BCP 47 language tag prefix.
         """
 
         return {
@@ -237,7 +252,8 @@ class LanguageUtils:
         See <https://discord.com/developers/docs/reference#locales>
 
         Returns:
-            list[str]: The list of Discord locale codes supported by Discord.
+            list[str]:
+                The list of Discord locale codes supported by Discord.
         """
 
         return [
@@ -283,7 +299,8 @@ class LanguageUtils:
         Get the mapping of BCP 47 language tag to Discord locale code.
 
         Returns:
-            dict[str, str]: The mapping of BCP 47 language tag to Discord locale code.
+            dict[str, str]:
+                The mapping of BCP 47 language tag to Discord locale code.
         """
 
         return {
@@ -301,7 +318,8 @@ class LanguageUtils:
         Get the mapping of Discord locale code to BCP 47 language tag.
 
         Returns:
-            dict: The mapping of Discord locale code to BCP 47 language tag.
+            dict:
+                The mapping of Discord locale code to BCP 47 language tag.
         """
 
         return {v: k for k, v in cls.get_discord_code_mapping().items()}
@@ -317,10 +335,12 @@ class LanguageUtils:
         * variant subtags: all lowercase. For example, wadegile.
 
         Parameters:
-            tag (str): BCP 47 language tag string.
+            tag (str):
+                BCP 47 language tag string.
 
         Returns:
-            str: BCP 47 language tag string with BCP 47 letter case.
+            str:
+                BCP 47 language tag string with BCP 47 letter case.
         """
 
         tag_lower_subtags: list[str] = tag.lower().split("-")
@@ -351,10 +371,12 @@ class LanguageUtils:
         zh-min-nan => nan).
 
         Parameters:
-            tag (str): Unnormalized BCP 47 language tag string.
+            tag (str):
+                Unnormalized BCP 47 language tag string.
 
         Returns:
-            str: Normalized BCP 47 language tag string.
+            str:
+                Normalized BCP 47 language tag string.
         """
 
         tag = tag.lower()
@@ -373,10 +395,12 @@ class LanguageUtils:
         Check if the given code is a supported Discord locale code.
 
         Parameters:
-            code (str): Discord locale code.
+            code (str):
+                Discord locale code.
 
         Returns:
-            bool: Whether the given code is a supported Discord locale code.
+            bool:
+                Whether the given code is a supported Discord locale code.
         """
 
         return code in cls.get_supported_discord_codes()
@@ -387,10 +411,12 @@ class LanguageUtils:
         Get the Discord locale code from BCP 47 language tag.
 
         Parameters:
-            tag (str): BCP 47 language tag.
+            tag (str):
+                BCP 47 language tag.
 
         Returns:
-            (str | None): the Discord locale code of the BCP 47 language tag.\
+            (str | None):
+                The Discord locale code of the BCP 47 language tag.
                 Return None when there's no corresponding supported Discord\
                 locale code.
         """
@@ -408,10 +434,12 @@ class LanguageUtils:
         Get the BCP 47 language tag from Discord locale code.
 
         Parameters:
-            code (str): Discord locale code.
+            code (str):
+                Discord locale code.
 
         Returns:
-            str: the BCP 47 language tag of the Discord locale code.
+            str:
+                The BCP 47 language tag of the Discord locale code.
         """
 
         return cls.get_discord_code_to_bcp_47_mapping().get(code, code)
@@ -425,14 +453,14 @@ class SystemMessage:
 
     _use_lang: str | None = None
     """
-    _use_lang (str|None): The language tag of the language for the system\
-        message to use.
+    _use_lang (str|None):
+        The language tag of the language for the system message to use.
     """
 
     _in_lang: str | None = None
     """
-    _in_lang (str|None): The language tag of the language that the system\
-        message actually used.
+    _in_lang (str|None):
+        The language tag of the language that the system message actually used.
     """
 
     def __init__(
@@ -445,10 +473,12 @@ class SystemMessage:
         Set the language tag of the language that the message expected to use.
 
         Parameters:
-            key (str): Message key.
-            params (list): Message parameters.
-            use_lang: (Language|None): Language to use (None: defaults to\
-                current user language).
+            key (str):
+                Message key.
+            params (list):
+                Message parameters.
+            use_lang: (Language|None):
+                Language to use (None: defaults to current user language).
         """
 
     def set_lang(self, lang_tag: str) -> None:
@@ -456,8 +486,9 @@ class SystemMessage:
         Set the language tag of the language that the message expected to use.
 
         Parameters:
-            lang_tag (str): The language tag of the language that the message\
-                expected to use.
+            lang_tag (str):
+                The language tag of the language that the message expected\
+                    to use.
         """
 
         self._use_lang = lang_tag
@@ -468,7 +499,8 @@ class SystemMessage:
             falls back to.
 
         Returns:
-            str: Description of return value.
+            str:
+                Description of return value.
         """
 
         return self._use_lang or self._in_lang or ""

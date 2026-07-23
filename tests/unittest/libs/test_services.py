@@ -13,7 +13,12 @@ import scaict_uwu.libs.services
 
 
 class MockService:
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
+        """
+        Parameters:
+            name (str):
+        """
+
         self.name: str = name
 
 
@@ -36,12 +41,28 @@ class TestService(unittest.TestCase):
     def _init_mock_service(
         services: scaict_uwu.libs.services.ServiceContainer,
     ) -> MockService:
+        """
+        Parameters:
+            scaict_uwu.libs.services.ServiceContainer
+
+        Returns:
+            MockService
+        """
+
         return MockService(name="MockService")
 
     @staticmethod
     def _init_mock_service3(
         services: scaict_uwu.libs.services.ServiceContainer,
     ) -> MockService:
+        """
+        Parameters:
+            scaict_uwu.libs.services.ServiceContainer
+
+        Returns:
+            MockService
+        """
+
         return MockService(name="MockService3")
 
     def test_name(self) -> None:
@@ -127,12 +148,28 @@ class TestServiceContainer(unittest.TestCase):
     def _init_mock_service(
         services: scaict_uwu.libs.services.ServiceContainer,
     ) -> MockService:
+        """
+        Parameters:
+            scaict_uwu.libs.services.ServiceContainer
+
+        Returns:
+            MockService
+        """
+
         return MockService(name="MockService")
 
     @staticmethod
     def _init_mock_service3(
         services: scaict_uwu.libs.services.ServiceContainer,
     ) -> MockService:
+        """
+        Parameters:
+            scaict_uwu.libs.services.ServiceContainer
+
+        Returns:
+            MockService
+        """
+
         return MockService(name="MockService3")
 
     def test_apply_wiring(self) -> None:

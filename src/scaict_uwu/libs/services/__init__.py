@@ -14,7 +14,12 @@ class CannotReplaceActiveServiceError(Exception):
     Error thrown when trying to replace an already active service.
     """
 
-    def __init__(self, *, name: str):
+    def __init__(self, *, name: str) -> None:
+        """
+        Parameters:
+            name (str):
+        """
+
         formatted_message = f"Cannot replace an active service: {name}"
 
         super().__init__(formatted_message)
@@ -25,7 +30,12 @@ class NoSuchServiceError(Exception):
     Error thrown when the requested service is not known.
     """
 
-    def __init__(self, *, name: str):
+    def __init__(self, *, name: str) -> None:
+        """
+        Parameters:
+            name (str):
+        """
+
         formatted_message = f"No such service: {name}"
 
         super().__init__(formatted_message)
@@ -41,12 +51,13 @@ class Service:
         *,
         name: str,
         instantiator: typing.Callable[[ServiceContainer], typing.Any],
-    ):
+    ) -> None:
         """
         Parameters:
-            name (str): Identifier of the service.
-            instantiator (typing.Callable[[ServiceContainer], typing.Any]): Instantiator of
-                the service.
+            name (str):
+                Identifier of the service.
+            instantiator (typing.Callable[[ServiceContainer], typing.Any]):
+                Instantiator of the service.
         """
 
         self.name: str = name
@@ -82,7 +93,10 @@ class Service:
     ) -> None:
         """
         Parameters:
-            instantiator (typing.Callable[[ServiceContainer], typing.Any])
+            instantiator (typing.Callable[[ServiceContainer], typing.Any]):
+
+        Raises:
+            scaict_uwu.libs.services.CannotReplaceActiveServiceError:
         """
 
         if self.is_active:
@@ -96,11 +110,12 @@ class Service:
         If the service is not active, activate it and get its instance.
 
         Parameters:
-            service (ServiceContainer): The service container instance for
-                dependency resolution.
+            service (ServiceContainer):
+                The service container instance for dependency resolution.
 
         Returns:
-            typing.Any: The instance of the service.
+            typing.Any:
+                The instance of the service.
         """
 
         if self._instance is None:
@@ -115,6 +130,11 @@ class ServiceAlreadyDefinedError(Exception):
     """
 
     def __init__(self, *, name: str):
+        """
+        Parameters:
+            name (str):
+        """
+
         formatted_message = f"Service already defined: {name}"
 
         super().__init__(formatted_message)
@@ -152,6 +172,9 @@ class ServiceContainer:
         """
         Parameters:
             service (Service):
+
+        Raises:
+            scaict_uwu.libs.services.ServiceAlreadyDefinedError:
         """
 
         name: str = service.name
@@ -168,6 +191,9 @@ class ServiceContainer:
         Parameters:
             name (str):
             instantiator (typing.Callable[[typing.Self], typing.Any]):
+
+        Raises:
+            scaict_uwu.libs.services.NoSuchServiceError:
         """
 
         if not self.has_service(name=name):
@@ -182,6 +208,9 @@ class ServiceContainer:
 
         Returns:
             typing.Any:
+
+        Raises:
+            scaict_uwu.libs.services.NoSuchServiceError:
         """
 
         if not self.has_service(name=name):

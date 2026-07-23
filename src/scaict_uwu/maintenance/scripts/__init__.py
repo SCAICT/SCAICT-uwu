@@ -24,4 +24,9 @@ class MaintenanceScriptUpdate(scaict_uwu.maintenance.MaintenanceScript):
         self.add_description("Database updater.")
 
     def execute(self) -> bool:
+        """
+        Returns:
+            bool:
+        """
+
         return True
