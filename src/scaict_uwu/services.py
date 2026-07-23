@@ -9,20 +9,12 @@ from __future__ import annotations
 import discord
 
 # Local imports
-from scaict_uwu.core.config import (
-    Config,
-    ConfigFactory,
-)
-from scaict_uwu.libs.language import (
-    LanguageTagFactory,
-)
-from scaict_uwu.libs.services import (
-    Service,
-    ServiceContainer,
-)
+import scaict_uwu.core.config
+import scaict_uwu.libs.language
+import scaict_uwu.libs.services
 
 
-class Services(ServiceContainer):
+class Services(scaict_uwu.libs.services.ServiceContainer):
     """
     Service instantiators and locators for SCAICT-uwu core services.
     """
@@ -32,14 +24,16 @@ class Services(ServiceContainer):
 
         self.apply_wiring(
             services={
-                "Config": Service(name="Config", instantiator=self._init_config),
-                "ConfigFactory": Service(
+                "scaict_uwu.core.config.Config": scaict_uwu.libs.services.Service(
+                    name="Config", instantiator=self._init_config
+                ),
+                "scaict_uwu.core.config.ConfigFactory": scaict_uwu.libs.services.Service(
                     name="ConfigFactory", instantiator=self._init_config_factory
                 ),
-                "DiscordBot": Service(
+                "DiscordBot": scaict_uwu.libs.services.Service(
                     name="DiscordBot", instantiator=self._init_discord_bot
                 ),
-                "LanguageTagFactory": Service(
+                "scaict_uwu.libs.language.LanguageTagFactory": scaict_uwu.libs.services.Service(
                     name="LanguageTagFactory",
                     instantiator=self._init_language_tag_factory,
                 ),
@@ -47,15 +41,21 @@ class Services(ServiceContainer):
         )
 
     @staticmethod
-    def _init_config(services: ServiceContainer) -> Config:
-        return services.get(name="ConfigFactory").get()
+    def _init_config(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> scaict_uwu.core.config.Config:
+        return services.get(name="scaict_uwu.core.config.ConfigFactory").get()
 
     @staticmethod
-    def _init_config_factory(services: ServiceContainer) -> ConfigFactory:
-        return ConfigFactory()
+    def _init_config_factory(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> scaict_uwu.core.config.ConfigFactory:
+        return scaict_uwu.core.config.ConfigFactory()
 
     @staticmethod
-    def _init_discord_bot(services: ServiceContainer) -> discord.Bot:
+    def _init_discord_bot(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> discord.Bot:
         intents: discord.Intents = discord.Intents.default()
 
         intents.members = True
@@ -64,5 +64,7 @@ class Services(ServiceContainer):
         return discord.Bot(intents=intents)
 
     @staticmethod
-    def _init_language_tag_factory(services: ServiceContainer) -> LanguageTagFactory:
-        return LanguageTagFactory()
+    def _init_language_tag_factory(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> scaict_uwu.libs.language.LanguageTagFactory:
+        return scaict_uwu.libs.language.LanguageTagFactory()

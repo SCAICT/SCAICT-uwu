@@ -9,13 +9,7 @@ from __future__ import annotations
 import unittest
 
 # Local imports
-from scaict_uwu.libs.services import (
-    CannotReplaceActiveServiceError,
-    NoSuchServiceError,
-    Service,
-    ServiceAlreadyDefinedError,
-    ServiceContainer,
-)
+import scaict_uwu.libs.services
 
 
 class MockService:
@@ -24,35 +18,47 @@ class MockService:
 
 
 class TestService(unittest.TestCase):
-    service_container: ServiceContainer | None
+    service_container: scaict_uwu.libs.services.ServiceContainer | None
 
     def setUp(self) -> None:
-        self.service_container = ServiceContainer()
+        self.service_container = scaict_uwu.libs.services.ServiceContainer()
 
         self.service_container.define_service(
-            service=Service(name="MockService", instantiator=self._init_mock_service)
+            service=scaict_uwu.libs.services.Service(
+                name="MockService", instantiator=self._init_mock_service
+            )
         )
 
     def tearDown(self) -> None:
         self.service_container = None
 
     @staticmethod
-    def _init_mock_service(services: ServiceContainer) -> MockService:
+    def _init_mock_service(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> MockService:
         return MockService(name="MockService")
 
     @staticmethod
-    def _init_mock_service3(services: ServiceContainer) -> MockService:
+    def _init_mock_service3(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> MockService:
         return MockService(name="MockService3")
 
     def test_name(self) -> None:
-        service_container: ServiceContainer = self.service_container
-        service: Service = service_container.get(name="MockService")
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
+        service: scaict_uwu.libs.services.Service = service_container.get(
+            name="MockService"
+        )
 
         self.assertEqual(service.name, "MockService")
 
     def test_is_active(self) -> None:
         service_container = self.service_container
-        service: Service = service_container.services["MockService"]
+        service: scaict_uwu.libs.services.Service = service_container.services[
+            "MockService"
+        ]
 
         self.assertFalse(service.is_active)
 
@@ -62,10 +68,14 @@ class TestService(unittest.TestCase):
         self.assertTrue(service.is_active)
 
     def test_redefine_instantiator(self) -> None:
-        service_container: ServiceContainer = self.service_container
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
 
         service_container.define_service(
-            service=Service(name="MockService3", instantiator=self._init_mock_service)
+            service=scaict_uwu.libs.services.Service(
+                name="MockService3", instantiator=self._init_mock_service
+            )
         )
 
         service_container.redefine_service_instantiator(
@@ -78,14 +88,20 @@ class TestService(unittest.TestCase):
 
         self.assertEqual(service3.name, "MockService3")
 
-        with self.assertRaises(CannotReplaceActiveServiceError):
+        with self.assertRaises(
+            scaict_uwu.libs.services.CannotReplaceActiveServiceError
+        ):
             service_container.redefine_service_instantiator(
                 name="MockService3", instantiator=self._init_mock_service
             )
 
     def test_get_instance(self) -> None:
-        service_container: ServiceContainer = self.service_container
-        service: Service = service_container.services["MockService"]
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
+        service: scaict_uwu.libs.services.Service = service_container.services[
+            "MockService"
+        ]
 
         self.assertIsInstance(
             service.get_instance(services=service_container), MockService
@@ -93,32 +109,40 @@ class TestService(unittest.TestCase):
 
 
 class TestServiceContainer(unittest.TestCase):
-    service_container: ServiceContainer | None
+    service_container: scaict_uwu.libs.services.ServiceContainer | None
 
     def setUp(self) -> None:
-        self.service_container = ServiceContainer()
+        self.service_container = scaict_uwu.libs.services.ServiceContainer()
 
         self.service_container.define_service(
-            service=Service(name="MockService", instantiator=self._init_mock_service)
+            service=scaict_uwu.libs.services.Service(
+                name="MockService", instantiator=self._init_mock_service
+            )
         )
 
     def tearDown(self) -> None:
         self.service_container = None
 
     @staticmethod
-    def _init_mock_service(services: ServiceContainer) -> MockService:
+    def _init_mock_service(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> MockService:
         return MockService(name="MockService")
 
     @staticmethod
-    def _init_mock_service3(services: ServiceContainer) -> MockService:
+    def _init_mock_service3(
+        services: scaict_uwu.libs.services.ServiceContainer,
+    ) -> MockService:
         return MockService(name="MockService3")
 
     def test_apply_wiring(self) -> None:
-        service_container: ServiceContainer = self.service_container
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
 
         service_container.apply_wiring(
             services={
-                "MockService2": Service(
+                "MockService2": scaict_uwu.libs.services.Service(
                     name="MockService2", instantiator=self._init_mock_service
                 )
             }
@@ -127,36 +151,46 @@ class TestServiceContainer(unittest.TestCase):
         self.assertTrue(service_container.has_service(name="MockService2"))
 
     def test_has_service(self) -> None:
-        service_container: ServiceContainer = self.service_container
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
 
         self.assertTrue(service_container.has_service(name="MockService"))
 
     def test_define_service(self) -> None:
-        service_container: ServiceContainer = self.service_container
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
 
         service_container.define_service(
-            service=Service(name="MockService3", instantiator=self._init_mock_service)
+            service=scaict_uwu.libs.services.Service(
+                name="MockService3", instantiator=self._init_mock_service
+            )
         )
 
         self.assertTrue(service_container.has_service(name="MockService3"))
 
-        with self.assertRaises(ServiceAlreadyDefinedError):
+        with self.assertRaises(scaict_uwu.libs.services.ServiceAlreadyDefinedError):
             service_container.define_service(
-                service=Service(
+                service=scaict_uwu.libs.services.Service(
                     name="MockService3", instantiator=self._init_mock_service
                 )
             )
 
     def test_redefine_service(self) -> None:
-        service_container: ServiceContainer = self.service_container
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
 
-        with self.assertRaises(NoSuchServiceError):
+        with self.assertRaises(scaict_uwu.libs.services.NoSuchServiceError):
             service_container.redefine_service_instantiator(
                 name="MockService4", instantiator=self._init_mock_service
             )
 
         service_container.define_service(
-            service=Service(name="MockService3", instantiator=self._init_mock_service)
+            service=scaict_uwu.libs.services.Service(
+                name="MockService3", instantiator=self._init_mock_service
+            )
         )
 
         service_container.redefine_service_instantiator(
@@ -169,13 +203,17 @@ class TestServiceContainer(unittest.TestCase):
 
         self.assertEqual(service3.name, "MockService3")
 
-        with self.assertRaises(CannotReplaceActiveServiceError):
+        with self.assertRaises(
+            scaict_uwu.libs.services.CannotReplaceActiveServiceError
+        ):
             service_container.redefine_service_instantiator(
                 name="MockService3", instantiator=self._init_mock_service
             )
 
     def test_get(self) -> None:
-        service_container: ServiceContainer = self.service_container
+        service_container: scaict_uwu.libs.services.ServiceContainer = (
+            self.service_container
+        )
 
         self.assertIsInstance(service_container.get(name="MockService"), MockService)
 

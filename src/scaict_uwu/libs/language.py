@@ -6,8 +6,8 @@ This is the module for languages.
 from __future__ import annotations
 
 # Standard imports
-from functools import cached_property
-from typing import ClassVar
+import functools
+import typing
 
 
 class LanguageTag:
@@ -35,7 +35,7 @@ class LanguageTag:
         The BCP 47 language subtag of the LanguageTag object.
         """
 
-    @cached_property
+    @functools.cached_property
     def bcp_47_tag(self) -> str:
         """
         Get the BCP 47 language tag of the LanguageTag object.
@@ -46,7 +46,7 @@ class LanguageTag:
 
         return self._tag
 
-    @cached_property
+    @functools.cached_property
     def system_message_tag(self) -> str:
         """
         Get the system message language tag of the LanguageTag object.
@@ -57,7 +57,7 @@ class LanguageTag:
 
         return self._tag.lower()
 
-    @cached_property
+    @functools.cached_property
     def discord_code(self) -> str | None:
         """
         Get the Discord locale code of the LanguageTag object.
@@ -71,7 +71,7 @@ class LanguageTag:
 
         return LanguageUtils.get_discord_code(tag=self._tag)
 
-    @cached_property
+    @functools.cached_property
     def fallbacks(self) -> list[str]:
         """
         Get the language fallback chain of the LanguageTag object.
@@ -89,7 +89,7 @@ class LanguageTagFactory:
     The LanguageTagFactory class deals with LanguageTag object creations.
     """
 
-    _tags: ClassVar[dict[str, LanguageTag]] = {}
+    _tags: typing.ClassVar[dict[str, LanguageTag]] = {}
     """
     _tags (dict): The LanguageTag objects.
     """

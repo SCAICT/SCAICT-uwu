@@ -1,5 +1,5 @@
 """
-Unit test for LanguageTagFactory using unittest.
+Unit test for scaict_uwu.libs.language.LanguageTagFactory using unittest.
 """
 
 # Future statements
@@ -9,23 +9,22 @@ from __future__ import annotations
 import unittest
 
 # Local imports
-from scaict_uwu.libs.language import (
-    LanguageTag,
-    LanguageTagFactory,
-)
+import scaict_uwu.libs.language
 
 
 class TestLanguageTagFactory(unittest.TestCase):
-    language_tag_factory: LanguageTagFactory | None
+    language_tag_factory: scaict_uwu.libs.language.LanguageTagFactory | None
 
     def setUp(self) -> None:
-        self.language_tag_factory = LanguageTagFactory()
+        self.language_tag_factory = scaict_uwu.libs.language.LanguageTagFactory()
 
     def tearDown(self) -> None:
         self.language_tag_factory = None
 
     def test_get(self) -> None:
-        language_tag: LanguageTag = self.language_tag_factory.get_tag(tag="zh-Hant")
+        language_tag: scaict_uwu.libs.language.LanguageTag = (
+            self.language_tag_factory.get_tag(tag="zh-Hant")
+        )
 
         self.assertEqual(language_tag.bcp_47_tag, "zh-Hant")
         self.assertEqual(language_tag.system_message_tag, "zh-hant")
@@ -38,7 +37,7 @@ class TestLanguageTagFactory(unittest.TestCase):
         self.assertEqual(language_tag.discord_code, "zh-TW")
 
     def test_get_by_discord_code(self) -> None:
-        language_tag: LanguageTag | None = (
+        language_tag: scaict_uwu.libs.language.LanguageTag | None = (
             self.language_tag_factory.get_by_discord_code(code="zh-TW")
         )
 

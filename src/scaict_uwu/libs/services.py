@@ -6,7 +6,7 @@ Module for service container.
 from __future__ import annotations
 
 # Standard imports
-from typing import Any, Callable, Self
+import typing
 
 
 class CannotReplaceActiveServiceError(Exception):
@@ -36,11 +36,16 @@ class Service:
     Service instantiators and locators.
     """
 
-    def __init__(self, *, name: str, instantiator: Callable[[ServiceContainer], Any]):
+    def __init__(
+        self,
+        *,
+        name: str,
+        instantiator: typing.Callable[[ServiceContainer], typing.Any],
+    ):
         """
         Parameters:
             name (str): Identifier of the service.
-            instantiator (Callable[[ServiceContainer], Any]): Instantiator of
+            instantiator (typing.Callable[[ServiceContainer], typing.Any]): Instantiator of
                 the service.
         """
 
@@ -49,12 +54,14 @@ class Service:
         Identifier of the service.
         """
 
-        self._instantiator: Callable[[ServiceContainer], Any] = instantiator
+        self._instantiator: typing.Callable[[ServiceContainer], typing.Any] = (
+            instantiator
+        )
         """
         Instantiator of the service.
         """
 
-        self._instance: Any = None
+        self._instance: typing.Any = None
         """
         Instance of the service.
         """
@@ -71,11 +78,11 @@ class Service:
         return self._instance is not None
 
     def redefine_instantiator(
-        self, *, instantiator: Callable[[ServiceContainer], Any]
+        self, *, instantiator: typing.Callable[[ServiceContainer], typing.Any]
     ) -> None:
         """
         Parameters:
-            instantiator (Callable[[ServiceContainer], Any])
+            instantiator (typing.Callable[[ServiceContainer], typing.Any])
         """
 
         if self.is_active:
@@ -83,7 +90,7 @@ class Service:
 
         self._instantiator = instantiator
 
-    def get_instance(self, *, services: ServiceContainer) -> Any:
+    def get_instance(self, *, services: ServiceContainer) -> typing.Any:
         """
         Get the instance of the service.
         If the service is not active, activate it and get its instance.
@@ -93,7 +100,7 @@ class Service:
                 dependency resolution.
 
         Returns:
-            Any: The instance of the service.
+            typing.Any: The instance of the service.
         """
 
         if self._instance is None:
@@ -155,12 +162,12 @@ class ServiceContainer:
         self.services[name] = service
 
     def redefine_service_instantiator(
-        self, *, name: str, instantiator: Callable[[Self], Any]
+        self, *, name: str, instantiator: typing.Callable[[typing.Self], typing.Any]
     ) -> None:
         """
         Parameters:
             name (str):
-            instantiator (Callable[[Self], Any]):
+            instantiator (typing.Callable[[typing.Self], typing.Any]):
         """
 
         if not self.has_service(name=name):
@@ -168,13 +175,13 @@ class ServiceContainer:
 
         self.services[name].redefine_instantiator(instantiator=instantiator)
 
-    def get(self, *, name: str) -> Any:
+    def get(self, *, name: str) -> typing.Any:
         """
         Parameters:
             name (str):
 
         Returns:
-            Any:
+            typing.Any:
         """
 
         if not self.has_service(name=name):
