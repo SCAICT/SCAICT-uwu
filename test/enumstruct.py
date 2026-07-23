@@ -2,6 +2,9 @@
 enum 測試
 """
 
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import enum
 

@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Third-party imports
 import discord
 import discord.ext.commands
@@ -9,7 +12,12 @@ import build.build
 class RuleRoles(build.build.Build):
     # 當使用者按下表情符號 -> 領取身分組
     @discord.ext.commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
+    async def on_raw_reaction_add(self, payload) -> None:
+        """
+        Parameters:
+            payload:
+        """
+
         # 取得反應的資訊
         guild = self.bot.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
@@ -23,7 +31,12 @@ class RuleRoles(build.build.Build):
 
     # 當使用者收回表情符號 -> 取消身分組
     @discord.ext.commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
+    async def on_raw_reaction_remove(self, payload) -> None:
+        """
+        Parameters:
+            payload:
+        """
+
         # 取得反應的資訊
         guild = self.bot.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
@@ -36,5 +49,10 @@ class RuleRoles(build.build.Build):
             await member.remove_roles(role)
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(RuleRoles(bot))

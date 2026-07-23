@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import asyncio
 
@@ -11,16 +14,30 @@ import build.build
 
 # 建立動態語音頻道
 class VoiceChat(build.build.Build):
-    async def check_and_delete_empty_channel(self, voice_channel):
+    async def check_and_delete_empty_channel(self, voice_channel) -> None:
+        """
+        Parameters:
+            voice_channel:
+        """
+
         while voice_channel.members:
             # 持續 loop 直到沒有人在頻道裡
             await asyncio.sleep(20)
+
         await voice_channel.delete()
 
     @discord.ext.commands.Cog.listener()
-    async def on_voice_state_update(self, member, before, after):
+    async def on_voice_state_update(self, member, before, after) -> None:
+        """
+        Parameters:
+            member:
+            before:
+            after:
+        """
+
         target_voice_channel_name = "創建語音"
         target_category_name = "----------動態語音頻道----------"
+
         if (
             after.channel
             and after.channel != before.channel
@@ -39,5 +56,10 @@ class VoiceChat(build.build.Build):
             self.bot.loop.create_task(self.check_and_delete_empty_channel(new_channel))
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(VoiceChat(bot))

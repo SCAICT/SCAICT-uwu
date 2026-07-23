@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import datetime
 import json
@@ -16,7 +19,14 @@ import cog.core.sql
 import cog.core.sql_abstract
 
 
-def get_channels():  # 取得特殊用途頻道的清單，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
+def get_channels() -> typing.Any:
+    """
+    取得特殊用途頻道的清單，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
+
+    Returns:
+        typing.Any:
+    """
+
     with open(
         f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
     ) as file:
@@ -24,10 +34,15 @@ def get_channels():  # 取得特殊用途頻道的清單，這裡會用來判斷
 
 
 class Charge(discord.ext.commands.Cog):
-    def __init__(self, bot: discord.Bot):
+    def __init__(self, bot: discord.Bot) -> None:
+        """
+        Parameters:
+            bot (discord.Bot):
+        """
+
         self.bot = bot
 
-    async def restore_downtime_point(self):
+    async def restore_downtime_point(self) -> None:
         downtime_list = cog.core.downtime.get_downtime_list()
         unprocessed_downtime_list = list(
             filter(lambda x: not x.is_restored, downtime_list)
@@ -64,11 +79,13 @@ class Charge(discord.ext.commands.Cog):
                 author = message.author
 
                 assert self.bot.user, "Bot was not logged in."
+
                 if author.id == self.bot.user.id:
                     continue
 
                 last_charge = self.get_last_charged(author, cursor)
                 already_charged = created_time.date() == last_charge.date()
+
                 if already_charged:
                     continue
 
@@ -107,7 +124,12 @@ class Charge(discord.ext.commands.Cog):
 
         # commit and close the connection
 
-    def embed_channel_error(self):
+    def embed_channel_error(self) -> discord.Embed:
+        """
+        Returns:
+            discord.Embed:
+        """
+
         embed = discord.Embed(color=0xFF0000)
         embed.set_thumbnail(url="https://http.cat/images/404.jpg")
         embed.add_field(name="這裡似乎沒有打雷…", value="  ⛱️", inline=False)
@@ -115,16 +137,40 @@ class Charge(discord.ext.commands.Cog):
 
         return embed
 
-    def embed_already_charged(self, user: discord.User | discord.Member):
+    def embed_already_charged(
+        self, user: discord.User | discord.Member
+    ) -> discord.Embed:
+        """
+        Parameters:
+            user (discord.User | discord.Member):
+
+        Returns:
+            discord.Embed:
+        """
+
         embed = discord.Embed(color=0xFF0000)
+
         if user.avatar is not None:  # 預設頭像沒有這個
             embed.set_thumbnail(url=str(user.avatar))
             embed.add_field(
                 name="您夠電了，明天再來!", value="⚡⚡⚡🛐🛐🛐", inline=False
             )
+
         return embed
 
-    def embed_successful(self, point, combo, user: discord.User | discord.Member):
+    def embed_successful(
+        self, point, combo, user: discord.User | discord.Member
+    ) -> discord.Embed:
+        """
+        Parameters:
+            point:
+            combo:
+            user (discord.User | discord.Member):
+
+        Returns:
+            discord.Embed:
+        """
+
         # 讀表符ID
         with open(
             f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
@@ -156,16 +202,26 @@ class Charge(discord.ext.commands.Cog):
 
     @staticmethod
     def is_forgivable(last_charge: datetime.datetime) -> bool:
-        # TODO: implement by add a table column called `is_forgivable` to control
-        """Return if user cannot charge due to downtime
+        """
+        Return if user cannot charge due to downtime
 
         For example, if downtime is from 2025-03-14 09:03:00 to 2025-04-11 21:00:00,
         return True for all users who have charged between 2025-03-13(yesterday) to 2025-03-14(downtime.start),
         if is_forgivable is True, you won't loss combo.
         but after next charge, is_forgivable will be False,
         because user will execute not at downtime, if downtime is correct
+
+        TODO: implement by add a table column called `is_forgivable` to control
+
+        Parameters:
+            last_charge (datetime.datetime):
+
+        Returns:
+            bool:
         """
+
         downtime_list = cog.core.downtime.get_downtime_list()
+
         return any(
             downtime.start.date() - datetime.timedelta(days=1)
             <= last_charge.date()
@@ -174,15 +230,37 @@ class Charge(discord.ext.commands.Cog):
         )
 
     @staticmethod
-    def is_cross_day(last_charge: datetime.datetime, executed_at: datetime.datetime):
+    def is_cross_day(
+        last_charge: datetime.datetime, executed_at: datetime.datetime
+    ) -> bool:
+        """
+        Parameters:
+            last_charge (datetime.datetime):
+            executed_at (datetime.datetime):
+
+        Returns:
+            bool:
+        """
+
         assert executed_at >= last_charge
+
         return executed_at.date() - last_charge.date() > datetime.timedelta(days=1)
 
     @staticmethod
     def is_already_charged(
         last_charge: datetime.datetime, executed_at: datetime.datetime
-    ):
+    ) -> bool:
+        """
+        Parameters:
+            last_charge (datetime.datetime):
+            executed_at (datetime.datetime):
+
+        Returns:
+            bool:
+        """
+
         assert executed_at >= last_charge
+
         return executed_at.date() == last_charge.date()
 
     # TODO: inherit a MySQLCursorAbstract to add method about these or consider to add self.cursor
@@ -199,11 +277,31 @@ class Charge(discord.ext.commands.Cog):
         is_forgivable: bool = False,
         testing: bool = False,
     ) -> cog.core.sql_abstract.UserRecord:
+        """
+        Parameters:
+            user_or_uid (discord.user._UserTag | int):
+            last_charge (datetime.datetime):
+            executed_at (datetime.datetime):
+            orig_combo (int):
+            orig_point (int):
+            orig_ticket (int):
+            cursor (mysql.connector.abstracts.MySQLCursorAbstract | None):
+            is_forgivable (bool):
+            testing (bool):
+
+        Returns:
+            cog.core.sql_abstract.UserRecord:
+
+        Raises:
+            ValueError:
+        """
 
         if testing:
             if not isinstance(user_or_uid, int):
                 raise ValueError("You should give a UID during test.")
+
             uid = user_or_uid
+
             # TODO: emulate cursor
             if cursor is not None:
                 raise ValueError("Database should not be changed during test.")
@@ -213,6 +311,7 @@ class Charge(discord.ext.commands.Cog):
                 raise ValueError(
                     "You should give a User or Member object, or other object inherit _UserTag, to get id."
                 )
+
             uid = user_or_uid.id
 
             if cursor is None:
@@ -228,9 +327,11 @@ class Charge(discord.ext.commands.Cog):
         point = orig_point + 5
 
         ticket = orig_ticket
+
         if combo % 7 == 0:
             ticket += 4
             delta_record.ticket = ticket
+
             # refactor with UserRecord.to_sql
             if not testing:
                 cog.core.sql.write(uid, "ticket", ticket, cursor)
@@ -254,7 +355,20 @@ class Charge(discord.ext.commands.Cog):
         return delta_record
 
     # TODO: inherit a MySQLCursorAbstract to add method about these or consider to add self.cursor
-    def get_last_charged(self, user: discord.User | discord.Member, cursor):
+    def get_last_charged(
+        self,
+        user: discord.User | discord.Member,
+        cursor: mysql.connector.abstracts.MySQLCursorAbstract | typing.Any,
+    ) -> datetime.datetime:
+        """
+        Parameters:
+            user (discord.User | discord.Member):
+            cursor (mysql.connector.abstracts.MySQLCursorAbstract | typing.Any):
+
+        Returns:
+            datetime.datetime:
+        """
+
         last_charge = cog.core.sql.read(
             user.id, "last_charge", cursor
         )  # SQL回傳型態：<class 'datetime.date'>
@@ -264,7 +378,12 @@ class Charge(discord.ext.commands.Cog):
         return last_charge
 
     @discord.slash_command(name="charge", description="每日充電")
-    async def charge(self, interaction):
+    async def charge(self, interaction) -> None:
+        """
+        Parameters:
+            interaction:
+        """
+
         interaction = typing.cast(discord.Interaction, interaction)
 
         assert (
@@ -277,6 +396,7 @@ class Charge(discord.ext.commands.Cog):
             embed = self.embed_channel_error()
             # 其他文案：這裡似乎離無線充電座太遠了，到「每日充電」頻道試試吧！ 待商議
             await interaction.response.send_message(embed=embed, ephemeral=True)
+
             # End connection instead of return
             return
 
@@ -316,5 +436,10 @@ class Charge(discord.ext.commands.Cog):
             await interaction.response.send_message(embed=embed)
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(Charge(bot))
