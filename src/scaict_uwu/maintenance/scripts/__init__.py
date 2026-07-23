@@ -6,12 +6,10 @@ Maintenance scripts
 from __future__ import annotations
 
 # Local imports
-import scaict_uwu.core.maintenance.maintenance
+import scaict_uwu.maintenance
 
 
-class MaintenanceScriptUpdate(
-    scaict_uwu.core.maintenance.maintenance.MaintenanceScript
-):
+class MaintenanceScriptUpdate(scaict_uwu.maintenance.MaintenanceScript):
     """
     Maintenance script to run database schema updates.
 
