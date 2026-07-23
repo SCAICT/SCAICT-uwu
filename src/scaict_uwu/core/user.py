@@ -2,8 +2,7 @@
 User
 """
 
-# Standard imports
-# Prevents runtime evaluation of type hints
+# Future statements
 from __future__ import annotations
 
 

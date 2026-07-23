@@ -2,8 +2,7 @@
 This is the module for the abstract class for all maintenance scripts.
 """
 
-# Standard imports
-# Prevents runtime evaluation of type hints
+# Future statements
 from __future__ import annotations
 
 

@@ -2,8 +2,7 @@
 Entry point for Discord bot using Pycord.
 """
 
-# Standard imports
-# Prevents runtime evaluation of type hints
+# Future statements
 from __future__ import annotations
 
 

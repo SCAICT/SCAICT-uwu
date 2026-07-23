@@ -2,10 +2,10 @@
 This is the module for languages.
 """
 
-# Standard imports
-# Prevents runtime evaluation of type hints
+# Future statements
 from __future__ import annotations
 
+# Standard imports
 from functools import cached_property
 from typing import ClassVar
 
