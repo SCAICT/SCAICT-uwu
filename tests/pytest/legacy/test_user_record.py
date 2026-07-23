@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import unittest
 
@@ -21,7 +24,7 @@ except (RuntimeError, TypeError, mysql.connector.errors.Error):
 
 class TestFromSQL(unittest.TestCase):
     @unittest.skipIf(skip, "Failed to connect to database.")
-    def test_yuevuwu_exist(self):
+    def test_yuevuwu_exist(self) -> None:
         data = cog.core.sql_abstract.UserRecord.from_sql(YUEVUWU)
         self.assertIsNotNone(data)
         print(data)

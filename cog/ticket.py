@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import asyncio
 
@@ -12,25 +15,34 @@ import build.build
 # ticket 頻道
 class Ticket(build.build.Build):
     @discord.ext.commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         self.bot.add_view(self.TicketView())
         self.bot.add_view(self.CloseView())
         self.bot.add_view(self.DelView())
 
     ## del cahnnel button
     class DelView(discord.ui.View):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(timeout=None)  # timeout of the view must be set to Nones
 
         @discord.ui.button(
             label="刪除頻道", style=discord.ButtonStyle.red, emoji="🗑️", custom_id="del"
         )
         # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(
+            self, button, interaction: discord.Interaction
+        ) -> None:
+            """
+            Parameters:
+                button:
+                interaction (discord.Interaction):
+            """
+
             embed = discord.Embed(color=0xFF0000)
             embed.add_field(name="將於幾秒後刪除", value=" ", inline=False)
             await interaction.response.send_message(embed=embed)
             await asyncio.sleep(3)
+
             try:
                 await interaction.channel.delete()
             except discord.Forbidden:
@@ -38,7 +50,7 @@ class Ticket(build.build.Build):
 
     ## close button
     class CloseView(discord.ui.View):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(timeout=None)  # timeout of the view must be set to Nones
 
         @discord.ui.button(
@@ -48,7 +60,15 @@ class Ticket(build.build.Build):
             custom_id="close",
         )
         # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(
+            self, button, interaction: discord.Interaction
+        ) -> None:
+            """
+            Parameters:
+                button:
+                interaction (discord.Interaction):
+            """
+
             channel = interaction.channel
 
             # 收回頻道中所有成員（即開單者）的檢視權限，
@@ -62,6 +82,7 @@ class Ticket(build.build.Build):
                     "我沒有權限關閉這個頻道，請檢查機器人的身分組權限！",
                     ephemeral=True,
                 )
+
                 return
 
             embed = discord.Embed(color=0xFF0A0A)
@@ -79,7 +100,7 @@ class Ticket(build.build.Build):
 
     ## create ticket button
     class TicketView(discord.ui.View):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(timeout=None)  # timeout of the view must be set to None
 
         @discord.ui.button(
@@ -89,11 +110,27 @@ class Ticket(build.build.Build):
             custom_id="ticket",
         )
         # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(
+            self, button, interaction: discord.Interaction
+        ) -> None:
+            """
+            Parameters:
+                button:
+                interaction (discord.Interaction):
+            """
+
             await self.create_ticket_channel(interaction, "開單")
 
         # pylint: disable-next = unused-argument
-        async def create_ticket_channel(self, interaction, button_name):
+        async def create_ticket_channel(
+            self, interaction: discord.Interaction, button_name
+        ) -> None:
+            """
+            Parameters:
+                interaction (discord.Interaction):
+                button_name:
+            """
+
             user = interaction.user
             guild = interaction.guild
             target_category_name = "開單處"
@@ -108,6 +145,7 @@ class Ticket(build.build.Build):
                 await interaction.response.send_message(
                     "你已經有建立頻道了！", ephemeral=True
                 )
+
                 return
 
             # 建立頻道名稱
@@ -115,6 +153,7 @@ class Ticket(build.build.Build):
 
             # 取得或建立目標類別
             category = discord.utils.get(guild.categories, name=target_category_name)
+
             if category is None:
                 category = await guild.create_category(target_category_name)
 
@@ -143,9 +182,13 @@ class Ticket(build.build.Build):
             )
 
     @discord.slash_command()
-    async def create_ticket_button(self, ctx):
-        if ctx.author.guild_permissions.administrator:
+    async def create_ticket_button(self, ctx) -> None:
+        """
+        Parameters:
+            ctx:
+        """
 
+        if ctx.author.guild_permissions.administrator:
             # 修改這裡，使用 Ticket.TicketView()
             embed = discord.Embed(title=" ", color=0xFEFCB6)
             embed.set_thumbnail(
@@ -189,5 +232,10 @@ class Ticket(build.build.Build):
             await ctx.respond(embed=embed, view=Ticket.TicketView())
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(Ticket(bot))

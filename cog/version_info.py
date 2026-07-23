@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import datetime
 
@@ -13,34 +16,50 @@ import discord.ext.commands
 class VersionInfo(discord.ext.commands.Cog):
     _SCAICT_UWU_VERSION_NUMBER: str = "0.2.0.dev0"
     """
-    Current hardcoded workaround
+    Returns:
+        str:
+            Current hardcoded workaround
     """
 
     _SCAICT_UWU_VERSION_DATE: str = "2025-11-03 (UTC)"
     """
-    Current hardcoded workaround
+    Returns:
+        str:
+            Current hardcoded workaround
     """
 
     _SCAICT_UWU_VERSION: str = (
         f"{_SCAICT_UWU_VERSION_NUMBER}\n{_SCAICT_UWU_VERSION_DATE}"
     )
     """
-    Current hardcoded workaround
+    Returns:
+        str:
+            Current hardcoded workaround
     """
 
     _SCAICT_UWU_IMAGE = (
         "https://github.com/SCAICT/SCAICT-uwu/blob/851186b/uwu.png?raw=true"
     )
     """
-    Current hardcoded workaround
+    Returns:
+        str:
+            Current hardcoded workaround
     """
 
     def __init__(self, bot: discord.Bot) -> None:
+        """
+        Parameters:
+            bot (discord.Bot):
+        """
+
         self.bot = bot
 
     def _embed_version_info(self) -> discord.Embed:
         """
         The version information embed.
+
+        Returns:
+            discord.Embed:
         """
 
         # TODO: Git hash
@@ -99,6 +118,9 @@ class VersionInfo(discord.ext.commands.Cog):
         """
         flask: version,   mysql-connector-python: version,
         py-cord: version, ...
+
+        Returns:
+            list[discord.EmbedField] | None:
         """
 
         # fields = []
@@ -117,6 +139,11 @@ class VersionInfo(discord.ext.commands.Cog):
 
     @discord.slash_command(name="version_info", description="版本資訊")
     async def version_info(self, interaction) -> None:
+        """
+        Parameters:
+            interaction:
+        """
+
         interaction = typing.cast(discord.Interaction, interaction)
 
         assert (
@@ -127,5 +154,10 @@ class VersionInfo(discord.ext.commands.Cog):
         await interaction.response.send_message(embed=self._embed_version_info())
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(VersionInfo(bot))

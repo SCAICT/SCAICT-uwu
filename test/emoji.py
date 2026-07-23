@@ -1,10 +1,20 @@
-def analyze_string(s: str):
+# Future statements
+from __future__ import annotations
+
+
+def analyze_string(s: str) -> None:
+    """
+    Parameters:
+        s (str):
+    """
+
     elements = s.split()
     print(elements)
     unique_elements: set[str] = set(elements)
 
     if len(unique_elements) > 2:
         print("超過兩種不同的元素，程式結束")
+
         return
 
     # 轉換元素為0和1

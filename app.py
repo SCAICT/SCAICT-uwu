@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import json
 import os
@@ -5,6 +8,7 @@ import random
 import secrets
 import time
 import traceback
+import typing
 import urllib.parse
 
 # Third-party imports
@@ -50,22 +54,38 @@ else:
 
 
 @app.errorhandler(404)
-def not_found_error(error):
+def not_found_error(error) -> tuple[str, typing.Literal[404]]:
+    """
+    Returns:
+        tuple[str, typing.Literal[404]]:
+    """
+
     return flask.render_template("404.html"), 404
 
 
-def is_safe_redirect_target(target):
-    """Only allow same-site, relative redirect targets after login.
+def is_safe_redirect_target(target) -> bool:
+    """
+    Only allow same-site, relative redirect targets after login.
 
     Rejects anything that could make the browser leave scaict.org: absolute
     URLs, protocol-relative URLs ("//evil.com"), and backslash tricks that
     some browsers still treat as "//" (e.g. "/\\evil.com").
+
+    Parameters:
+        target:
+
+    Returns:
+        out (bool):
     """
+
     if not target or not isinstance(target, str):
         return False
+
     if not target.startswith("/") or target.startswith(("//", "/\\")):
         return False
+
     parsed = urllib.parse.urlparse(target)
+
     return not (parsed.scheme or parsed.netloc)
 
 

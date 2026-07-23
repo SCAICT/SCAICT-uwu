@@ -7,6 +7,9 @@
 價格與租期設定在 database/server.config.json 的 perk 區塊。
 """
 
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import datetime
 import json
@@ -22,12 +25,13 @@ import discord.ext.tasks
 import cog.core.sql
 
 
-def get_perk_config():
+def get_perk_config() -> dict:
     """
     讀取 server.config.json 中的 perk 設定。
 
     Returns:
-        dict: perk 設定，讀取失敗時為空 dict（使用程式內預設值）。
+        dict:
+            perk 設定，讀取失敗時為空 dict（使用程式內預設值）。
     """
 
     try:
@@ -70,49 +74,58 @@ COLOR_PRESETS = {
 }
 
 
-def parse_colour(color):
+def parse_colour(color: str) -> discord.Colour | None:
     """
     將預設顏色名稱或十六進位色碼轉成 discord.Colour。
 
     Parameters:
-        color (str): 預設顏色名稱（如「粉紅色」）或六位色碼（如 F5A9B8）。
+        color (str):
+            預設顏色名稱（如「粉紅色」）或六位色碼（如 F5A9B8）。
 
     Returns:
-        discord.Colour | None: 解析失敗時為 None。
+        discord.Colour | None:
+            解析失敗時為 None。
     """
 
     color = color.strip().lstrip("#")
     color = COLOR_PRESETS.get(color, color)
+
     if re.fullmatch("[0-9A-Fa-f]{6}", color):
         return discord.Colour(int(color, 16))
+
     return None
 
 
-async def color_autocomplete(ctx):
+async def color_autocomplete(ctx: discord.AutocompleteContext) -> list[str]:
     """
     顏色選項的自動完成：輸入時列出符合的預設顏色。
 
     Parameters:
-        ctx (discord.AutocompleteContext): 自動完成的上下文。
+        ctx (discord.AutocompleteContext):
+            自動完成的上下文。
 
     Returns:
-        list[str]: 建議的顏色名稱。
+        list[str]:
+            建議的顏色名稱。
     """
 
     value = (ctx.value or "").strip()
     matches = [name for name in COLOR_PRESETS if value in name]
+
     return matches or list(COLOR_PRESETS)
 
 
-def sanitize(text):
+def sanitize(text: str) -> str:
     """
     移除會影響 SQL 寫入與訊息排版的字元。
 
     Parameters:
-        text (str): 原始輸入。
+        text (str):
+            原始輸入。
 
     Returns:
-        str: 清理後的文字。
+        str:
+            清理後的文字。
     """
 
     return re.sub(r'["\\\n\r`]', "", text).strip()
@@ -123,8 +136,11 @@ class Perk(discord.ext.commands.Cog):
     電電點數位特權：自訂身分組與中電喵專屬稱呼。
 
     Attributes:
-        bot (discord.Bot): 掛載這個 cog 的 bot。
+        bot (discord.Bot):
+            掛載這個 cog 的 bot。
     """
+
+    bot: discord.Bot
 
     def __init__(self, bot):
         self.bot = bot
@@ -147,22 +163,34 @@ class Perk(discord.ext.commands.Cog):
             autocomplete=color_autocomplete,
             default="",
         ),
-    ):
+    ) -> None:
+        """
+        Parameters:
+            ctx:
+            name (str):
+            color (str):
+        """
+
         if ctx.guild is None:
             await ctx.respond("這個指令只能在伺服器內使用！", ephemeral=True)
+
             return
 
         name = sanitize(name)
+
         if not 1 <= len(name) <= ROLE_NAME_MAX_LENGTH:
             await ctx.respond(
                 f"身分組名稱長度需在 1~{ROLE_NAME_MAX_LENGTH} 字元之間！",
                 ephemeral=True,
             )
+
             return
 
         colour = None
+
         if color:
             colour = parse_colour(color)
+
             if colour is None:
                 await ctx.respond(
                     "看不懂這個顏色！可以選預設顏色："
@@ -170,6 +198,7 @@ class Perk(discord.ext.commands.Cog):
                     "或輸入六位十六進位色碼（例如 F5A9B8）",
                     ephemeral=True,
                 )
+
                 return
 
         # 先告知 Discord 稍等，避免資料庫或 API 較慢時超過 3 秒限制
@@ -178,16 +207,19 @@ class Perk(discord.ext.commands.Cog):
         user_id = ctx.author.id
         connection, cursor = cog.core.sql.link_sql()
         point = cog.core.sql.read(user_id, "point", cursor)
+
         if point < ROLE_PRICE:
             await ctx.respond(
                 f"電電點不足！需要 {ROLE_PRICE} 點，你目前只有 {point} 點。"
             )
             cog.core.sql.end(connection, cursor)
+
             return
 
         # 已有租借中的身分組就改名續租，否則建立新的
         role_id = cog.core.sql.read(user_id, "role_id", cursor, table="custom_role")
         role = ctx.guild.get_role(role_id) if role_id else None
+
         try:
             if role is None:
                 role = await ctx.guild.create_role(
@@ -200,10 +232,12 @@ class Perk(discord.ext.commands.Cog):
                 await role.edit(name=name)
             else:
                 await role.edit(name=name, colour=colour)
+
             await ctx.author.add_roles(role)
         except discord.Forbidden:
             await ctx.respond("我沒有管理身分組的權限，請聯絡管理員！")
             cog.core.sql.end(connection, cursor)
+
             return
 
         # 續租從原到期日往後算，新租從現在起算
@@ -246,12 +280,22 @@ class Perk(discord.ext.commands.Cog):
         name="chat_nick",
         description=f"用 {NICK_PRICE} 電電點設定中電喵對你的稱呼",
     )
-    async def chat_nick(self, ctx, nickname: str = discord.Option(str, "想被叫的稱呼")):
+    async def chat_nick(
+        self, ctx, nickname: str = discord.Option(str, "想被叫的稱呼")
+    ) -> None:
+        """
+        Parameters:
+            ctx:
+            nickname (str):
+        """
+
         nickname = sanitize(nickname)
+
         if not 1 <= len(nickname) <= NICK_MAX_LENGTH:
             await ctx.respond(
                 f"稱呼長度需在 1~{NICK_MAX_LENGTH} 字元之間！", ephemeral=True
             )
+
             return
 
         # 先告知 Discord 稍等，避免資料庫較慢時超過 3 秒限制
@@ -260,11 +304,13 @@ class Perk(discord.ext.commands.Cog):
         user_id = ctx.author.id
         connection, cursor = cog.core.sql.link_sql()
         point = cog.core.sql.read(user_id, "point", cursor)
+
         if point < NICK_PRICE:
             await ctx.respond(
                 f"電電點不足！需要 {NICK_PRICE} 點，你目前只有 {point} 點。"
             )
             cog.core.sql.end(connection, cursor)
+
             return
 
         cog.core.sql.write(user_id, "point", point - NICK_PRICE, cursor)
@@ -280,7 +326,7 @@ class Perk(discord.ext.commands.Cog):
         await ctx.respond(embed=embed)
 
     @discord.ext.tasks.loop(minutes=30)
-    async def expire_check(self):
+    async def expire_check(self) -> None:
         """
         回收過期的自訂身分組。
         """
@@ -293,31 +339,43 @@ class Perk(discord.ext.commands.Cog):
                 (datetime.datetime.now(),),
             )
             expired = cursor.fetchall()
+
             for user_id, role_id in expired:
                 role = None
+
                 for guild in self.bot.guilds:
                     role = guild.get_role(role_id)
+
                     if role is not None:
                         break
+
                 if role is not None:
                     try:
                         await role.delete(reason="自訂身分組租期已到")
                     except discord.Forbidden:
                         print(f"No permission to delete role {role_id}")
+
                         continue
+
                 cursor.execute("DELETE FROM custom_role WHERE uid = %s", (user_id,))
                 print(
                     f"{user_id} custom role {role_id} expired {datetime.datetime.now()}"
                 )
+
             cog.core.sql.end(connection, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error in expire_check: {exception}")
 
     @expire_check.before_loop
-    async def before_expire_check(self):
+    async def before_expire_check(self) -> None:
         await self.bot.wait_until_ready()
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(Perk(bot))

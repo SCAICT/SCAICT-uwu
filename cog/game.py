@@ -1,7 +1,11 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import json
 import os
 import random
+import typing
 
 # Third-party imports
 import discord
@@ -11,10 +15,14 @@ import discord.ext.commands
 import cog.core.sql
 
 
-def get_channels():
+def get_channels() -> typing.Any | dict:
     """
     取得特殊用途頻道的列表，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
+
+    Returns:
+        typing.Any | dict:
     """
+
     try:
         with open(
             f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
@@ -22,9 +30,11 @@ def get_channels():
             return json.load(file)["SCAICT-alpha"]
     except FileNotFoundError:
         print("Configuration file not found.")
+
         return {}
     except json.JSONDecodeError:
         print("Error decoding JSON.")
+
         return {}
 
 
@@ -36,28 +46,43 @@ class Game(discord.ext.commands.Cog):
     @discord.slash_command(name="rock_paper_scissors", description="玩剪刀石頭布")
     # user can choose ✊, 🤚, or ✌️ in their command
     async def rock_paper_scissors(
-        self, interaction, choice: str = discord.Option(str, choices=["✊", "🤚", "✌️"])
-    ):
+        self,
+        interaction: discord.Interaction,
+        choice: str = discord.Option(str, choices=["✊", "🤚", "✌️"]),
+    ) -> None:
+        """
+        Parameters:
+            interaction (discord.Interaction):
+            choice (str):
+        """
+
         if interaction.channel.id != get_channels()["channel"]["commandChannel"]:
             await interaction.response.send_message("這裡不是指令區喔", ephemeral=True)
+
             return
+
         user_id = interaction.user.id
         user_display_name = interaction.user
+
         try:
             connection, cursor = cog.core.sql.link_sql()  # SQL 會話
 
             point = cog.core.sql.read(user_id, "point", cursor)
+
             if point < 5:
                 await interaction.response.send_message(
                     "你的電電點不足以玩這個遊戲", ephemeral=True
                 )
                 cog.core.sql.end(connection, cursor)
+
                 return
+
             if choice not in ["✊", "🤚", "✌️"]:
                 await interaction.response.send_message(
                     "請輸入正確的選擇", ephemeral=True
                 )
                 cog.core.sql.end(connection, cursor)
+
                 return
 
             bot_choice = random.choice(["✊", "🤚", "✌️"])
@@ -94,7 +119,12 @@ class Game(discord.ext.commands.Cog):
         cog.core.sql.end(connection, cursor)
 
     @discord.slash_command(name="number_status", description="數數狀態")
-    async def number_status(self, interaction):
+    async def number_status(self, interaction: discord.Interaction) -> None:
+        """
+        Parameters:
+            interaction (discord.Interaction):
+        """
+
         try:
             connection, cursor = cog.core.sql.link_sql()  # SQL 會話
             cursor.execute("SELECT seq FROM game")
@@ -112,5 +142,10 @@ class Game(discord.ext.commands.Cog):
         await interaction.response.send_message(embed=embed)
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(Game(bot))

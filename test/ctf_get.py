@@ -2,6 +2,9 @@
 把舊 CTF JSON 格式檔案的資料搬進資料庫，執行時拿到資料夾根木錄才能正確import SQL
 """
 
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import json
 
@@ -25,4 +28,5 @@ with open("./database/ctf.json", "r", encoding="utf-8") as file:
             )
 
         cog.core.sql.end(connection, cursor)
+
         break

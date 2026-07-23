@@ -1,3 +1,6 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import datetime
 import unittest
@@ -21,7 +24,7 @@ class TestIsForgivable(unittest.TestCase):
     #     }
     # ]
 
-    def test_is_forgivable(self):
+    def test_is_forgivable(self) -> None:
         test_cases_true = [
             "2025-03-13 00:00:00",
             "2025-03-13 23:59:59",
@@ -41,6 +44,7 @@ class TestIsForgivable(unittest.TestCase):
                         datetime.datetime.strptime(last_charge, "%Y-%m-%d %H:%M:%S")
                     )
                 )
+
         for last_charge in test_cases_false:
             with self.subTest(last_charge=last_charge):
                 self.assertFalse(
@@ -51,7 +55,7 @@ class TestIsForgivable(unittest.TestCase):
 
 
 class TestIsCrossDay(unittest.TestCase):
-    def test_cross_day(self):
+    def test_cross_day(self) -> None:
         test_cases_true = [
             ("2024-01-01 01:00:00", "2024-01-03 00:00:00"),
             ("2024-01-01 01:00:00", "2024-01-03 00:59:59"),
@@ -71,6 +75,7 @@ class TestIsCrossDay(unittest.TestCase):
                         datetime.datetime.strptime(executed_at, "%Y-%m-%d %H:%M:%S"),
                     )
                 )
+
         for last_charge, executed_at in test_cases_false:
             with self.subTest(last_charge=last_charge, executed_at=executed_at):
                 self.assertFalse(
@@ -84,12 +89,13 @@ class TestIsCrossDay(unittest.TestCase):
 class TestDailyChargeIntegrationTest(unittest.TestCase):
     """
     There will be three Variable:
+
     ```
     is_forgivable: bool # sign before downtime and not loss combo
     ```
     """
 
-    def test_panboyu3980(self):
+    def test_panboyu3980(self) -> None:
         last_charge = datetime.datetime(2025, 3, 13, 9, 5, 0)
         is_forgivable = cog.daily_charge.Charge.is_forgivable(last_charge)
         self.assertTrue(is_forgivable)
@@ -112,7 +118,7 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
         )
         self.assertEqual(delta, expected)
 
-    def test_w4lnu7__(self):
+    def test_w4lnu7__(self) -> None:
         last_charge = datetime.datetime(2025, 3, 12, 21, 15, 0)
         is_forgivable = cog.daily_charge.Charge.is_forgivable(last_charge)
         self.assertFalse(is_forgivable)
@@ -135,7 +141,7 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
         )
         self.assertEqual(delta, expected)
 
-    def test_hatakutsu_yuevu(self):
+    def test_hatakutsu_yuevu(self) -> None:
         last_charge = datetime.datetime(2025, 4, 12, 16, 27, 0)
         is_forgivable = cog.daily_charge.Charge.is_forgivable(last_charge)
         self.assertFalse(is_forgivable)

@@ -1,13 +1,18 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import datetime
 import json
 import os
 import random
 import re
+import typing
 
 # Third-party imports
 import discord
 import discord.ext.commands
+import mysql.connector.abstracts
 
 # Local imports
 import cog.core.sql
@@ -25,10 +30,20 @@ except json.JSONDecodeError:
     stickers = {}
 
 
-def insert_user(user_id, table, cursor):
+def insert_user(
+    user_id,
+    table: str,
+    cursor: mysql.connector.abstracts.MySQLCursorAbstract | typing.Any,
+) -> None:
     """
     初始化（新增）傳入該ID的資料表
+
+    Parameters:
+        user_id:
+        table (str):
+        cursor (mysql.connector.abstracts.MySQLCursorAbstract | typing.Any):
     """
+
     try:
         cursor.execute(
             f"INSERT INTO {table} (uid) VALUE({user_id})"
@@ -38,7 +53,14 @@ def insert_user(user_id, table, cursor):
         print(f"Error inserting user {user_id} into {table}: {exception}")
 
 
-def get_channels():  # 要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
+def get_channels() -> typing.Any | dict:
+    """
+    要特殊用途頻道的列表，這裡會用來判斷是否在簽到頻道簽到，否則不予受理
+
+    Returns:
+        typing.Any | dict:
+    """
+
     # os.chdir("./")
     try:
         with open(
@@ -55,8 +77,20 @@ def get_channels():  # 要特殊用途頻道的列表，這裡會用來判斷是
     return {}
 
 
-def reset(message, now, cursor):
+def reset(
+    message: discord.Message,
+    now,
+    cursor: mysql.connector.abstracts.MySQLCursorAbstract | typing.Any,
+) -> None:
+    """
+    Parameters:
+        message (discord.Message):
+        now:
+        cursor (mysql.connector.abstracts.MySQLCursorAbstract | typing.Any):
+    """
+
     user_id = message.author.id
+
     try:
         cog.core.sql.write(user_id, "today_comments", 0, cursor)  # 歸零發言次數
         cog.core.sql.write(user_id, "last_comment", str(now), cursor)
@@ -69,9 +103,19 @@ def reset(message, now, cursor):
         print(f"Error resetting user {user_id}: {exception}")
 
 
-def reward(message, cursor):
+def reward(
+    message: discord.Message,
+    cursor: mysql.connector.abstracts.MySQLCursorAbstract | typing.Any,
+) -> None:
+    """
+    Parameters:
+        message (discord.Message):
+        cursor (mysql.connector.abstracts.MySQLCursorAbstract | typing.Any):
+    """
+
     user_id = message.author.id
     user_display_name = message.author
+
     try:
         # 讀user資料表的東西
         today_comments = cog.core.sql.read(user_id, "today_comments", cursor)
@@ -98,6 +142,7 @@ def reward(message, cursor):
             print(
                 f"{user_id}, {user_display_name} Get 2 point by comment {datetime.datetime.now()}"
             )
+
         cog.core.sql.write(user_id, "today_comments", today_comments, cursor)
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
@@ -105,8 +150,7 @@ def reward(message, cursor):
 
 
 class Comment(discord.ext.commands.Cog):
-
-    def __init__(self, bot):
+    def __init__(self, bot) -> None:
         self.bot = bot
         self.sp_channel = get_channels()  # 特殊用途的channel
 
@@ -117,14 +161,22 @@ class Comment(discord.ext.commands.Cog):
 
     # 數數判定
     @discord.ext.commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message) -> None:
+        """
+        Parameters:
+            message (discord.Message):
+        """
+
         user_id = message.author.id
+
         try:
             if user_id != self.bot.user.id:  # 機器人發言不可當成觸發條件，必須排除
                 handler = self.sp_channel_handler.get(message.channel.id)
+
                 # 根據訊息頻道 ID 切換要呼叫的函數
                 if handler:
                     await handler(message)
+
                 if message.channel.id not in self.sp_channel["exclude_point"]:
                     # 平方發言加電電點，列表中頻道不算發言次數
                     connection, cursor = cog.core.sql.link_sql()  # SQL 會話
@@ -135,12 +187,24 @@ class Comment(discord.ext.commands.Cog):
             print(f"Error in comment for user {user_id}: {exception}")
 
     @staticmethod
-    def today_comment(user_id, message, cursor):
+    def today_comment(
+        user_id,
+        message: discord.Message,
+        cursor: mysql.connector.abstracts.MySQLCursorAbstract | typing.Any,
+    ) -> None:
+        """
+        Parameters:
+            user_id:
+            message (discord.Message):
+            cursor (mysql.connector.abstracts.MySQLCursorAbstract | typing.Any):
+        """
+
         try:
             # 新增該user的資料表
             if not cog.core.sql.user_id_exists(user_id, "user", cursor):
                 # 該 user id 不在user資料表內，插入該筆使用者資料
                 insert_user(user_id, "user", cursor)
+
             if not cog.core.sql.user_id_exists(user_id, "comment_points", cursor):
                 insert_user(user_id, "comment_points", cursor)
         # pylint: disable-next = broad-exception-caught
@@ -151,16 +215,22 @@ class Comment(discord.ext.commands.Cog):
         delta = datetime.timedelta(days=1)
         # SQL回傳型態：<class 'datetime.date'>
         last_comment = cog.core.sql.read(user_id, "last_comment", cursor)
+
         # 今天第一次發言，重設發言次數
         if now - last_comment >= delta:
             reset(message, now, cursor)
+
         # 變更今天發言狀態
         reward(message, cursor)
 
     @staticmethod
-    async def count(message):
-        try:
+    async def count(message: discord.Message) -> None:
+        """
+        Parameters:
+            message (discord.Message):
+        """
 
+        try:
             connection, cursor = cog.core.sql.link_sql()
 
             raw_content = message.content
@@ -168,8 +238,10 @@ class Comment(discord.ext.commands.Cog):
             # emoji 數數(把emoji轉換成binary)
             elements = raw_content.split()
             unique_elements = set(elements)
+
             if len(unique_elements) > 2:
                 await message.add_reaction("❔")
+
                 return
 
             # 轉換元素為0和1
@@ -221,6 +293,7 @@ class Comment(discord.ext.commands.Cog):
             now_seq = cursor.fetchone()[0]
             cursor.execute("select lastid from game")
             latest_user = cursor.fetchone()[0]
+
             if message.author.id == latest_user:
                 # 同人疊數數
                 await message.add_reaction("🔄")
@@ -232,6 +305,7 @@ class Comment(discord.ext.commands.Cog):
                 await message.add_reaction("✅")
                 # 隨機產生 1~100 的數字。若模 11=10 ，九個數字符合，分布於 1~100 ，發生機率 9%。給予 5 點電電點
                 rand = random.randint(1, 100)
+
                 if rand % 11 == 10:
                     point = cog.core.sql.read(message.author.id, "point", cursor) + 5
                     cog.core.sql.write(message.author.id, "point", point, cursor)
@@ -254,11 +328,17 @@ class Comment(discord.ext.commands.Cog):
         cog.core.sql.end(connection, cursor)
 
     @staticmethod
-    async def nice_color(message):
+    async def nice_color(message: discord.Message) -> None:
+        """
+        Parameters:
+            message (discord.Message):
+        """
+
         # if message.content is three letter
         if len(message.content) != 3:
             # reply text
             await message.channel.send("請輸入三位 HEX 碼顏色")
+
             return
 
         try:
@@ -270,6 +350,7 @@ class Comment(discord.ext.commands.Cog):
 
             cursor.execute("SELECT `nicecolorround` FROM game")
             guess_round = cursor.fetchone()[0] + 1
+
             if hex_color == nice_color:
                 # Use embed to send message. Set embed color to hex_color
                 nice_color = "".join([c * 2 for c in nice_color])  # 格式化成六位數
@@ -338,5 +419,10 @@ class Comment(discord.ext.commands.Cog):
         cog.core.sql.end(connection, cursor)
 
 
-def setup(bot: discord.Bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(Comment(bot))
