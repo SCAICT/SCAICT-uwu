@@ -36,6 +36,10 @@ app.config["SESSION_COOKIE_SECURE"] = (
 # How long an OAuth "state" nonce (see /login and /callback) stays valid.
 OAUTH_STATE_MAX_AGE_SECONDS = 300
 
+# Upper bound for a single /api/send gift, mirroring the Discord slash-command
+# gift path (cog/admin_gift.py) rejecting non-positive counts.
+GIFT_AMOUNT_MAX = 100000
+
 discord_client_id = os.getenv("DISCORD_CLIENT_ID")
 discord_client_secret = os.getenv("DISCORD_CLIENT_SECRET")
 discord_redirect_uri = os.getenv("DISCORD_REDIRECT_URI")
@@ -151,8 +155,11 @@ def listt():
     return response.json()
 
 
-@app.route("/api/send/<int:target_user_id>")
-# api/send/{recipient}?gift_type={電電點|抽獎券}count={count}
+@app.route("/api/send/<int:target_user_id>", methods=["POST"])
+# POST api/send/{recipient}?gift_type={電電點|抽獎券}count={count}
+# POST-only so a cross-site top-level navigation (link/img/redirect) can't
+# trigger this as a simple GET request; SameSite=Lax still blocks the cookie
+# on cross-site POSTs.
 def send(target_user_id):
     if not flask.session:
         return flask.jsonify({"result": "you must login", "status": 403})
@@ -187,6 +194,14 @@ def send(target_user_id):
             gift_amount = int(gift_amount)  # 確保 count 是整數
         except ValueError:
             return flask.jsonify({"result": "Invalid count value", "status": 400})
+        # 不能發送 0 以下或超過上限的數量，跟 Discord 斜線指令的驗證保持一致
+        if not 0 < gift_amount <= GIFT_AMOUNT_MAX:
+            return flask.jsonify(
+                {
+                    "result": f"count must be between 1 and {GIFT_AMOUNT_MAX}",
+                    "status": 400,
+                }
+            )
         # 確保目標用戶存在
         user_data = discord_api.get_user(target_user_id)
         if "error" in user_data:
