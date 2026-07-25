@@ -14,14 +14,14 @@ import discord.ext.commands
 
 
 class VersionInfo(discord.ext.commands.Cog):
-    _SCAICT_UWU_VERSION_NUMBER: str = "0.1.15"
+    _SCAICT_UWU_VERSION_NUMBER: str = "0.1.16.dev0"
     """
     Returns:
         str:
             Current hardcoded workaround
     """
 
-    _SCAICT_UWU_VERSION_DATE: str = "2026-03-25 (UTC)"
+    _SCAICT_UWU_VERSION_DATE: str = "2026-07-25 (UTC)"
     """
     Returns:
         str:
