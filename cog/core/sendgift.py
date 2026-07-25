@@ -1,20 +1,36 @@
+# Future statements
+from __future__ import annotations
+
 # Third-party imports
 import discord
 
-from cog.core.sql import link_sql, end
-
-
-class MessageSendError(Exception):  # 自定義的例外類型
-    pass
+# Local imports
+import cog.core.sql
 
 
 class DBError(Exception):  # 自定義的例外類型
     pass
 
 
+class MessageSendError(Exception):  # 自定義的例外類型
+    pass
+
+
 async def send_gift_button(
     self, target_user: discord.User, gift_type: str, count: int, sender: int
 ) -> None:
+    """
+    Parameters:
+        target_user (discord.User):
+        gift_type (str):
+        count (int):
+        sender (int):
+
+    Raises:
+        cog.core.sendgift.DBError:
+        cog.core.sendgift.MessageSendError:
+    """
+
     # 產生按鈕物件
     view = self.Gift()
     view.type = gift_type
@@ -29,16 +45,16 @@ async def send_gift_button(
         btn_id: int, gift_type: str, count: int, recipient: str
     ) -> None:
         try:
-            connection, cursor = link_sql()
+            connection, cursor = cog.core.sql.link_sql()
             cursor.execute(
                 "INSERT INTO `gift`(`btnID`, `type`, `count`, `recipient`,`sender`) VALUES (%s, %s, %s, %s,%s)",
                 (btn_id, gift_type, count, recipient, sender),
             )
-            end(connection, cursor)
+            cog.core.sql.end(connection, cursor)
         except Exception as e:
+            cog.core.sql.end(connection, cursor)
+
             raise DBError("無法成功插入禮物資料進資料庫") from e
-        finally:
-            end(connection, cursor)
 
     try:
         await target_user.send(embed=embed)

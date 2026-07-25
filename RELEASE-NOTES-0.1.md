@@ -1,0 +1,1224 @@
+# SCAICT-uwu 0.1
+
+## SCAICT-uwu 0.1.15
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### New developer features in 0.1.15
+
+* Updated `SECURITY.md`, pointed to GitHub's Security Reporting page.
+* (#367, #371) Enabled experimental Python 3.13 support.
+  * Added Python 3.13 to `pyproject.toml` `project.classifiers`.
+
+### External dependency changes in 0.1.15
+
+#### Changed external dependencies in 0.1.15
+
+* (#400) Upgraded flask from 3.1.2 to 3.1.3.
+* (#385) Upgraded multidict from 6.7.0 to 6.7.1.
+* (#382) Upgraded mysql-connector-python from 9.5.0 to 9.6.0.
+* (#371, #394) Upgraded py-cord from 2.6.1 to 2.7.1.
+
+#### Changed development-only external dependencies in 0.1.15
+
+* (#375, #425) Upgraded black from 25.12.0 to 26.3.1.
+* (#378) Upgraded dill from 0.4.0 to 0.4.1.
+* (#409) (0.2.x branch only) Upgraded hatchling from 1.28.0 to 1.29.0.
+* (#402) Upgraded isort from 7.0.0 to 8.0.0.
+* (#383) Upgraded packaging from 25.0 to 26.0.
+* (#375, #387) Upgraded pathspec from 0.12.1 to 1.0.4.
+* (#412) Upgraded platformdirs from 4.5.1 to 4.9.2.
+* (#406) Upgraded pylint from 4.0.4 to 4.0.5.
+* (#390) Upgraded pytokens from 0.3.0 to 0.4.1.
+* (#373) Upgraded tomlkit from 0.13.3 to 0.14.0.
+
+### Bug fixes in 0.1.15
+
+* Fixed duplicated pull requests from Dependabot.
+* Fixed postcommit CI.
+* (#371) Fixed `discord.ui.Modal` abstract method clear_items in Pycord 2.7.0.
+
+### Languages updated in 0.1.15
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+### Other changes in 0.1.15
+
+* Follow `uv add` whitespace style for dependencies.
+* (#407) Dropped Sync issues to Notion GitHub Actions CI workflow.
+
+## SCAICT-uwu 0.1.14
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.14
+
+#### New configuration in 0.1.14
+
+* …
+
+#### Changed configuration in 0.1.14
+
+* …
+
+#### Removed configuration in 0.1.14
+
+* …
+
+### New user-facing features in 0.1.14
+
+* …
+
+### New features for sysadmins in 0.1.14
+
+* …
+
+### New developer features in 0.1.14
+
+* …
+
+### External dependency changes in 0.1.14
+
+#### New external dependencies in 0.1.14
+
+* …
+
+#### New development-only external dependencies in 0.1.14
+
+* …
+
+#### Changed external dependencies in 0.1.14
+
+* …
+
+#### Changed development-only external dependencies in 0.1.14
+
+* …
+
+#### Removed external dependencies in 0.1.14
+
+* …
+
+### Bug fixes in 0.1.14
+
+* …
+
+### API changes in 0.1.14
+
+* …
+
+### API internal changes in 0.1.14
+
+* …
+
+### Languages updated in 0.1.14
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.14
+
+* …
+
+### Deprecations in 0.1.14
+
+* …
+
+### Other changes in 0.1.14
+
+* …
+
+## SCAICT-uwu 0.1.13
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.13
+
+#### New configuration in 0.1.13
+
+* …
+
+#### Changed configuration in 0.1.13
+
+* …
+
+#### Removed configuration in 0.1.13
+
+* …
+
+### New user-facing features in 0.1.13
+
+* …
+
+### New features for sysadmins in 0.1.13
+
+* …
+
+### New developer features in 0.1.13
+
+* …
+
+### External dependency changes in 0.1.13
+
+#### New external dependencies in 0.1.13
+
+* …
+
+#### New development-only external dependencies in 0.1.13
+
+* …
+
+#### Changed external dependencies in 0.1.13
+
+* …
+
+#### Changed development-only external dependencies in 0.1.13
+
+* …
+
+#### Removed external dependencies in 0.1.13
+
+* …
+
+### Bug fixes in 0.1.13
+
+* …
+
+### API changes in 0.1.13
+
+* …
+
+### API internal changes in 0.1.13
+
+* …
+
+### Languages updated in 0.1.13
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.13
+
+* …
+
+### Deprecations in 0.1.13
+
+* …
+
+### Other changes in 0.1.13
+
+* …
+
+## SCAICT-uwu 0.1.12
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.12
+
+#### New configuration in 0.1.12
+
+* …
+
+#### Changed configuration in 0.1.12
+
+* …
+
+#### Removed configuration in 0.1.12
+
+* …
+
+### New user-facing features in 0.1.12
+
+* …
+
+### New features for sysadmins in 0.1.12
+
+* …
+
+### New developer features in 0.1.12
+
+* …
+
+### External dependency changes in 0.1.12
+
+#### New external dependencies in 0.1.12
+
+* …
+
+#### New development-only external dependencies in 0.1.12
+
+* …
+
+#### Changed external dependencies in 0.1.12
+
+* …
+
+#### Changed development-only external dependencies in 0.1.12
+
+* …
+
+#### Removed external dependencies in 0.1.12
+
+* …
+
+### Bug fixes in 0.1.12
+
+* …
+
+### API changes in 0.1.12
+
+* …
+
+### API internal changes in 0.1.12
+
+* …
+
+### Languages updated in 0.1.12
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.12
+
+* …
+
+### Deprecations in 0.1.12
+
+* …
+
+### Other changes in 0.1.12
+
+* …
+
+## SCAICT-uwu 0.1.11
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.11
+
+#### New configuration in 0.1.11
+
+* …
+
+#### Changed configuration in 0.1.11
+
+* …
+
+#### Removed configuration in 0.1.11
+
+* …
+
+### New user-facing features in 0.1.11
+
+* …
+
+### New features for sysadmins in 0.1.11
+
+* …
+
+### New developer features in 0.1.11
+
+* …
+
+### External dependency changes in 0.1.11
+
+#### New external dependencies in 0.1.11
+
+* …
+
+#### New development-only external dependencies in 0.1.11
+
+* …
+
+#### Changed external dependencies in 0.1.11
+
+* …
+
+#### Changed development-only external dependencies in 0.1.11
+
+* …
+
+#### Removed external dependencies in 0.1.11
+
+* …
+
+### Bug fixes in 0.1.11
+
+* …
+
+### API changes in 0.1.11
+
+* …
+
+### API internal changes in 0.1.11
+
+* …
+
+### Languages updated in 0.1.11
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.11
+
+* …
+
+### Deprecations in 0.1.11
+
+* …
+
+### Other changes in 0.1.11
+
+* …
+
+## SCAICT-uwu 0.1.10
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.10
+
+#### New configuration in 0.1.10
+
+* …
+
+#### Changed configuration in 0.1.10
+
+* …
+
+#### Removed configuration in 0.1.10
+
+* …
+
+### New user-facing features in 0.1.10
+
+* …
+
+### New features for sysadmins in 0.1.10
+
+* …
+
+### New developer features in 0.1.10
+
+* …
+
+### External dependency changes in 0.1.10
+
+#### New external dependencies in 0.1.10
+
+* …
+
+#### New development-only external dependencies in 0.1.10
+
+* …
+
+#### Changed external dependencies in 0.1.10
+
+* …
+
+#### Changed development-only external dependencies in 0.1.10
+
+* …
+
+#### Removed external dependencies in 0.1.10
+
+* …
+
+### Bug fixes in 0.1.10
+
+* …
+
+### API changes in 0.1.10
+
+* …
+
+### API internal changes in 0.1.10
+
+* …
+
+### Languages updated in 0.1.10
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.10
+
+* …
+
+### Deprecations in 0.1.10
+
+* …
+
+### Other changes in 0.1.10
+
+* …
+
+## SCAICT-uwu 0.1.9
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.9
+
+#### New configuration in 0.1.9
+
+* …
+
+#### Changed configuration in 0.1.9
+
+* …
+
+#### Removed configuration in 0.1.9
+
+* …
+
+### New user-facing features in 0.1.9
+
+* …
+
+### New features for sysadmins in 0.1.9
+
+* …
+
+### New developer features in 0.1.9
+
+* Updated project.classifiers in `pyproject.toml`.
+* …
+
+### External dependency changes in 0.1.9
+
+#### New external dependencies in 0.1.9
+
+* Added py-cord dependency.
+  * Added propcache 0.3.1.
+* …
+
+#### New development-only external dependencies in 0.1.9
+
+* …
+
+#### Changed external dependencies in 0.1.9
+
+* Upgraded flask from 3.0.3 to 3.1.0.
+  * Upgraded blinker from 1.8.2 to 1.9.0
+  * Upgraded click from 8.1.7 to 8.1.8.
+  * Upgraded jinja2 from 3.1.4 to 3.1.6.
+  * Upgraded markupsafe from 2.1.5 to 3.0.2.
+  * Upgraded werkzeug from 3.0.4 to 3.1.3.
+* Upgraded mysql-connector-python from 8.4.0 to 9.2.0.
+* Upgraded py-cord from 2.6.0 to 2.6.1.
+  * Upgraded aiohappyeyeballs from 2.4.0 to 2.6.1.
+  * Upgraded aiohttp from 3.10.5 to 3.11.14.
+  * Upgraded aiosignal from 1.3.1 to 1.3.2.
+  * Upgraded attrs from 24.2.0 to 25.3.0.
+  * Upgraded frozenlist from 1.4.1 to 1.5.0.
+  * Upgraded idna from 3.7 to 3.10.
+  * Upgraded multidict from 6.0.5 to 6.3.1.
+  * Upgraded yarl from 1.9.4 to 1.18.3.
+* Upgraded requests dependencies.
+  * Upgraded certifi from 2024.7.4 to 2025.1.31.
+  * Upgraded charset-normalizer from 3.3.2 to 3.4.1.
+  * Upgraded idna from 3.7 to 3.10.
+  * Upgraded urllib3 from 2.2.2 to 2.3.0.
+* …
+
+#### Changed development-only external dependencies in 0.1.9
+
+* Upgraded black from 24.8.0 to 25.1.0.
+  * Upgraded click from 8.1.7 to 8.1.8.
+  * Upgraded packaging from 24.1 to 24.2.
+  * Upgraded platformdirs from 4.2.2 to 4.3.7.
+* Upgraded pylint from 3.2.6 to 3.3.6.
+  * Upgraded astroid from 3.2.4 to 3.3.9.
+  * Upgraded dill from 0.3.8 to 0.3.9.
+  * Upgraded isort from 5.13.2 to 6.0.1.
+  * Upgraded platformdirs from 4.2.2 to 4.3.7.
+* Upgraded pytest from 8.3.2 to 8.3.5.
+  * Upgraded iniconfig from 2.0.0 to 2.1.0.
+  * Upgraded packaging from 24.1 to 24.2.
+* …
+
+#### Removed external dependencies in 0.1.9
+
+* …
+
+### Bug fixes in 0.1.9
+
+* …
+
+### API changes in 0.1.9
+
+* …
+
+### API internal changes in 0.1.9
+
+* …
+
+### Languages updated in 0.1.9
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.9
+
+* …
+
+### Deprecations in 0.1.9
+
+* …
+
+### Other changes in 0.1.9
+
+* …
+
+## SCAICT-uwu 0.1.8
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.8
+
+#### New configuration in 0.1.8
+
+* …
+
+#### Changed configuration in 0.1.8
+
+* …
+
+#### Removed configuration in 0.1.8
+
+* …
+
+### New user-facing features in 0.1.8
+
+* …
+
+### New features for sysadmins in 0.1.8
+
+* …
+
+### New developer features in 0.1.8
+
+* …
+
+### External dependency changes in 0.1.8
+
+#### New external dependencies in 0.1.8
+
+* …
+
+#### New development-only external dependencies in 0.1.8
+
+* …
+
+#### Changed external dependencies in 0.1.8
+
+* …
+
+#### Changed development-only external dependencies in 0.1.8
+
+* …
+
+#### Removed external dependencies in 0.1.8
+
+* …
+
+### Bug fixes in 0.1.8
+
+* …
+
+### API changes in 0.1.8
+
+* …
+
+### API internal changes in 0.1.8
+
+* …
+
+### Languages updated in 0.1.8
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* …
+
+### Breaking changes in 0.1.8
+
+* …
+
+### Deprecations in 0.1.8
+
+* …
+
+### Other changes in 0.1.8
+
+* …
+
+## SCAICT-uwu 0.1.7
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.7
+
+#### New configuration in 0.1.7
+
+* …
+
+#### Changed configuration in 0.1.7
+
+* …
+
+#### Removed configuration in 0.1.7
+
+* …
+
+### New user-facing features in 0.1.7
+
+* …
+
+### New features for sysadmins in 0.1.7
+
+* …
+
+### New developer features in 0.1.7
+
+* …
+
+### External dependency changes in 0.1.7
+
+#### New external dependencies in 0.1.7
+
+* …
+
+#### New development-only external dependencies in 0.1.7
+
+* …
+
+#### Changed external dependencies in 0.1.7
+
+* …
+
+#### Changed development-only external dependencies in 0.1.7
+
+* …
+
+#### Removed external dependencies in 0.1.7
+
+* …
+
+### Bug fixes in 0.1.7
+
+* …
+
+### API changes in 0.1.7
+
+* …
+
+### API internal changes in 0.1.7
+
+* …
+
+### Languages updated in 0.1.7
+
+SCAICT-uwu now supports 1 language.
+
+### Breaking changes in 0.1.7
+
+* …
+
+### Deprecations in 0.1.7
+
+* …
+
+### Other changes in 0.1.7
+
+* …
+
+## SCAICT-uwu 0.1.6
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.6
+
+#### New configuration in 0.1.6
+
+* …
+
+#### Changed configuration in 0.1.6
+
+* …
+
+#### Removed configuration in 0.1.6
+
+* …
+
+### New user-facing features in 0.1.6
+
+* …
+
+### New features for sysadmins in 0.1.6
+
+* …
+
+### New developer features in 0.1.6
+
+* …
+
+### External dependency changes in 0.1.6
+
+#### New external dependencies in 0.1.6
+
+* …
+
+#### New development-only external dependencies in 0.1.6
+
+* …
+
+#### Changed external dependencies in 0.1.6
+
+* …
+
+#### Changed development-only external dependencies in 0.1.6
+
+* …
+
+#### Removed external dependencies in 0.1.6
+
+* …
+
+### Bug fixes in 0.1.6
+
+* …
+
+### API changes in 0.1.6
+
+* …
+
+### API internal changes in 0.1.6
+
+* …
+
+### Languages updated in 0.1.6
+
+SCAICT-uwu now supports 1 language.
+
+### Breaking changes in 0.1.6
+
+* …
+
+### Deprecations in 0.1.6
+
+* …
+
+### Other changes in 0.1.6
+
+* …
+
+## SCAICT-uwu 0.1.5
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.5
+
+#### New configuration in 0.1.5
+
+* …
+
+#### Changed configuration in 0.1.5
+
+* …
+
+#### Removed configuration in 0.1.5
+
+* …
+
+### New user-facing features in 0.1.5
+
+* …
+
+### New features for sysadmins in 0.1.5
+
+* …
+
+### New developer features in 0.1.5
+
+* …
+
+### External dependency changes in 0.1.5
+
+#### New external dependencies in 0.1.5
+
+* …
+
+#### New development-only external dependencies in 0.1.5
+
+* …
+
+#### Changed external dependencies in 0.1.5
+
+* …
+
+#### Changed development-only external dependencies in 0.1.5
+
+* …
+
+#### Removed external dependencies in 0.1.5
+
+* …
+
+### Bug fixes in 0.1.5
+
+* …
+
+### API changes in 0.1.5
+
+* …
+
+### API internal changes in 0.1.5
+
+* …
+
+### Languages updated in 0.1.5
+
+SCAICT-uwu now supports 1 language.
+
+### Breaking changes in 0.1.5
+
+* …
+
+### Deprecations in 0.1.5
+
+* …
+
+### Other changes in 0.1.5
+
+* …
+
+## SCAICT-uwu 0.1.4
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.4
+
+#### New configuration in 0.1.4
+
+* …
+
+#### Changed configuration in 0.1.4
+
+* …
+
+#### Removed configuration in 0.1.4
+
+* …
+
+### New user-facing features in 0.1.4
+
+* …
+
+### New features for sysadmins in 0.1.4
+
+* …
+
+### New developer features in 0.1.4
+
+* …
+
+### External dependency changes in 0.1.4
+
+#### New external dependencies in 0.1.4
+
+* …
+
+#### New development-only external dependencies in 0.1.4
+
+* …
+
+#### Changed external dependencies in 0.1.4
+
+* …
+
+#### Changed development-only external dependencies in 0.1.4
+
+* …
+
+#### Removed external dependencies in 0.1.4
+
+* …
+
+### Bug fixes in 0.1.4
+
+* …
+
+### API changes in 0.1.4
+
+* …
+
+### API internal changes in 0.1.4
+
+* …
+
+### Languages updated in 0.1.4
+
+SCAICT-uwu now supports 1 language.
+
+### Breaking changes in 0.1.4
+
+* …
+
+### Deprecations in 0.1.4
+
+* …
+
+### Other changes in 0.1.4
+
+* …
+
+## SCAICT-uwu 0.1.3
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.3
+
+#### New configuration in 0.1.3
+
+* …
+
+#### Changed configuration in 0.1.3
+
+* …
+
+#### Removed configuration in 0.1.3
+
+* …
+
+### New user-facing features in 0.1.3
+
+* …
+
+### New features for sysadmins in 0.1.3
+
+* …
+
+### New developer features in 0.1.3
+
+* …
+
+### External dependency changes in 0.1.3
+
+#### New external dependencies in 0.1.3
+
+* …
+
+#### New development-only external dependencies in 0.1.3
+
+* …
+
+#### Changed external dependencies in 0.1.3
+
+* …
+
+#### Changed development-only external dependencies in 0.1.3
+
+* …
+
+#### Removed external dependencies in 0.1.3
+
+* …
+
+### Bug fixes in 0.1.3
+
+* …
+
+### API changes in 0.1.3
+
+* …
+
+### API internal changes in 0.1.3
+
+* …
+
+### Languages updated in 0.1.3
+
+SCAICT-uwu now supports 1 language.
+
+### Breaking changes in 0.1.3
+
+* …
+
+### Deprecations in 0.1.3
+
+* …
+
+### Other changes in 0.1.3
+
+* …
+
+## SCAICT-uwu 0.1.2
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### Configuration changes for system administrators in 0.1.2
+
+#### New configuration in 0.1.2
+
+* …
+
+#### Changed configuration in 0.1.2
+
+* …
+
+#### Removed configuration in 0.1.2
+
+* …
+
+### New user-facing features in 0.1.2
+
+* …
+
+### New features for sysadmins in 0.1.2
+
+* …
+
+### New developer features in 0.1.2
+
+* …
+
+### External dependency changes in 0.1.2
+
+#### New external dependencies in 0.1.2
+
+* …
+
+#### New development-only external dependencies in 0.1.2
+
+* …
+
+#### Changed external dependencies in 0.1.2
+
+* …
+
+#### Changed development-only external dependencies in 0.1.2
+
+* …
+
+#### Removed external dependencies in 0.1.2
+
+* …
+
+### Bug fixes in 0.1.2
+
+* …
+
+### API changes in 0.1.2
+
+* …
+
+### API internal changes in 0.1.2
+
+* …
+
+### Languages updated in 0.1.2
+
+SCAICT-uwu now supports 1 language.
+
+### Breaking changes in 0.1.2
+
+* …
+
+### Deprecations in 0.1.2
+
+* …
+
+### Other changes in 0.1.2
+
+* …
+
+## SCAICT-uwu 0.1.1
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### New user-facing features in 0.1.1
+
+* Added dynamic voice channel and support ticket feature.
+* Added channel member display.
+* Added CTF features.
+* Updated CTF features (WIP, can create and list).
+* Added independent update channels.
+* Rewrote the daily charge feature.
+* Completed CTF features.
+* Added initial website using Flask.
+* Completed course role features.
+* Updated design of SCAICT Store.
+* Updated the support ticket embed description.
+* Updated to limit the usage of daily change command to specific channel.
+* Completed SCAICT Store.
+* Added lottery slot feature in SCAICT Store.
+* Added support for bot status/presence.
+* Added zap emoji.
+* Added total point status display.
+* Updated CTF features.
+
+### New features for sysadmins in 0.1.1
+
+* Added Google Analytics.
+
+### Bug fixes in 0.1.1
+
+* Fixed the problem of bot responding to self messages.
+* Fixed counting error, only the user replied would see the message.
+* Added exception handling for data not found issues.
+* Fixed issue caused by users without avatar set.
+
+### Languages in 0.1.1
+
+SCAICT-uwu now supports 1 language.
+
+Below only new and removed languages are listed.
+
+* Added language support for Mandarin - Traditional Han script (`zh-hant`).
+
+### Breaking changes and deprecations in 0.1.1
+
+* Added JSON file as initial database.
+* Updated to use JSON file to get CTF maker role ID.
+* Added SQL database.
+* Migrated user.json to SQL database.
+* Renamed SQL column name from `user_id` to `uid`.
+* Dropped support for `user.json`, use SQL database instead.
+
+### Other changes in 0.1.1
+
+* Added `.gitignore` to ignore token files.
+* Added `.gitignore` to ignore cache files.
+* Passing bot attributes.
+* Added comment, check_point and daily_charge Python modules.
+* Added user Python module.
+* Migrated use of user functions to user Python module.
+
+## SCAICT-uwu 0.1.0
+
+This is the initial release of SCAICT-uwu 0.1 version.
+
+### Changes in 0.1.0
+
+* Initial commit.
+  * Added `LICENSE`, using Apache License Version 2.0, January 2004.
+  * Added `README.md`.

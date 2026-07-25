@@ -1,15 +1,17 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import asyncio
 import json
 import os
-from random import choice
+import random
 
 # Third-party imports
 import discord
 
 # Local imports
-from cog.core.sql import link_sql
-from cog.core.sql import end
+import cog.core.sql
 
 
 def open_json():
@@ -23,10 +25,10 @@ def open_json():
 
 
 def get_total_points():
-    connection, cursor = link_sql()
+    connection, cursor = cog.core.sql.link_sql()
     cursor.execute("SELECT SUM(point) FROM `user`")
     points = cursor.fetchone()[0]
-    end(connection, cursor)
+    cog.core.sql.end(connection, cursor)
     return points
 
 
@@ -68,6 +70,6 @@ async def change_status(bot):
         "debug",
     ]
     while not bot.is_closed():
-        status = choice(announcements)
+        status = random.choice(announcements)
         await bot.change_presence(activity=discord.Game(name=status))
         await asyncio.sleep(10)

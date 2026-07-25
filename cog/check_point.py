@@ -1,19 +1,34 @@
+# Future statements
+from __future__ import annotations
+
 # Third-party imports
 import discord
-from discord.ext import commands
+import discord.ext.commands
 
 # Local imports
-from cog.core.sql import read
-from cog.core.sql import link_sql
-from cog.core.sql import end
+import cog.core.sql
 
 
-class CheckPoint(commands.Cog):
-    def __init__(self, bot):
+class CheckPoint(discord.ext.commands.Cog):
+    def __init__(self, bot: discord.Bot) -> None:
+        """
+        Parameters:
+            bot (discord.Bot):
+        """
+
         self.bot = bot
         self.embed = None
 
-    async def send_message(self, point, combo, interaction):
+    async def send_message(
+        self, point, combo, interaction: discord.Interaction
+    ) -> None:
+        """
+        Parameters:
+            point:
+            combo:
+            interaction (discord.Interaction):
+        """
+
         member = interaction.user.mention
         # mention the users
 
@@ -21,6 +36,7 @@ class CheckPoint(commands.Cog):
 
         if interaction.user.avatar is not None:  # 預設頭像沒有這個
             self.embed.set_thumbnail(url=str(interaction.user.avatar))
+
         self.embed.add_field(name="\n", value="使用者：" + member, inline=False)
         self.embed.add_field(name="目前點數：" + str(point), value="\n", inline=False)
         self.embed.add_field(name="已連續充電：" + str(combo), value="\n", inline=False)
@@ -32,14 +48,24 @@ class CheckPoint(commands.Cog):
         await interaction.response.send_message(embed=self.embed)
 
     @discord.slash_command(name="check_point", description="查看電電點")
-    async def check(self, interaction):
-        connection, cursor = link_sql()  # SQL 會話
+    async def check(self, interaction) -> None:
+        """
+        Parameters:
+            interaction:
+        """
+
+        connection, cursor = cog.core.sql.link_sql()  # SQL 會話
         user_id = interaction.user.id
-        combo = read(user_id, "charge_combo", cursor)
-        point = read(user_id, "point", cursor)
+        combo = cog.core.sql.read(user_id, "charge_combo", cursor)
+        point = cog.core.sql.read(user_id, "point", cursor)
         await self.send_message(point, combo, interaction)
-        end(connection, cursor)
+        cog.core.sql.end(connection, cursor)
 
 
-def setup(bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(CheckPoint(bot))
