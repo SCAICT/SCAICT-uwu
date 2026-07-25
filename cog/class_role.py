@@ -1,46 +1,72 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import json
 import os
+import typing
 
 # Third-party imports
 import discord
-from discord.ext import commands
+import discord.ext.commands
 
 # Local imports
-from build.build import Build
+import build.build
 
 
-def get_courses():
+def get_courses() -> typing.Any | dict:
+    """
+    Returns:
+        typing.Any | dict:
+    """
+
     try:
         with open(f"{os.getcwd()}/DataBase/clas.json", "r", encoding="utf-8") as file:
             data = json.load(file)
+
         return data
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
 
-def search_data(code):
+def search_data(code) -> typing.Any | typing.Literal[False]:
+    """
+    Parameters:
+        code:
+
+    Returns:
+        typing.Any | typing.Literal[False]:
+    """
+
     data = get_courses()
+
     if code in data:
         return data[code]
 
     return False
 
 
-def add_data(code, new_data):
+def add_data(code, new_data) -> None:
+    """
+    Parameters:
+        code:
+        new_data:
+    """
+
     data = get_courses()
     data[code] = new_data
+
     with open(f"{os.getcwd()}/DataBase/clas.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=2, ensure_ascii=False)
 
 
-class ClassRole(Build):
-    @commands.Cog.listener()
-    async def on_ready(self):
+class ClassRole(build.build.Build):
+    @discord.ext.commands.Cog.listener()
+    async def on_ready(self) -> None:
         self.bot.add_view(self.TokenVerifyButton())
 
     class TokenVerifyButton(discord.ui.View):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(timeout=None)
 
         @discord.ui.button(
@@ -50,15 +76,34 @@ class ClassRole(Build):
             custom_id="button",
         )
         # pylint: disable-next = unused-argument
-        async def button_callback(self, button, interaction):
+        async def button_callback(
+            self, button, interaction: discord.Interaction
+        ) -> None:
+            """
+            Parameters:
+                button:
+                interaction (discord.Interaction):
+            """
+
             class TokenModal(discord.ui.Modal):
                 def __init__(self, *args, **kwargs) -> None:
+                    """
+                    Parameters:
+                        *args:
+                        **kwargs:
+                    """
+
                     super().__init__(*args, **kwargs)
 
                     self.input_field = discord.ui.InputText(label="請輸入課程代碼")
                     self.add_item(self.input_field)
 
-                async def callback(self, interaction: discord.Interaction):
+                async def callback(self, interaction: discord.Interaction) -> None:
+                    """
+                    Parameters:
+                        interaction (discord.Interaction):
+                    """
+
                     user_code = self.input_field.value
 
                     if search_data(user_code):
@@ -109,10 +154,34 @@ class ClassRole(Build):
                             embed=embed, ephemeral=True
                         )
 
+                def clear_items(self) -> typing.Self:
+                    """
+                    Clear all InputText from the modal.
+
+                    This should be implemented by the parent class in Pycord.
+                    However, we're now fixing it here as a workaround.
+
+                    Returns:
+                        typing.Self:
+                    """
+
+                    try:
+                        self._children.clear()
+                        self.__weights.clear()
+                    except ValueError:
+                        pass
+
+                    return self
+
             await interaction.response.send_modal(TokenModal(title="請輸入課程代碼"))
 
     @discord.slash_command(description="發送課程代碼兌換鈕")
-    async def send_modal(self, ctx):
+    async def send_modal(self, ctx) -> None:
+        """
+        Parameters:
+            ctx:
+        """
+
         if ctx.author.guild_permissions.administrator:
             embed = discord.Embed(color=0x4BE1EC)
             # pylint: disable-next = line-too-long
@@ -124,10 +193,20 @@ class ClassRole(Build):
             await ctx.send(embed=embed, view=self.TokenVerifyButton())
 
     @discord.slash_command(description="新增主題課程")
-    # pylint: disable-next = too-many-arguments
+    # pylint: disable-next = too-many-arguments, too-many-positional-arguments
     async def add_class(
         self, ctx, class_code: str, name: str, theme: str, teacher: str, time: str
-    ):
+    ) -> None:
+        """
+        Parameters:
+            ctx:
+            class_code (str):
+            name (str):
+            theme (str):
+            teacher (str):
+            time (str):
+        """
+
         if ctx.author.guild_permissions.administrator:
             d = {"name": name, "theme": theme, "teacher": teacher, "time": time}
             add_data(class_code, d)
@@ -136,5 +215,10 @@ class ClassRole(Build):
             )
 
 
-def setup(bot):
+def setup(bot: discord.Bot) -> None:
+    """
+    Parameters:
+        bot (discord.Bot):
+    """
+
     bot.add_cog(ClassRole(bot))

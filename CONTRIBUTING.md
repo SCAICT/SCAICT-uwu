@@ -1,14 +1,16 @@
 # Contributing
 
-If you wish to contribute to the SCAICT-uwu, feel free to fork the repository
-and submit a pull request.
+If you wish to contribute to SCAICT-uwu, feel free to fork the repository and
+submit a pull request.
 
-All development happens on the `development` branch. Make sure to submit pull
-requests in the correct branch.
+All development happens on the `dev` branch. Make sure to submit pull requests
+in the correct branch.
 
 ## Coding conventions
 
 ### File formatting
+
+For Python files, we currently use the Black formatter.
 
 #### Indentation
 
@@ -34,37 +36,6 @@ All text files must be encoded with UTF-8 without a
 
 Do not use Microsoft Notepad to edit files, as it always inserts a BOM.
 
-#### Whitespace
-
-The general whitespace style for Python would be:
-
-```py
-statement # Inline comments
-```
-
-```py
-if condition and condition or condition:
-```
-
-```py
-if (
-    condition and
-    condition or
-    condition
-):
-```
-
-```py
-def function_name(arg_1: type = "value 1", arg_2: type) -> type:
-```
-
-```py
-def function_name(
-    arg_1: type = "value 1",
-    arg_2: type
-) -> type:
-```
-
 #### Trailing whitespace
 
 Developers should avoid adding trailing whitespace.
@@ -73,15 +44,22 @@ Developers should avoid adding trailing whitespace.
 
 Lines should be broken with a line break at maximum 80 characters.
 
-#### Import order
+#### Imports
 
 Imports should use the following order first, then the alphabetical order:
 
 ```py
+# Future statements
+
 # Standard imports
+
 # Third-party imports
+
 # Local imports
 ```
+
+Only use `from ... import ...` in future statements; otherwise always use
+`import package.subpackage.module` only.
 
 See
 [wrong-import-order / C0411](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/wrong-import-order.html)
@@ -122,6 +100,9 @@ Summary of module.
 Extended description.
 """
 
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import standard_import
 
@@ -138,18 +119,28 @@ class ClassName:
     Extended description.
 
     Attributes:
-        CONST_NAME (int): Description of constant.
-        attr_name (int): Description of attribute.
+        PUBLIC_CONST_NAME (int):
+            Description of public constant.
+        public_attr_name (int):
+            Description of public attribute.
     """
 
-    CONST_NAME = 1
+    PUBLIC_CONST_NAME = 1
+
+    public_attr_name = 1
+
+    _PRIVATE_CONST_NAME = 2
     """
-    CONST_NAME (int): Description of constant.
+    Returns:
+        int:
+            Description of private constant.
     """
 
-    attr_name = 1
+    _private_attr_name = 1
     """
-    attr_name (int): Description of attribute.
+    Returns:
+        int:
+            Description of private attribute.
     """
 
     def method_name(self, param_name: int) -> int:
@@ -159,13 +150,16 @@ class ClassName:
         Extended description.
 
         Parameters:
-            param_name (int): Description of parameter.
+            param_name (int):
+                Description of parameter.
 
         Returns:
-            int: Description of return value.
+            int:
+                Description of return value.
 
         Raises:
-            KeyError: Raises an exception.
+            KeyError:
+                Raises an exception.
         """
 
         print(param_name)
@@ -189,8 +183,9 @@ for further information.
   MySQL/MariaDB.
 * Column names should be unique, i.e., same column name should not exist in
   different tables.
-* Column names should be prefixed with table names or abbrieviations.
-  * For example, `user_id` in `user`, `ug_user` in `user_groups`.
+* Column names should be prefixed with table names or abbreviations.
+  * For example, `user_id` column in `user` table, `ug_user` column in
+    `user_groups` table.
 
 Examples:
 
@@ -212,5 +207,6 @@ UPDATE game SET game_seq = game_seq + 1
 
 ### Development dependencies
 
+* black: <https://black.readthedocs.io>
 * pylint: <https://pylint.readthedocs.io>
 * pytest: <https://docs.pytest.org>
