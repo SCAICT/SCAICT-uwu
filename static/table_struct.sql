@@ -132,6 +132,29 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+--
+-- Table structure for table `custom_role`
+-- (manually added; not part of the original dump)
+--
+
+CREATE TABLE IF NOT EXISTS `custom_role` (
+  `uid` bigint NOT NULL,
+  `role_id` bigint DEFAULT NULL,
+  `role_expire` datetime DEFAULT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `chat_nick`
+-- (manually added; not part of the original dump)
+--
+
+CREATE TABLE IF NOT EXISTS `chat_nick` (
+  `uid` bigint NOT NULL,
+  `nickname` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
