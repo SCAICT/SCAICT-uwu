@@ -1,15 +1,20 @@
-# 把舊 CTF JSON 格式檔案的資料搬進資料庫，執行時拿到資料夾根木錄才能正確import SQL
+"""
+把舊 CTF JSON 格式檔案的資料搬進資料庫，執行時拿到資料夾根木錄才能正確import SQL
+"""
+
+# Future statements
+from __future__ import annotations
+
 # Standard imports
 import json
 
 # Local imports
-from cog.core.sql import link_sql
-from cog.core.sql import end
+import cog.core.sql
 
 with open("./DataBase/ctf.json", "r", encoding="utf-8") as file:
     # code to read and process the file goes here
     file = json.load(file)
-    connection, cursor = link_sql()
+    connection, cursor = cog.core.sql.link_sql()
     cursor.execute("USE `CTF`")
 
     for questionId, ctf in file.items():
@@ -22,5 +27,6 @@ with open("./DataBase/ctf.json", "r", encoding="utf-8") as file:
                 f"INSERT INTO `history`(data_id,uid,count,solved) VALUES('{questionId}',{h},{ctf['history'][h]},{solved});"
             )
 
-        end(connection, cursor)
+        cog.core.sql.end(connection, cursor)
+
         break
