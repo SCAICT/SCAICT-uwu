@@ -771,9 +771,9 @@ mysql-connector-python==9.7.0 \
     --hash=sha256:e3842ecd62391a28c1dda5eb817f40418715e68482a8c146b3c478ac8bb7a23f \
     --hash=sha256:ea4e05ab864ab8b0b5066d885d89ca51e5ba1320dba520c20a6f9388a8eca022
     # via scaict-uwu
-openai==2.48.0 \
-    --hash=sha256:231b1e7661dda14574986c2f71451e9d584b7fe69e0ee6480e12ed090b48fc16 \
-    --hash=sha256:c98df30aaaf93c51979f64d3e7c5b76464f8be0173368266229eb8fe6bd30f2c
+openai==2.49.0 \
+    --hash=sha256:80f934333b5b83cef2fde9af7151dacaa72e150f43f92b7675f7647ca6157f48 \
+    --hash=sha256:b694201eaa42a1ccf2aa125fe29458150108fb22df1abfb55d7188599da81d8c
     # via scaict-uwu
 propcache==0.5.2 \
     --hash=sha256:01c4fc7480cd0598bb4b57022df55b9ca296da7fc5a8760bd8451a7e63a7d427 \
