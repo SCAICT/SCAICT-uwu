@@ -7,8 +7,6 @@ import typing
 
 # Third-party imports
 import mysql.connector.abstracts
-import mysql.connector.connection_cext
-import mysql.connector.cursor_cext
 import mysql.connector.errors
 import mysql.connector.pooling
 import mysql.connector.types
@@ -21,15 +19,15 @@ import cog.core.secret
 @contextlib.contextmanager
 def mysql_connection() -> typing.Generator[
     tuple[
-        mysql.connector.connection_cext.CMySQLConnection,
-        mysql.connector.cursor_cext.CMySQLCursor,
+        mysql.connector.abstracts.MySQLConnectionAbstract,
+        mysql.connector.abstracts.MySQLCursorAbstract,
     ],
     typing.Any,
     None,
 ]:
     """
     Returns:
-        typing.Generator[tuple[mysql.connector.connection_cext.CMySQLConnection, mysql.connector.cursor_cext.CMySQLCursor], typing.Any, None]:
+        typing.Generator[tuple[mysql.connector.abstracts.MySQLConnectionAbstract, mysql.connector.abstracts.MySQLCursorAbstract], typing.Any, None]:
 
     Raises:
         RuntimeError:
@@ -37,12 +35,12 @@ def mysql_connection() -> typing.Generator[
         mysql.connector.errors.Error:
     """
 
-    connection: mysql.connector.connection_cext.CMySQLConnection | None = None
-    cursor: mysql.connector.cursor_cext.CMySQLCursor | None = None
+    connection: mysql.connector.abstracts.MySQLConnectionAbstract | None = None
+    cursor: mysql.connector.abstracts.MySQLCursorAbstract | None = None
 
     try:
         connection = typing.cast(
-            mysql.connector.connection_cext.CMySQLConnection, cog.core.secret.connect()
+            mysql.connector.abstracts.MySQLConnectionAbstract, cog.core.secret.connect()
         )
 
         if connection is None:
