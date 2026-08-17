@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@v10.0.1
       - name: Setup venv with Python ${{ matrix.python-version }}
         run: |
           uv venv --python ${{ matrix.python-version }}
@@ -50,7 +50,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@v10.0.1
       - name: Setup venv with Python ${{ matrix.python-version }}
         run: |
           uv venv --python ${{ matrix.python-version }}
@@ -86,7 +86,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@v10.0.1
       - name: Setup venv with Python ${{ matrix.python-version }}
         run: |
           uv venv --python ${{ matrix.python-version }}
@@ -109,7 +109,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@v10.0.1
       - name: Setup venv
         run: |
           uv venv

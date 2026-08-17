@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@v10.0.1
       - name: Setup venv with Python ${{ env.PYTHON_VERSION }}
         run: |
           uv venv --python ${{ env.PYTHON_VERSION }}
