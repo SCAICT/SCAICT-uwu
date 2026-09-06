@@ -1,5 +1,52 @@
 # SCAICT-uwu 0.1
 
+## SCAICT-uwu 0.1.16
+
+This is a maintenance release of SCAICT-uwu 0.1 version.
+
+### New user-facing features in 0.1.16
+
+* (#470) AI chat perks announce.
+
+### New developer features in 0.1.16
+
+* (#367, #371) Enabled experimental Python 3.14 support.
+  * Added Python 3.14 to `pyproject.toml` `project.classifiers`.
+
+### External dependency changes in 0.1.16
+
+#### New external dependencies in 0.1.16
+
+* Added google-genai 2.18.0.
+* Added openai 3.0.0.
+
+#### Changed external dependencies in 0.1.16
+
+* Upgraded mysql-connector-python from 9.6.0 to 26.7.0.
+* Upgraded py-cord from 2.7.1 to 2.8.1.
+* Upgraded python-dotenv from 1.2.1 to 1.2.2.
+* Upgraded requests from 2.32.5 to 2.34.2.
+
+#### Changed development-only external dependencies in 0.1.16
+
+* Upgraded black from 26.3.1 to 26.5.1.
+* Upgraded pylint from 4.0.5 to 4.0.7.
+* Upgraded pytest from 9.0.2 to 9.1.1.
+
+### Bug fixes in 0.1.16
+
+* (#490) Fixed Discord OAuth callback open redirect and token leakage (ZD-2026-00783).
+* (#500) Fixed gift send endpoint being triggerable by GET and unvalidated quantity (ZD-2026-00801).
+* (#531) Fixed daily charge being lost when the Discord interaction times out.
+
+### Languages updated in 0.1.16
+
+SCAICT-uwu now supports 1 language. Localisations are updated regularly.
+
+### Other changes in 0.1.16
+
+* Dropped GitHub Dependabot pull requests, use uv to list upgradable dependencies.
+
 ## SCAICT-uwu 0.1.15
 
 This is a maintenance release of SCAICT-uwu 0.1 version.
