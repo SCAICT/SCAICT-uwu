@@ -12,6 +12,7 @@ from __future__ import annotations
 # Standard imports
 import collections
 import os
+import re
 import time
 
 # Third-party imports
@@ -207,6 +208,33 @@ class Chat(discord.ext.commands.Cog):
             return any(role in bot_member.roles for role in message.role_mentions)
 
         return False
+
+    @staticmethod
+    def sanitize_mentions(text: str) -> str:
+        """
+        破壞回覆中可能被 Discord 解析成提及的字串，防止誘導 @everyone。
+
+        在字元之間插入零寬空格，讓 Discord 無法解析成 @everyone / @here，
+        也不會顯示成可點擊的藍色提及。內嵌的使用者 / 身分組 ID 則直接移除。
+
+        Parameters:
+            text (str):
+                AI 產生的回覆內容。
+
+        Returns:
+            str:
+                清除提及解析後的內容。
+        """
+
+        # 把 @everyone / @here 中間插入零寬空格（U+200B）
+        for keyword in ("everyone", "here"):
+            text = text.replace(f"@{keyword}", f"@\u200b{keyword}")
+
+        # 移除 <@123> / <@!123> / <@&456> 這類提及語法
+        text = re.sub(r"<@!?\d+>", "", text)
+        text = re.sub(r"<@&\d+>", "", text)
+
+        return text
 
     def clean_content(self, message: discord.Message) -> str:
         """
@@ -452,8 +480,16 @@ class Chat(discord.ext.commands.Cog):
             f" out={tokens_out} model={model_used}"
         )
 
-        # Discord 訊息長度上限 2000 字元
-        await message.reply(reply_text[:2000], mention_author=False)
+        # Discord 訊息長度上限 2000 字元；
+        # sanitize_mentions 破壞 @everyone 等提及解析，
+        # allowed_mentions 確保即使殘留 mention 語法也不會真的提及任何人
+        await message.reply(
+            self.sanitize_mentions(reply_text[:2000]),
+            mention_author=False,
+            allowed_mentions=discord.AllowedMentions(
+                everyone=False, roles=False, users=False
+            ),
+        )
 
 
 def setup(bot: discord.Bot) -> None:

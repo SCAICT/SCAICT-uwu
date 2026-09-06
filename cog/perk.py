@@ -54,6 +54,10 @@ ROLE_PRICE = PERK_CONFIG.get("customRolePrice", 500)
 ROLE_DAYS = PERK_CONFIG.get("customRoleDays", 30)
 NICK_PRICE = PERK_CONFIG.get("chatNickPrice", 200)
 
+# 不允許出現在身分組名稱或稱呼中的敏感詞彙
+# （會長名字、違反善良風俗的詞等），由 server.config.json 的 perk.forbidden 維護
+FORBIDDEN_WORDS = [word for word in PERK_CONFIG.get("forbidden", []) if word]
+
 ROLE_NAME_MAX_LENGTH = 32
 NICK_MAX_LENGTH = 20
 
@@ -131,6 +135,56 @@ def sanitize(text: str) -> str:
     return re.sub(r'["\\\n\r`]', "", text).strip()
 
 
+def contains_forbidden(text: str) -> bool:
+    """
+    判斷文字是否包含任何敏感詞彙（FORBIDDEN_WORDS）。
+
+    Parameters:
+        text (str):
+            要檢查的文字。
+
+    Returns:
+        bool:
+            包含敏感詞彙時為 True。
+    """
+
+    lowered = text.lower()
+
+    return any(word.lower() in lowered for word in FORBIDDEN_WORDS)
+
+
+def is_same_as_member(guild: discord.Guild | None, user_id: int, text: str) -> bool:
+    """
+    判斷文字是否與其他成員的顯示名稱完全相同（防撞名）。
+
+    Parameters:
+        guild (discord.Guild | None):
+            所在的伺服器，無法取得時回傳 False。
+        user_id (int):
+            提出請求的使用者 ID，自己的名稱不算撞名。
+        text (str):
+            要檢查的文字。
+
+    Returns:
+        bool:
+            與其他成員名稱完全相同時為 True。
+    """
+
+    if guild is None:
+        return False
+
+    lowered = text.lower()
+
+    for member in guild.members:
+        if member.id == user_id:
+            continue
+
+        if member.display_name.lower() == lowered:
+            return True
+
+    return False
+
+
 class Perk(discord.ext.commands.Cog):
     """
     電電點數位特權：自訂身分組與中電喵專屬稱呼。
@@ -186,6 +240,18 @@ class Perk(discord.ext.commands.Cog):
 
             return
 
+        if contains_forbidden(name):
+            await ctx.respond("這個身分組名稱包含了不允許使用的詞彙！", ephemeral=True)
+
+            return
+
+        if is_same_as_member(ctx.guild, ctx.author.id, name):
+            await ctx.respond(
+                "這個身分組名稱與其他成員的名字相同，請換一個！", ephemeral=True
+            )
+
+            return
+
         colour = None
 
         if color:
@@ -232,6 +298,16 @@ class Perk(discord.ext.commands.Cog):
                 await role.edit(name=name)
             else:
                 await role.edit(name=name, colour=colour)
+
+            # 優先度最高：移到身分組清單最上方。
+            # Discord 限制角色不能高於 bot 自己的 top role，
+            # 所以取 bot 最高可設定的位置（top role 下面一格）
+            try:
+                highest_position = max(ctx.guild.me.top_role.position - 1, 0)
+                await role.edit(position=highest_position)
+            except discord.HTTPException as exception:
+                # 移動位置失敗不影響租借，記錄即可
+                print(f"Failed to move role to top: {exception}")
 
             await ctx.author.add_roles(role)
         except discord.Forbidden:
@@ -294,6 +370,18 @@ class Perk(discord.ext.commands.Cog):
         if not 1 <= len(nickname) <= NICK_MAX_LENGTH:
             await ctx.respond(
                 f"稱呼長度需在 1~{NICK_MAX_LENGTH} 字元之間！", ephemeral=True
+            )
+
+            return
+
+        if contains_forbidden(nickname):
+            await ctx.respond("這個稱呼包含了不允許使用的詞彙！", ephemeral=True)
+
+            return
+
+        if is_same_as_member(ctx.guild, ctx.author.id, nickname):
+            await ctx.respond(
+                "這個稱呼與其他成員的名字相同，請換一個！", ephemeral=True
             )
 
             return
