@@ -401,7 +401,7 @@ class Charge(discord.ext.commands.Cog):
             return
 
         with cog.core.sql.mysql_connection() as c:  # SQL 會話
-            _, cursor = c
+            connection, cursor = c
             user = interaction.user
 
             # get now time and combo
@@ -431,6 +431,10 @@ class Charge(discord.ext.commands.Cog):
             changed = self.reward(
                 user, last_charge, now, combo, point, ticket, cursor, is_forgivable
             )
+
+            # commit before sending the message, so that the charge is not lost
+            # if the Discord interaction times out (e.g. NotFound 404).
+            connection.commit()
 
             embed = self.embed_successful(changed.point, changed.charge_combo, user)
             await interaction.response.send_message(embed=embed)
