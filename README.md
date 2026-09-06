@@ -6,7 +6,6 @@
 
 # 中電喵 SCAICT uwu
 
-[![Sync issues to Notion](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml/badge.svg?event=issues)](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml)
 [![Website](https://img.shields.io/website?label=Website&&url=https%3A%2F%2Fscaict.org%2F)](https://scaict.org/)
 [![SCAICT Store](https://img.shields.io/website?label=SCAICT+store&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://store.scaict.org/)
 [![Documentation](https://img.shields.io/website?label=Documentation&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://g.scaict.org/doc/)
@@ -81,7 +80,7 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
 ## How to Deploy?
 
 1. Clone this repository.
-2. Create an environment in Python 3.11 or **3.12** (recommended) or 3.13 (**experimental**).
+2. Create an environment in Python 3.11 or **3.12** (recommended) or 3.13 (**experimental**) or 3.14 (**experimental**).
 3. Install the required libraries.
 
    ```bash

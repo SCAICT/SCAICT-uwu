@@ -1,12 +1,21 @@
+# Future statements
+from __future__ import annotations
+
 # Standard imports
-# import json
+import typing
 
 # Third-party imports
 import requests
 
 
 class Apis:
-    def __init__(self, api_key: str, guild_id: int):
+    def __init__(self, api_key: str, guild_id: int) -> None:
+        """
+        Parameters:
+            api_key (str):
+            guild_id (int):
+        """
+
         self.api_key = api_key
         self.guild_id = guild_id
         self.headers = {
@@ -14,9 +23,11 @@ class Apis:
             "Content-Type": "application/json",
         }
 
-    def get_user(self, uid):
+    def get_user(self, uid) -> dict[str, typing.Any]:
         """
         API 回傳的資料格式範例，已經把一些敏感資料隱藏掉
+
+        ```
         {
             "avatar": null,
             "banner": null,
@@ -53,25 +64,44 @@ class Apis:
             "mute": false,
             "deaf": false
         }
+        ```
+
+        Parameters:
+            uid:
+
+        Returns:
+            dict[str, typing.Any]:
         """
+
         try:
             url = f"https://discord.com/api/v10/guilds/{self.guild_id}/members/{uid}"
             usr = requests.get(url, headers=self.headers, timeout=5)
             usr.raise_for_status()  # 檢查 HTTP 狀態碼
+
             return usr.json()
         except requests.exceptions.RequestException as e:
             # 如果發生錯誤，返回一個包含錯誤訊息和詳細報錯的字典
             return {"error": "get_user error", "details": str(e)}
 
-    def create_dm_channel(self, target_user_id: str):
+    def create_dm_channel(self, target_user_id: str) -> dict[str, typing.Any]:
+        """
+        Parameters:
+            target_user_id (str):
+
+        Returns:
+            dict[str, typing.Any]:
+        """
+
         try:
             url = "https://discord.com/api/v10/users/@me/channels"
             json_data = {"recipient_id": target_user_id}
             response = requests.post(
                 url, headers=self.headers, json=json_data, timeout=10
             )
-            response.raise_for_status()  # Raise an HTTPError for bad responses
+            # Raise an HTTPError for bad responses
+            response.raise_for_status()
             dm_channel = response.json()
+
             return dm_channel["id"]
         except requests.RequestException as e:
             return {

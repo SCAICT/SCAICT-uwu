@@ -1,25 +1,31 @@
+# Future statements
+from __future__ import annotations
+
+# Standard imports
 import unittest
 
-from mysql.connector.errors import Error as MySQLError
+# Third-party imports
+import mysql.connector.errors
 
-from cog.core.sql import mysql_connection
-from cog.core.sql_abstract import UserRecord
+# Local imports
+import cog.core.sql
+import cog.core.sql_abstract
 
 YUEVUWU = 545234619729969152
 
 skip = False
 
 try:
-    with mysql_connection() as _:
+    with cog.core.sql.mysql_connection() as _:
         pass
-except (RuntimeError, MySQLError, TypeError):
+except (RuntimeError, TypeError, mysql.connector.errors.Error):
     skip = True
 
 
 class TestFromSQL(unittest.TestCase):
     @unittest.skipIf(skip, "Failed to connect to database.")
-    def test_yuevuwu_exist(self):
-        data = UserRecord.from_sql(YUEVUWU)
+    def test_yuevuwu_exist(self) -> None:
+        data = cog.core.sql_abstract.UserRecord.from_sql(YUEVUWU)
         self.assertIsNotNone(data)
         print(data)
 

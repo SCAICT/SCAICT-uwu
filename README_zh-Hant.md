@@ -8,7 +8,6 @@
 
 住在中電會 Discord 伺服器的貓咪
 
-[![同步代辦事項至 Notion](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml/badge.svg?event=issues)](https://github.com/SCAICT/SCAICT-uwu/actions/workflows/notion.yml)
 [![官方網站](https://img.shields.io/website?label=官方網站&&url=https%3A%2F%2Fscaict.org%2F)](https://scaict.org/)
 [![中電商店](https://img.shields.io/website?label=中電商店&&url=https%3A%2F%2Fstore.scaict.org%2F)](https://store.scaict.org/)
 [![加入 Discord 伺服器](https://img.shields.io/discord/959823904266944562?label=Discord&logo=discord&)](https://dc.scaict.org)
@@ -21,7 +20,7 @@
 ## 如何部署？
 
 1. clone 此儲存庫。
-2. 在 Python 3.11 或 **3.12**（推薦）或 3.13（**實驗性**）中建立環境。
+2. 在 Python 3.11 或 **3.12**（推薦）或 3.13（**實驗性**）或 3.14（**實驗性**）中建立環境。
 3. 安裝必要的函式庫。
 
    ```bash

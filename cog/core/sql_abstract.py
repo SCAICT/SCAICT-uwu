@@ -2,20 +2,28 @@
 # let's keep that mess for now and probably fix them later.
 # pylint: disable = invalid-name, too-many-instance-attributes, broad-exception-raised
 
+# Future statements
 from __future__ import annotations
-from abc import ABC, abstractmethod
-from collections import UserDict
-from datetime import datetime, date
-from dataclasses import dataclass, is_dataclass, fields
-from typing import Any, Generic, TypeVar
 
-from cog.core.sql import fetchone_by_primary_key, write, mysql_connection
-from cog.core.singleton import SingletonMeta
+# Standard imports
+import abc
+import collections
+import dataclasses
+import datetime
+import typing
+
+# Local imports
+import cog.core.singleton
+import cog.core.sql
 
 
 # TODO: extend if we need to judge the unset value is nullable
-class UnsetSentinel(metaclass=SingletonMeta):
+class UnsetSentinel(metaclass=cog.core.singleton.SingletonMeta):
     def __repr__(self):
+        """
+        Returns:
+            Literal['UNSET']:
+        """
         return "UNSET"
 
 
@@ -24,12 +32,29 @@ UNSET = UnsetSentinel()
 
 class Unsettable:
     def __getattribute__(self, name):
+        """
+        Parameters:
+            name:
+
+        Returns:
+        """
+
         value = super().__getattribute__(name)
+
         if value is UNSET:
             raise UnsetError(f"Attribute '{name}' is not set")
+
         return value
 
-    def is_unset(self, attr_name):
+    def is_unset(self, attr_name) -> bool:
+        """
+        Parameters:
+            attr_name:
+
+        Returns:
+            bool:
+        """
+
         return super().__getattribute__(attr_name) is UNSET
 
 
@@ -37,13 +62,24 @@ class UnsetError(Exception):
     pass
 
 
-DataclassT = TypeVar("DataclassT")
+DataclassT = typing.TypeVar("DataclassT")
 
 
 # TODO: optimize with attr module
-class AttributeKeyedDict(UserDict, Generic[DataclassT]):
-    def __init__(self, primary_key_name: str, *args, **kwargs):
-        if not is_dataclass(DataclassT):
+class AttributeKeyedDict(collections.UserDict, typing.Generic[DataclassT]):
+    def __init__(self, primary_key_name: str, *args, **kwargs) -> None:
+        """
+        Parameters:
+            primary_key_name (str):
+            *args:
+            **kwargs:
+
+        Raises:
+            AttributeError:
+            TypeError:
+        """
+
+        if not dataclasses.is_dataclass(DataclassT):
             raise TypeError(
                 "KeyedDict should be specified a dataclass as the type of the item."
             )
@@ -54,26 +90,71 @@ class AttributeKeyedDict(UserDict, Generic[DataclassT]):
             )
 
         self.primary_key_name = primary_key_name
+
         super().__init__(*args, **kwargs)
 
-    def __setitem__(self, key, item: DataclassT):
+    def __setitem__(self, key, item: DataclassT) -> typing.NoReturn:
+        """
+        Parameters:
+            key:
+            item:
+
+        Returns:
+            typing.NoReturn:
+
+        Raises:
+            RuntimeError:
+        """
+
         raise RuntimeError("Please use `set()` method to set records")
 
-    def set(self, record: DataclassT):
+    def set(self, record: DataclassT) -> None:
+        """
+        Parameters:
+            record:
+        """
+
         identifier = getattr(record, self.primary_key_name)
+
         return super().__setitem__(identifier, record)
 
 
 def is_protected_name(name: str) -> bool:
+    """
+    Parameters:
+        name (str):
+
+    Returns:
+        bool:
+    """
+
     return name.startswith("_") and not name.startswith("__") and not name.endswith("_")
 
 
 class ProtectedAttrReadOnlyMixin:
-    def __getattribute__(self, name: str) -> Any:
+    def __getattribute__(self, name: str) -> typing.Any:
+        """
+        Parameters:
+            name (str):
+
+        Returns:
+            typing.Any:
+        """
+
         return super().__getattribute__(name)
 
-    def __setattr__(self, name: str, value):
+    def __setattr__(self, name: str, value) -> None:
+        """
+        Parameters:
+            name (str):
+            value:
+
+        Raises:
+            AttributeError:
+        """
+
         is_protected = is_protected_name(name)
+
         if not is_protected or self.__dict__ is None:
             return super().__setattr__(name, value)
 
@@ -85,19 +166,20 @@ class ProtectedAttrReadOnlyMixin:
             raise AttributeError(
                 f"The protected attribute `{name}` should be read-only after initialization."
             )
+
         return super().__setattr__(name, value)
 
 
-class SQLTable(ABC):
+class SQLTable(abc.ABC):
     @staticmethod
-    @abstractmethod
+    @abc.abstractmethod
     def from_sql(unique_id): ...
 
-    @abstractmethod
+    @abc.abstractmethod
     def to_sql(self): ...
 
 
-@dataclass
+@dataclasses.dataclass
 class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
     uid: int  # required
 
@@ -110,25 +192,34 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
     ticket: int = UNSET  # pyright: ignore[reportAssignmentType]
     charge_combo: int = UNSET  # pyright: ignore[reportAssignmentType]
     next_lottery: int = UNSET  # pyright: ignore[reportAssignmentType]
-    last_charge: datetime = UNSET  # pyright: ignore[reportAssignmentType]
-    last_comment: date = UNSET  # pyright: ignore[reportAssignmentType]
+    last_charge: datetime.datetime = UNSET  # pyright: ignore[reportAssignmentType]
+    last_comment: datetime.date = UNSET  # pyright: ignore[reportAssignmentType]
     today_comments: int = UNSET  # pyright: ignore[reportAssignmentType]
     admkey: str | None = UNSET  # pyright: ignore[reportAssignmentType]
 
     # if true, readonly after init (default: False)
     _protected: bool = UNSET  # pyright: ignore[reportAssignmentType]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.is_unset("_protected"):
             self._protected = False
 
     def __eq__(self, value: object) -> bool:
+        """
+        Parameters:
+            value (object):
+
+        Returns:
+            bool:
+        """
+
         if not isinstance(value, UserRecord):
             return False
 
-        for field in fields(UserRecord):
+        for field in dataclasses.fields(UserRecord):
             is_unset_a = self.is_unset(field.name)
             is_unset_b = value.is_unset(field.name)
+
             if is_unset_a != is_unset_b:
                 return False
 
@@ -142,7 +233,15 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
     # won't place default value unless use default() to ensure safety
     # TODO: UserRecord.from_sql(uid).or_default() or UserRecord.from_sql_or_default(uid)
     @staticmethod
-    def default(uid):
+    def default(uid: int) -> UserRecord:
+        """
+        Parameters:
+            uid (int):
+
+        Returns:
+            cog.core.sql_abstract.UserRecord:
+        """
+
         return UserRecord(
             uid=uid,
             DCname=None,
@@ -154,8 +253,8 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
             ticket=1,
             charge_combo=0,
             next_lottery=0,
-            last_charge=datetime(1970, 1, 1, 0, 0, 0),
-            last_comment=date(1970, 1, 1),
+            last_charge=datetime.datetime(1970, 1, 1, 0, 0, 0),
+            last_comment=datetime.date(1970, 1, 1),
             today_comments=0,
             admkey=None,
         )
@@ -163,9 +262,20 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
     @staticmethod
     def from_sql(  # pylint: disable=arguments-renamed # pyright: ignore[reportIncompatibleMethodOverride]
         uid: int,
-    ):
+    ) -> UserRecord | None:
+        """
+        Parameters:
+            uid (int):
 
-        data = fetchone_by_primary_key("user", "uid", uid)
+        Returns:
+            cog.core.sql_abstract.UserRecord | None:
+
+        Raises:
+            Exception:
+        """
+
+        data = cog.core.sql.fetchone_by_primary_key("user", "uid", uid)
+
         if data is None:
             return None
 
@@ -173,7 +283,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
             _protected=True, **data  # pyright: ignore[reportArgumentType]
         )
 
-        for field in fields(record):
+        for field in dataclasses.fields(record):
             if record.is_unset(field.name):
                 raise Exception(
                     f"SQL is not return all fields. (`{field.name}`=`{getattr(record, field.name)}`)"
@@ -181,22 +291,29 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
 
         return record
 
-    def to_sql(self):
+    def to_sql(self) -> None:
+        """
+        Raises:
+            ValueError:
+        """
+
         if self._protected:
             raise ValueError("You should new a object to modify.")
+
         self.to_sql_unsafe()
 
-    def to_sql_unsafe(self):
-        with mysql_connection() as c:
+    def to_sql_unsafe(self) -> None:
+        with cog.core.sql.mysql_connection() as c:
             _, cursor = c
-            for field in fields(self):
+
+            for field in dataclasses.fields(self):
                 if is_protected_name(field.name):  # _protected
                     continue
 
                 try:
                     # only write changed value by check if value is unset or not
                     value = getattr(self, field.name)
-                    write(self.uid, field.name, value, cursor)
+                    cog.core.sql.write(self.uid, field.name, value, cursor)
                 except UnsetError:
                     continue
         #         except MySQLError:
@@ -206,5 +323,5 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
 
 
 class UserRecordDict(AttributeKeyedDict[UserRecord]):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("uid")
