@@ -12,7 +12,7 @@ import mysql.connector.pooling
 import mysql.connector.types
 
 # Local imports
-import cog.core.secret
+import uwu.cog.core.secret
 
 
 # TODO: replace link_sql()
@@ -40,7 +40,8 @@ def mysql_connection() -> typing.Generator[
 
     try:
         connection = typing.cast(
-            mysql.connector.abstracts.MySQLConnectionAbstract, cog.core.secret.connect()
+            mysql.connector.abstracts.MySQLConnectionAbstract,
+            uwu.cog.core.secret.connect(),
         )
 
         if connection is None:
@@ -96,7 +97,7 @@ def link_sql() -> tuple[
         tuple[mysql.connector.pooling.PooledMySQLConnection | mysql.connector.abstracts.MySQLConnectionAbstract, mysql.connector.abstracts.MySQLCursorAbstract | typing.Any]:
     """
 
-    connection = cog.core.secret.connect()
+    connection = uwu.cog.core.secret.connect()
     cursor = connection.cursor()
 
     return connection, cursor

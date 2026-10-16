@@ -11,7 +11,7 @@ import random
 import discord
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 
 def open_json():
@@ -25,10 +25,10 @@ def open_json():
 
 
 def get_total_points():
-    connection, cursor = cog.core.sql.link_sql()
+    connection, cursor = uwu.cog.core.sql.link_sql()
     cursor.execute("SELECT SUM(point) FROM `user`")
     points = cursor.fetchone()[0]
-    cog.core.sql.end(connection, cursor)
+    uwu.cog.core.sql.end(connection, cursor)
     return points
 
 

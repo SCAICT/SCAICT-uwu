@@ -6,8 +6,8 @@ import datetime
 import unittest
 
 # Local imports
-import cog.core.sql_abstract
-import cog.daily_charge
+import uwu.cog.core.sql_abstract
+import uwu.cog.daily_charge
 
 YUEVUWU = 1
 PANBOYU = 2
@@ -40,7 +40,7 @@ class TestIsForgivable(unittest.TestCase):
         for last_charge in test_cases_true:
             with self.subTest(last_charge=last_charge):
                 self.assertTrue(
-                    cog.daily_charge.Charge.is_forgivable(
+                    uwu.cog.daily_charge.Charge.is_forgivable(
                         datetime.datetime.strptime(last_charge, "%Y-%m-%d %H:%M:%S")
                     )
                 )
@@ -48,7 +48,7 @@ class TestIsForgivable(unittest.TestCase):
         for last_charge in test_cases_false:
             with self.subTest(last_charge=last_charge):
                 self.assertFalse(
-                    cog.daily_charge.Charge.is_forgivable(
+                    uwu.cog.daily_charge.Charge.is_forgivable(
                         datetime.datetime.strptime(last_charge, "%Y-%m-%d %H:%M:%S")
                     )
                 )
@@ -70,7 +70,7 @@ class TestIsCrossDay(unittest.TestCase):
         for last_charge, executed_at in test_cases_true:
             with self.subTest(last_charge=last_charge, executed_at=executed_at):
                 self.assertTrue(
-                    cog.daily_charge.Charge.is_cross_day(
+                    uwu.cog.daily_charge.Charge.is_cross_day(
                         datetime.datetime.strptime(last_charge, "%Y-%m-%d %H:%M:%S"),
                         datetime.datetime.strptime(executed_at, "%Y-%m-%d %H:%M:%S"),
                     )
@@ -79,7 +79,7 @@ class TestIsCrossDay(unittest.TestCase):
         for last_charge, executed_at in test_cases_false:
             with self.subTest(last_charge=last_charge, executed_at=executed_at):
                 self.assertFalse(
-                    cog.daily_charge.Charge.is_cross_day(
+                    uwu.cog.daily_charge.Charge.is_cross_day(
                         datetime.datetime.strptime(last_charge, "%Y-%m-%d %H:%M:%S"),
                         datetime.datetime.strptime(executed_at, "%Y-%m-%d %H:%M:%S"),
                     )
@@ -97,10 +97,10 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
 
     def test_panboyu3980(self) -> None:
         last_charge = datetime.datetime(2025, 3, 13, 9, 5, 0)
-        is_forgivable = cog.daily_charge.Charge.is_forgivable(last_charge)
+        is_forgivable = uwu.cog.daily_charge.Charge.is_forgivable(last_charge)
         self.assertTrue(is_forgivable)
 
-        delta = cog.daily_charge.Charge.reward(
+        delta = uwu.cog.daily_charge.Charge.reward(
             user_or_uid=PANBOYU,
             last_charge=last_charge,
             executed_at=datetime.datetime(2025, 4, 12, 17, 26, 0),
@@ -110,7 +110,7 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
             is_forgivable=is_forgivable,
             testing=True,
         )
-        expected = cog.core.sql_abstract.UserRecord(
+        expected = uwu.cog.core.sql_abstract.UserRecord(
             uid=PANBOYU,
             charge_combo=12,
             point=1450,
@@ -120,10 +120,10 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
 
     def test_w4lnu7__(self) -> None:
         last_charge = datetime.datetime(2025, 3, 12, 21, 15, 0)
-        is_forgivable = cog.daily_charge.Charge.is_forgivable(last_charge)
+        is_forgivable = uwu.cog.daily_charge.Charge.is_forgivable(last_charge)
         self.assertFalse(is_forgivable)
 
-        delta = cog.daily_charge.Charge.reward(
+        delta = uwu.cog.daily_charge.Charge.reward(
             user_or_uid=WALNUT,
             last_charge=last_charge,
             executed_at=datetime.datetime(2025, 4, 12, 20, 56, 0),
@@ -133,7 +133,7 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
             is_forgivable=is_forgivable,
             testing=True,
         )
-        expected = cog.core.sql_abstract.UserRecord(
+        expected = uwu.cog.core.sql_abstract.UserRecord(
             uid=WALNUT,
             charge_combo=1,
             point=2569,
@@ -143,10 +143,10 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
 
     def test_hatakutsu_yuevu(self) -> None:
         last_charge = datetime.datetime(2025, 4, 12, 16, 27, 0)
-        is_forgivable = cog.daily_charge.Charge.is_forgivable(last_charge)
+        is_forgivable = uwu.cog.daily_charge.Charge.is_forgivable(last_charge)
         self.assertFalse(is_forgivable)
 
-        delta = cog.daily_charge.Charge.reward(
+        delta = uwu.cog.daily_charge.Charge.reward(
             user_or_uid=YUEVUWU,
             last_charge=last_charge,
             executed_at=datetime.datetime(2025, 4, 13, 2, 47, 0),
@@ -156,7 +156,7 @@ class TestDailyChargeIntegrationTest(unittest.TestCase):
             is_forgivable=is_forgivable,
             testing=True,
         )
-        expected = cog.core.sql_abstract.UserRecord(
+        expected = uwu.cog.core.sql_abstract.UserRecord(
             uid=YUEVUWU,
             charge_combo=3,
             point=2751,

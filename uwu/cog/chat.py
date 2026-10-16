@@ -24,7 +24,7 @@ import google.genai.types
 import openai
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 dotenv.load_dotenv(f"{os.getcwd()}/.env")
 
@@ -276,10 +276,10 @@ class Chat(discord.ext.commands.Cog):
         """
 
         try:
-            connection, cursor = cog.core.sql.link_sql()
+            connection, cursor = uwu.cog.core.sql.link_sql()
             cursor.execute("SELECT nickname FROM chat_nick WHERE uid = %s", (user_id,))
             ret = cursor.fetchall()
-            cog.core.sql.end(connection, cursor)
+            uwu.cog.core.sql.end(connection, cursor)
 
             if ret and ret[0][0]:
                 return ret[0][0]

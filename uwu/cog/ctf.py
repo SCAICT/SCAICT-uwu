@@ -15,8 +15,8 @@ import discord.commands
 import discord.ext.commands
 
 # Local imports
-import build.build
-import cog.core.sql
+import uwu.build
+import uwu.cog.core.sql
 
 with open(
     f"{os.getcwd()}/database/server.config.json", "r", encoding="utf-8"
@@ -55,7 +55,7 @@ def generate_ctf_id() -> str:
     return str(random.randint(100000000000000000, 999999999999999999))
 
 
-class CTF(build.build.Build):
+class CTF(uwu.build.Build):
     @discord.ext.commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.CTFView())
@@ -100,7 +100,7 @@ class CTF(build.build.Build):
                     """
 
                     try:
-                        connection, cursor = cog.core.sql.endlink_sql()  # SQL 會話
+                        connection, cursor = uwu.cog.core.sql.endlink_sql()  # SQL 會話
                         question_id = interaction.message.embeds[0].footer.text.split(
                             ": "
                         )[1]
@@ -128,7 +128,7 @@ class CTF(build.build.Build):
                             await interaction.response.send_message(
                                 "答題時間尚未開始！", ephemeral=True
                             )
-                            cog.core.sql.end(connection, cursor)
+                            uwu.cog.core.sql.end(connection, cursor)
 
                             return
 
@@ -140,7 +140,7 @@ class CTF(build.build.Build):
                             await interaction.response.send_message(
                                 "目前不在作答時間內！", ephemeral=True
                             )
-                            cog.core.sql.end(connection, cursor)
+                            uwu.cog.core.sql.end(connection, cursor)
 
                             return
 
@@ -182,7 +182,7 @@ class CTF(build.build.Build):
                                 await interaction.response.send_message(
                                     "你已經回答超過限制次數了喔！", ephemeral=True
                                 )
-                                cog.core.sql.end(connection, cursor)
+                                uwu.cog.core.sql.end(connection, cursor)
 
                                 return
 
@@ -254,10 +254,12 @@ class CTF(build.build.Build):
                             )
                             reward = int(cursor.fetchone()[0])
                             # cursor.execute("USE Discord;") # 換資料庫存取電電點
-                            current_point = cog.core.sql.read(user_id, "point", cursor)
+                            current_point = uwu.cog.core.sql.read(
+                                user_id, "point", cursor
+                            )
                             new_point = current_point + reward
                             # 更新使用者電電點
-                            cog.core.sql.write(user_id, "point", new_point, cursor)
+                            uwu.cog.core.sql.write(user_id, "point", new_point, cursor)
                             # 更新作答狀態
                             # log
                             print(
@@ -307,7 +309,7 @@ class CTF(build.build.Build):
                         )
                         print(f"Error: {exception}\n{traceback_str}")
 
-                    cog.core.sql.end(connection, cursor)  # 結束SQL會話
+                    uwu.cog.core.sql.end(connection, cursor)  # 結束SQL會話
 
                 def clear_items(self) -> typing.Self:
                     """
@@ -387,7 +389,7 @@ class CTF(build.build.Build):
             return
         try:
             await ctx.defer()  # 確保機器人請求不會超時
-            connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+            connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
 
             while True:
                 new_id = generate_ctf_id()
@@ -484,7 +486,7 @@ class CTF(build.build.Build):
             )
             print(f"Error: {exception}\n{traceback_str}")
 
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
     # 刪除題目
     @ctf_commands.command(name="delete", description="刪除題目")
@@ -512,7 +514,7 @@ class CTF(build.build.Build):
 
             return
         try:
-            connection, cursor = cog.core.sql.link_sql()
+            connection, cursor = uwu.cog.core.sql.link_sql()
             cursor.execute(
                 "SELECT message_id, title FROM ctf_data WHERE id=%s and flags=%s;",
                 (
@@ -556,7 +558,7 @@ class CTF(build.build.Build):
             print(f"Error: {exception}")
             # 删除消息
 
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
     @ctf_commands.command(name="list", description="列出所有題目")
     async def list_all(self, ctx) -> None:
@@ -566,7 +568,7 @@ class CTF(build.build.Build):
         """
 
         question_list = ["# **CTF 題目列表:**"]
-        connection, cursor = cog.core.sql.link_sql()
+        connection, cursor = uwu.cog.core.sql.link_sql()
         # cursor.execute("use CTF;")
         cursor.execute("SELECT title, score, id FROM ctf_data")
         ctf_info = cursor.fetchall()
@@ -578,7 +580,7 @@ class CTF(build.build.Build):
 
         question_text = "\n".join(question_list)
         await ctx.respond(question_text)
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
 
 def setup(bot: discord.Bot) -> None:

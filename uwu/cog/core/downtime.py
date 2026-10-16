@@ -13,7 +13,7 @@ import discord
 import discord.abc
 
 # Local imports
-import cog.core.safe_write
+import uwu.cog.core.safe_write
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S%z"
 DOWNTIME_PATH = f"{os.getcwd()}/database/downtime.json"
@@ -124,7 +124,7 @@ def write_downtime_list(downtime_list: list[Downtime]) -> None:
         downtime_list (list[cog.core.downtime.Downtime]):
     """
 
-    with cog.core.safe_write.safe_open_w(DOWNTIME_PATH, encoding="utf-8") as file:
+    with uwu.cog.core.safe_write.safe_open_w(DOWNTIME_PATH, encoding="utf-8") as file:
         json.dump([downtime.to_dict() for downtime in downtime_list], file, indent=4)
 
 

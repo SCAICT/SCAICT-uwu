@@ -22,7 +22,7 @@ import discord.ext.commands
 import discord.ext.tasks
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 
 def get_perk_config() -> dict:
@@ -271,19 +271,19 @@ class Perk(discord.ext.commands.Cog):
         await ctx.defer()
 
         user_id = ctx.author.id
-        connection, cursor = cog.core.sql.link_sql()
-        point = cog.core.sql.read(user_id, "point", cursor)
+        connection, cursor = uwu.cog.core.sql.link_sql()
+        point = uwu.cog.core.sql.read(user_id, "point", cursor)
 
         if point < ROLE_PRICE:
             await ctx.respond(
                 f"電電點不足！需要 {ROLE_PRICE} 點，你目前只有 {point} 點。"
             )
-            cog.core.sql.end(connection, cursor)
+            uwu.cog.core.sql.end(connection, cursor)
 
             return
 
         # 已有租借中的身分組就改名續租，否則建立新的
-        role_id = cog.core.sql.read(user_id, "role_id", cursor, table="custom_role")
+        role_id = uwu.cog.core.sql.read(user_id, "role_id", cursor, table="custom_role")
         role = ctx.guild.get_role(role_id) if role_id else None
 
         try:
@@ -312,28 +312,28 @@ class Perk(discord.ext.commands.Cog):
             await ctx.author.add_roles(role)
         except discord.Forbidden:
             await ctx.respond("我沒有管理身分組的權限，請聯絡管理員！")
-            cog.core.sql.end(connection, cursor)
+            uwu.cog.core.sql.end(connection, cursor)
 
             return
 
         # 續租從原到期日往後算，新租從現在起算
         now = datetime.datetime.now()
-        old_expire = cog.core.sql.read(
+        old_expire = uwu.cog.core.sql.read(
             user_id, "role_expire", cursor, table="custom_role"
         )
         base = old_expire if old_expire is not None and old_expire > now else now
         new_expire = base + datetime.timedelta(days=ROLE_DAYS)
 
-        cog.core.sql.write(user_id, "point", point - ROLE_PRICE, cursor)
-        cog.core.sql.write(user_id, "role_id", role.id, cursor, table="custom_role")
-        cog.core.sql.write(
+        uwu.cog.core.sql.write(user_id, "point", point - ROLE_PRICE, cursor)
+        uwu.cog.core.sql.write(user_id, "role_id", role.id, cursor, table="custom_role")
+        uwu.cog.core.sql.write(
             user_id,
             "role_expire",
             new_expire.strftime("%Y-%m-%d %H:%M:%S"),
             cursor,
             table="custom_role",
         )
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
         print(
             f"{user_id}, {ctx.author} rent custom role {role.id} {datetime.datetime.now()}"
         )
@@ -390,20 +390,20 @@ class Perk(discord.ext.commands.Cog):
         await ctx.defer()
 
         user_id = ctx.author.id
-        connection, cursor = cog.core.sql.link_sql()
-        point = cog.core.sql.read(user_id, "point", cursor)
+        connection, cursor = uwu.cog.core.sql.link_sql()
+        point = uwu.cog.core.sql.read(user_id, "point", cursor)
 
         if point < NICK_PRICE:
             await ctx.respond(
                 f"電電點不足！需要 {NICK_PRICE} 點，你目前只有 {point} 點。"
             )
-            cog.core.sql.end(connection, cursor)
+            uwu.cog.core.sql.end(connection, cursor)
 
             return
 
-        cog.core.sql.write(user_id, "point", point - NICK_PRICE, cursor)
-        cog.core.sql.write(user_id, "nickname", nickname, cursor, table="chat_nick")
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.write(user_id, "point", point - NICK_PRICE, cursor)
+        uwu.cog.core.sql.write(user_id, "nickname", nickname, cursor, table="chat_nick")
+        uwu.cog.core.sql.end(connection, cursor)
         print(f"{user_id}, {ctx.author} set chat nick {datetime.datetime.now()}")
 
         embed = discord.Embed(color=0x14E15C)
@@ -420,7 +420,7 @@ class Perk(discord.ext.commands.Cog):
         """
 
         try:
-            connection, cursor = cog.core.sql.link_sql()
+            connection, cursor = uwu.cog.core.sql.link_sql()
             cursor.execute(
                 "SELECT uid, role_id FROM custom_role"
                 " WHERE role_expire IS NOT NULL AND role_expire < %s",
@@ -450,7 +450,7 @@ class Perk(discord.ext.commands.Cog):
                     f"{user_id} custom role {role_id} expired {datetime.datetime.now()}"
                 )
 
-            cog.core.sql.end(connection, cursor)
+            uwu.cog.core.sql.end(connection, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error in expire_check: {exception}")

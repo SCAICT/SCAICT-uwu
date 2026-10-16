@@ -13,12 +13,12 @@ import datetime
 import typing
 
 # Local imports
-import cog.core.singleton
-import cog.core.sql
+import uwu.cog.core.singleton
+import uwu.cog.core.sql
 
 
 # TODO: extend if we need to judge the unset value is nullable
-class UnsetSentinel(metaclass=cog.core.singleton.SingletonMeta):
+class UnsetSentinel(metaclass=uwu.cog.core.singleton.SingletonMeta):
     def __repr__(self):
         """
         Returns:
@@ -274,7 +274,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
             Exception:
         """
 
-        data = cog.core.sql.fetchone_by_primary_key("user", "uid", uid)
+        data = uwu.cog.core.sql.fetchone_by_primary_key("user", "uid", uid)
 
         if data is None:
             return None
@@ -303,7 +303,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
         self.to_sql_unsafe()
 
     def to_sql_unsafe(self) -> None:
-        with cog.core.sql.mysql_connection() as c:
+        with uwu.cog.core.sql.mysql_connection() as c:
             _, cursor = c
 
             for field in dataclasses.fields(self):
@@ -313,7 +313,7 @@ class UserRecord(SQLTable, Unsettable, ProtectedAttrReadOnlyMixin):
                 try:
                     # only write changed value by check if value is unset or not
                     value = getattr(self, field.name)
-                    cog.core.sql.write(self.uid, field.name, value, cursor)
+                    uwu.cog.core.sql.write(self.uid, field.name, value, cursor)
                 except UnsetError:
                     continue
         #         except MySQLError:

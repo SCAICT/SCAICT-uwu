@@ -9,11 +9,11 @@ import discord
 import discord.ext.commands
 
 # Local imports
-import build.build
+import uwu.build
 
 
 # ticket 頻道
-class Ticket(build.build.Build):
+class Ticket(uwu.build.Build):
     @discord.ext.commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.TicketView())

@@ -9,8 +9,8 @@ import discord
 import dotenv
 
 # Local imports
-import channel_check  # update_channel程式從core目錄底下引入
-import cog.daily_charge
+import uwu.channel_check  # update_channel程式從core目錄底下引入
+import uwu.cog.daily_charge
 
 intt = discord.Intents.default()
 intt.members = True
@@ -18,9 +18,9 @@ intt.message_content = True
 bot = discord.Bot(intents=intt)
 
 
-for filename in os.listdir(f"{os.getcwd()}/cog"):
+for filename in os.listdir(f"{os.getcwd()}/uwu/cog"):
     if filename.endswith(".py"):
-        bot.load_extension(f"cog.{filename[:-3]}")
+        bot.load_extension(f"uwu.cog.{filename[:-3]}")
         print(f"📖 {filename} loaded")  # test
 
 
@@ -46,9 +46,9 @@ async def unload(ctx, extension):
 async def on_ready():
     print(f"✅ {bot.user} is online")
 
-    bot.loop.create_task(channel_check.update_channel(bot))
-    bot.loop.create_task(channel_check.change_status(bot))
-    bot.loop.create_task(cog.daily_charge.Charge(bot).restore_downtime_point())
+    bot.loop.create_task(uwu.channel_check.update_channel(bot))
+    bot.loop.create_task(uwu.channel_check.change_status(bot))
+    bot.loop.create_task(uwu.cog.daily_charge.Charge(bot).restore_downtime_point())
 
 
 if __name__ == "__main__":

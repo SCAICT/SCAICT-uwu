@@ -14,9 +14,9 @@ import discord.user
 import mysql.connector.abstracts
 
 # Local imports
-import cog.core.downtime
-import cog.core.sql
-import cog.core.sql_abstract
+import uwu.cog.core.downtime
+import uwu.cog.core.sql
+import uwu.cog.core.sql_abstract
 
 
 def get_channels() -> typing.Any:
@@ -43,7 +43,7 @@ class Charge(discord.ext.commands.Cog):
         self.bot = bot
 
     async def restore_downtime_point(self) -> None:
-        downtime_list = cog.core.downtime.get_downtime_list()
+        downtime_list = uwu.cog.core.downtime.get_downtime_list()
         unprocessed_downtime_list = list(
             filter(lambda x: not x.is_restored, downtime_list)
         )
@@ -58,7 +58,7 @@ class Charge(discord.ext.commands.Cog):
         latest_downtime_end = datetime.datetime.now()
 
         charge_channel_id = get_channels()["everyDayCharge"]
-        messages = await cog.core.downtime.get_history(
+        messages = await uwu.cog.core.downtime.get_history(
             self.bot,
             charge_channel_id,
             after=earliest_downtime_start,
@@ -67,7 +67,7 @@ class Charge(discord.ext.commands.Cog):
 
         # TODO: cache the last_charged date
         # cached_change: UserDict = UserDict()
-        with cog.core.sql.mysql_connection() as c:
+        with uwu.cog.core.sql.mysql_connection() as c:
             connection, cursor = c
             # XXX: check with a better method, because the module on the running machine have no `_connection` attribute :skull:
             assert (
@@ -93,9 +93,9 @@ class Charge(discord.ext.commands.Cog):
                     message.created_at in downtime
                     for downtime in unprocessed_downtime_list
                 ):
-                    user_data = cog.core.sql_abstract.UserRecord.from_sql(
+                    user_data = uwu.cog.core.sql_abstract.UserRecord.from_sql(
                         author.id
-                    ) or cog.core.sql_abstract.UserRecord.default(author.id)
+                    ) or uwu.cog.core.sql_abstract.UserRecord.default(author.id)
 
                     delta_record = self.reward(
                         author,
@@ -120,7 +120,7 @@ class Charge(discord.ext.commands.Cog):
             restored_downtime_list = [
                 downtime.marked_as_restored() for downtime in downtime_list
             ]
-            cog.core.downtime.write_downtime_list(restored_downtime_list)
+            uwu.cog.core.downtime.write_downtime_list(restored_downtime_list)
 
         # commit and close the connection
 
@@ -220,7 +220,7 @@ class Charge(discord.ext.commands.Cog):
             bool:
         """
 
-        downtime_list = cog.core.downtime.get_downtime_list()
+        downtime_list = uwu.cog.core.downtime.get_downtime_list()
 
         return any(
             downtime.start.date() - datetime.timedelta(days=1)
@@ -276,7 +276,7 @@ class Charge(discord.ext.commands.Cog):
         cursor: mysql.connector.abstracts.MySQLCursorAbstract | None = None,
         is_forgivable: bool = False,
         testing: bool = False,
-    ) -> cog.core.sql_abstract.UserRecord:
+    ) -> uwu.cog.core.sql_abstract.UserRecord:
         """
         Parameters:
             user_or_uid (discord.user._UserTag | int):
@@ -317,7 +317,7 @@ class Charge(discord.ext.commands.Cog):
             if cursor is None:
                 raise ValueError("You should give a cursor for writing data to sql.")
 
-        delta_record = cog.core.sql_abstract.UserRecord(uid)
+        delta_record = uwu.cog.core.sql_abstract.UserRecord(uid)
 
         combo = (
             1
@@ -334,16 +334,16 @@ class Charge(discord.ext.commands.Cog):
 
             # refactor with UserRecord.to_sql
             if not testing:
-                cog.core.sql.write(uid, "ticket", ticket, cursor)
+                uwu.cog.core.sql.write(uid, "ticket", ticket, cursor)
 
         delta_record.last_charge = executed_at
         delta_record.charge_combo = combo
         delta_record.point = point
 
         if not testing:
-            cog.core.sql.write(uid, "last_charge", executed_at, cursor)
-            cog.core.sql.write(uid, "charge_combo", combo, cursor)
-            cog.core.sql.write(uid, "point", point, cursor)
+            uwu.cog.core.sql.write(uid, "last_charge", executed_at, cursor)
+            uwu.cog.core.sql.write(uid, "charge_combo", combo, cursor)
+            uwu.cog.core.sql.write(uid, "point", point, cursor)
 
         # 紀錄log
         # TODO: record both executed time and datetime.now() after logger is implemented
@@ -369,7 +369,7 @@ class Charge(discord.ext.commands.Cog):
             datetime.datetime:
         """
 
-        last_charge = cog.core.sql.read(
+        last_charge = uwu.cog.core.sql.read(
             user.id, "last_charge", cursor
         )  # SQL回傳型態：<class 'datetime.date'>
         # strptime轉型後：<class 'datetime.datetime'>
@@ -400,7 +400,7 @@ class Charge(discord.ext.commands.Cog):
             # End connection instead of return
             return
 
-        with cog.core.sql.mysql_connection() as c:  # SQL 會話
+        with uwu.cog.core.sql.mysql_connection() as c:  # SQL 會話
             connection, cursor = c
             user = interaction.user
 
@@ -416,13 +416,13 @@ class Charge(discord.ext.commands.Cog):
 
                 return
 
-            combo: int = cog.core.sql.read(
+            combo: int = uwu.cog.core.sql.read(
                 user.id, "charge_combo", cursor
             )  # 連續登入 # pyright: ignore[reportAssignmentType]
-            point: int = cog.core.sql.read(
+            point: int = uwu.cog.core.sql.read(
                 user.id, "point", cursor
             )  # pyright: ignore[reportAssignmentType]
-            ticket: int = cog.core.sql.read(
+            ticket: int = uwu.cog.core.sql.read(
                 user.id, "ticket", cursor
             )  # pyright: ignore[reportAssignmentType]
 
