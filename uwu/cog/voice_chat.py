@@ -9,11 +9,11 @@ import discord
 import discord.ext.commands
 
 # Local imports
-import build.build
+import uwu.build
 
 
 # 建立動態語音頻道
-class VoiceChat(build.build.Build):
+class VoiceChat(uwu.build.Build):
     async def check_and_delete_empty_channel(self, voice_channel) -> None:
         """
         Parameters:

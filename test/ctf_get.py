@@ -9,12 +9,12 @@ from __future__ import annotations
 import json
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 with open("./database/ctf.json", "r", encoding="utf-8") as file:
     # code to read and process the file goes here
     file = json.load(file)
-    connection, cursor = cog.core.sql.link_sql()
+    connection, cursor = uwu.cog.core.sql.link_sql()
     cursor.execute("USE `CTF`")
 
     for questionId, ctf in file.items():
@@ -27,6 +27,6 @@ with open("./database/ctf.json", "r", encoding="utf-8") as file:
                 f"INSERT INTO `history`(data_id,uid,count,solved) VALUES('{questionId}',{h},{ctf['history'][h]},{solved});"
             )
 
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
         break

@@ -9,20 +9,15 @@ import typing
 # Third-party imports
 import discord
 import discord.ext.commands
-import mysql.connector.abstracts
-import mysql.connector.connection_cext
-import mysql.connector.cursor_cext
-import mysql.connector.errors
-import mysql.connector.pooling
 import mysql.connector.types
 
 # Local imports
-import build.build
-import cog.core.sendgift
-import cog.core.sql
+import uwu.build
+import uwu.cog.core.sendgift
+import uwu.cog.core.sql
 
 
-class SendGift(build.build.Build):
+class SendGift(uwu.build.Build):
     @discord.ext.commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.Gift())
@@ -46,10 +41,10 @@ class SendGift(build.build.Build):
                 bonus (int):
             """
 
-            connection, cursor = cog.core.sql.link_sql()
-            current_point = cog.core.sql.read(uid, bonus_type, cursor)
-            cog.core.sql.write(uid, bonus_type, current_point + bonus, cursor)
-            cog.core.sql.end(connection, cursor)
+            connection, cursor = uwu.cog.core.sql.link_sql()
+            current_point = uwu.cog.core.sql.read(uid, bonus_type, cursor)
+            uwu.cog.core.sql.write(uid, bonus_type, current_point + bonus, cursor)
+            uwu.cog.core.sql.end(connection, cursor)
             print(
                 f"{uid} {username} get {bonus} {bonus_type} by Gift {datetime.datetime.now()}"
             )
@@ -71,7 +66,7 @@ class SendGift(build.build.Build):
             """
 
             try:
-                connection, cursor = cog.core.sql.link_sql()
+                connection, cursor = uwu.cog.core.sql.link_sql()
                 cursor.execute(
                     f"SELECT type, count FROM `gift` WHERE `btnID`={btn_id} and `received`=0"
                 )
@@ -81,7 +76,7 @@ class SendGift(build.build.Build):
                     return None, None
 
                 cursor.execute(f"UPDATE `gift` SET `received`=1 WHERE `btnID`={btn_id}")
-                cog.core.sql.end(connection, cursor)
+                uwu.cog.core.sql.end(connection, cursor)
 
                 return ret[0][0], ret[0][1]  # type, count
             except Exception as e:
@@ -199,7 +194,7 @@ class SendGift(build.build.Build):
 
             # DM 一個 Embed 和領取按鈕
             for target_user in target_users:
-                await cog.core.sendgift.send_gift_button(
+                await uwu.cog.core.sendgift.send_gift_button(
                     self, target_user, gift_type, count, manager.name
                 )
 

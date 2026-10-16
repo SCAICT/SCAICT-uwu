@@ -12,7 +12,7 @@ import discord
 import discord.ext.commands
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 
 def get_channels() -> typing.Any | dict:
@@ -65,15 +65,15 @@ class Game(discord.ext.commands.Cog):
         user_display_name = interaction.user
 
         try:
-            connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+            connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
 
-            point = cog.core.sql.read(user_id, "point", cursor)
+            point = uwu.cog.core.sql.read(user_id, "point", cursor)
 
             if point < 5:
                 await interaction.response.send_message(
                     "你的電電點不足以玩這個遊戲", ephemeral=True
                 )
-                cog.core.sql.end(connection, cursor)
+                uwu.cog.core.sql.end(connection, cursor)
 
                 return
 
@@ -81,7 +81,7 @@ class Game(discord.ext.commands.Cog):
                 await interaction.response.send_message(
                     "請輸入正確的選擇", ephemeral=True
                 )
-                cog.core.sql.end(connection, cursor)
+                uwu.cog.core.sql.end(connection, cursor)
 
                 return
 
@@ -111,12 +111,12 @@ class Game(discord.ext.commands.Cog):
                 print(
                     f"{user_id}, {user_display_name} Get {game_outcomes[(bot_choice, choice)]} point by playing rock-paper-scissors"
                 )
-            cog.core.sql.write(user_id, "point", point, cursor)
+            uwu.cog.core.sql.write(user_id, "point", point, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error: {exception}")
 
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
     @discord.slash_command(name="number_status", description="數數狀態")
     async def number_status(self, interaction: discord.Interaction) -> None:
@@ -126,14 +126,14 @@ class Game(discord.ext.commands.Cog):
         """
 
         try:
-            connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+            connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
             cursor.execute("SELECT seq FROM game")
             current_sequence = cursor.fetchone()[0]
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error: {exception}")
 
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
         embed = discord.Embed(
             title="現在數到",
             description=f"{current_sequence} (dec) 了，接下去吧!",

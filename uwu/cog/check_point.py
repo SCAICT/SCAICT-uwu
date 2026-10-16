@@ -6,7 +6,7 @@ import discord
 import discord.ext.commands
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 
 class CheckPoint(discord.ext.commands.Cog):
@@ -54,12 +54,12 @@ class CheckPoint(discord.ext.commands.Cog):
             interaction:
         """
 
-        connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+        connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
         user_id = interaction.user.id
-        combo = cog.core.sql.read(user_id, "charge_combo", cursor)
-        point = cog.core.sql.read(user_id, "point", cursor)
+        combo = uwu.cog.core.sql.read(user_id, "charge_combo", cursor)
+        point = uwu.cog.core.sql.read(user_id, "point", cursor)
         await self.send_message(point, combo, interaction)
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
 
 def setup(bot: discord.Bot) -> None:

@@ -18,7 +18,7 @@ import mysql.connector.abstracts
 import requests
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 app = flask.Flask(__name__)
 dotenv.load_dotenv(f"{os.getcwd()}/.env", verbose=True, override=True)
@@ -203,7 +203,7 @@ def send(target_user_id) -> flask.Response:
         )  # <class 'werkzeug.local.LocalProxy'> {'avatar': 'https://cdn.discordapp.com/avatars/898141506588770334/a_c81acdd4a925993d053a6fe9ed990c14.png', 'id': '898141506588770334', 'name': 'iach526526'}
         api_admin_id = api_admin.get("id")
         api_admin_name = api_admin.get("name")
-        discord_api = cog.core.sql.Apis(discord_token, guild_id)
+        discord_api = uwu.cog.core.sql.Apis(discord_token, guild_id)
         request_admin = discord_api.get_user(api_admin_id)
         gift_type = flask.request.args.get("gift_type", "電電點")  # 預設為"電電點"
         gift_amount = flask.request.args.get("count", 1)  # 預設數量為1
@@ -260,7 +260,7 @@ def send(target_user_id) -> flask.Response:
         user_name = user_data["user"]["username"]
 
         try:
-            new_gift = cog.core.sql.Gift(
+            new_gift = uwu.cog.core.sql.Gift(
                 discord_token, guild_id, target_user_id
             )  # create a new gift object
 
@@ -274,9 +274,9 @@ def send(target_user_id) -> flask.Response:
                 )
 
             message_id = new_gift.send_gift(gift_type, gift_amount)
-            connect, cursor = cog.core.sql.link_sql()
+            connect, cursor = uwu.cog.core.sql.link_sql()
 
-            if not cog.core.sql.user_id_exists(target_user_id, "user", cursor):
+            if not uwu.cog.core.sql.user_id_exists(target_user_id, "user", cursor):
                 cursor.execute(
                     "INSERT INTO user (uid) VALUE(%s)", (target_user_id,)
                 )  # 這裡要調用 api 去抓使用者名稱和 Mail
@@ -295,7 +295,7 @@ def send(target_user_id) -> flask.Response:
             gift_type = "point" if gift_type == "電電點" else "ticket"
             query = f"update user set {gift_type}={gift_type}+%s where uid=%s"
             cursor.execute(query, (gift_amount, target_user_id))
-            cog.core.sql.end(connect, cursor)
+            uwu.cog.core.sql.end(connect, cursor)
         except Exception as e:
             return flask.jsonify(
                 {
@@ -381,12 +381,12 @@ def callback() -> str | flask.Response:
     }
 
     # 將用戶資料寫入資料庫
-    connection, cursor = cog.core.sql.link_sql()
-    cog.core.sql.write(user_data["id"], "DCname", user_data["username"], cursor)
-    cog.core.sql.write(
+    connection, cursor = uwu.cog.core.sql.link_sql()
+    uwu.cog.core.sql.write(user_data["id"], "DCname", user_data["username"], cursor)
+    uwu.cog.core.sql.write(
         user_data["id"], "DCmail", user_data.get("email", "No email provided"), cursor
     )
-    cog.core.sql.end(connection, cursor)
+    uwu.cog.core.sql.end(connection, cursor)
 
     # 使用者資料已經存進 session["user"]，目標頁面（站內相對路徑）可以直接讀 session，
     # 完全不需要、也絕對不能把 email、user id 或 access token 放進轉址網址。
@@ -450,21 +450,21 @@ def profile() -> str:
         str:
     """
 
-    connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+    connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
     discord_user = flask.session.get("user")
 
     if not discord_user:
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
         return flask.render_template("home.html")
 
-    user_points = cog.core.sql.read(discord_user["id"], "point", cursor)
-    user_tickets = cog.core.sql.read(discord_user["id"], "ticket", cursor)
+    user_points = uwu.cog.core.sql.read(discord_user["id"], "point", cursor)
+    user_tickets = uwu.cog.core.sql.read(discord_user["id"], "ticket", cursor)
 
-    if cog.core.sql.user_id_exists(
+    if uwu.cog.core.sql.user_id_exists(
         discord_user["id"], "user", cursor
     ):  # 有找到這個使用者在表上
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
         return flask.render_template(
             "home.html",
@@ -474,7 +474,7 @@ def profile() -> str:
             ticket=str(user_tickets),
         )
 
-    cog.core.sql.end(connection, cursor)
+    uwu.cog.core.sql.end(connection, cursor)
 
     return flask.render_template(
         "home.html",
@@ -492,19 +492,19 @@ def slot() -> str:
         str:
     """
 
-    connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+    connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
     discord_user = flask.session.get("user")
 
     if not discord_user:
         return flask.render_template("slot.html")
 
-    user_points = cog.core.sql.read(discord_user["id"], "point", cursor)
-    user_tickets = cog.core.sql.read(discord_user["id"], "ticket", cursor)
+    user_points = uwu.cog.core.sql.read(discord_user["id"], "point", cursor)
+    user_tickets = uwu.cog.core.sql.read(discord_user["id"], "ticket", cursor)
 
-    if cog.core.sql.user_id_exists(
+    if uwu.cog.core.sql.user_id_exists(
         discord_user["id"], "user", cursor
     ):  # 有找到這個使用者在資料表上
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
         return flask.render_template(
             "slot.html",
@@ -514,7 +514,7 @@ def slot() -> str:
             ticket=str(user_tickets),
         )
 
-    cog.core.sql.end(connection, cursor)
+    uwu.cog.core.sql.end(connection, cursor)
 
     return flask.render_template(
         "slot.html",
@@ -573,24 +573,24 @@ def buy_product() -> str:
     if product["pay"] != "point":
         return "此獎品無法使用電電點兌換"
 
-    connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+    connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
 
-    if not cog.core.sql.user_id_exists(discord_user["id"], "user", cursor):
-        cog.core.sql.end(connection, cursor)
+    if not uwu.cog.core.sql.user_id_exists(discord_user["id"], "user", cursor):
+        uwu.cog.core.sql.end(connection, cursor)
 
         return "使用者不存在"
 
-    user_points = cog.core.sql.read(discord_user["id"], "point", cursor)
+    user_points = uwu.cog.core.sql.read(discord_user["id"], "point", cursor)
 
     if user_points < product["price"]:
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
         return "電電點不足"
 
     user_points -= product["price"]
 
-    cog.core.sql.write(discord_user["id"], "point", user_points, cursor)
-    cog.core.sql.end(connection, cursor)
+    uwu.cog.core.sql.write(discord_user["id"], "point", user_points, cursor)
+    uwu.cog.core.sql.end(connection, cursor)
     product["stock"] -= 1
 
     with open(f"{os.getcwd()}/database/products.json", "w", encoding="utf-8") as file:
@@ -608,15 +608,15 @@ def roll_slot() -> list:
 
     data = flask.request.json
     num_draws = int(data.get("numDraws", 1))  # 預設為 1 次抽獎
-    connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+    connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
     discord_user = flask.session.get("user")
 
     if not discord_user:
         return "請重新登入"
 
     # # user = users.get(discord_user["id"])
-    if not cog.core.sql.user_id_exists(discord_user["id"], "user", cursor):
-        cog.core.sql.end(connection, cursor)
+    if not uwu.cog.core.sql.user_id_exists(discord_user["id"], "user", cursor):
+        uwu.cog.core.sql.end(connection, cursor)
 
         return "使用者不存在"
 
@@ -628,11 +628,11 @@ def roll_slot() -> list:
     # product 參考內容 {'name': '貓咪機', 'id': 'slot', 'description': '來抽獎吧', 'price': 1, 'image': 'https://cdn-icons-png.flaticon.com/128/1055/1055823.png', 'stock': 9999, 'category': '遊戲', 'pay': 'ticket', 'url': 'slot'}
     # 用來確認商品是否存在和價格用的
     # 讀使用者的抽獎券和電電點
-    user_tickets = cog.core.sql.read(discord_user["id"], "ticket", cursor)
-    user_points = cog.core.sql.read(discord_user["id"], "point", cursor)
+    user_tickets = uwu.cog.core.sql.read(discord_user["id"], "ticket", cursor)
+    user_points = uwu.cog.core.sql.read(discord_user["id"], "point", cursor)
 
     if user_tickets < product["price"] * num_draws:
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
         easter_egg = (
             "這位好駭客，burp suite 是不能突破我的" if num_draws not in (1, 10) else ""
         )
@@ -653,9 +653,9 @@ def roll_slot() -> list:
     if not discord_user:
         return "請重新登入"
 
-    cog.core.sql.write(discord_user["id"], "ticket", user_tickets, cursor)
-    cog.core.sql.write(discord_user["id"], "point", user_points, cursor)
-    cog.core.sql.end(connection, cursor)
+    uwu.cog.core.sql.write(discord_user["id"], "ticket", user_tickets, cursor)
+    uwu.cog.core.sql.write(discord_user["id"], "point", user_points, cursor)
+    uwu.cog.core.sql.end(connection, cursor)
     easter_egg = (
         f"你是好駭客，破例讓你連抽 {num_draws} 次" if num_draws not in (1, 10) else ""
     )  # 給用 burp suite 偷改前端表單的人一點驚喜
@@ -745,11 +745,11 @@ def star_uwu() -> flask.Response | str | typing.LiteralString:
     user_response = requests.get(user_url, headers=headers)
     github_username = user_response.json()["login"]
     github_email = user_response.json()["email"]
-    connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+    connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
     discord_user = flask.session.get("user")
-    cog.core.sql.write(discord_user["id"], "githubName", github_username, cursor)
-    cog.core.sql.write(discord_user["id"], "githubMail", github_email, cursor)
-    cog.core.sql.end(connection, cursor)
+    uwu.cog.core.sql.write(discord_user["id"], "githubName", github_username, cursor)
+    uwu.cog.core.sql.write(discord_user["id"], "githubMail", github_email, cursor)
+    uwu.cog.core.sql.end(connection, cursor)
 
     repo_owner = "SCAICT"
     repo_name = "SCAICT-uwu"
@@ -762,24 +762,24 @@ def star_uwu() -> flask.Response | str | typing.LiteralString:
     # Checking the response status and returning an appropriate message
     if response.ok:
         print(f"Successfully starred {repo_owner}/{repo_name}! {response}")
-        connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+        connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
 
-        if not cog.core.sql.user_id_exists(
+        if not uwu.cog.core.sql.user_id_exists(
             discord_user["id"], "user", cursor
         ):  # 該 user id 不在user表格內，插入該筆使用者資料
             insert_user(discord_user["id"], "user", cursor)
 
         # if already starred. loveuwu is 1
-        if cog.core.sql.read(discord_user["id"], "loveuwu", cursor):
-            cog.core.sql.end(connection, cursor)
+        if uwu.cog.core.sql.read(discord_user["id"], "loveuwu", cursor):
+            uwu.cog.core.sql.end(connection, cursor)
 
             return flask.render_template("already.html")
 
-        cog.core.sql.write(discord_user["id"], "loveuwu", 1, cursor)
-        user_points = cog.core.sql.read(discord_user["id"], "point", cursor)
+        uwu.cog.core.sql.write(discord_user["id"], "loveuwu", 1, cursor)
+        user_points = uwu.cog.core.sql.read(discord_user["id"], "point", cursor)
         user_points += 20
-        cog.core.sql.write(discord_user["id"], "point", user_points, cursor)
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.write(discord_user["id"], "point", user_points, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
         return flask.render_template("star_success.html")
 

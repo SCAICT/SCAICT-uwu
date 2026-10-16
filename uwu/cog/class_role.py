@@ -11,7 +11,7 @@ import discord
 import discord.ext.commands
 
 # Local imports
-import build.build
+import uwu.build
 
 
 def get_courses() -> typing.Any | dict:
@@ -62,7 +62,7 @@ def add_data(code, new_data) -> None:
         json.dump(data, file, indent=2, ensure_ascii=False)
 
 
-class ClassRole(build.build.Build):
+class ClassRole(uwu.build.Build):
     @discord.ext.commands.Cog.listener()
     async def on_ready(self) -> None:
         self.bot.add_view(self.TokenVerifyButton())

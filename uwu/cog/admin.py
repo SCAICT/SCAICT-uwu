@@ -5,10 +5,10 @@ from __future__ import annotations
 import discord
 
 # Local imports
-import build.build
+import uwu.build
 
 
-class ManagerCommand(build.build.Build):
+class ManagerCommand(uwu.build.Build):
     @discord.slash_command(name="reload", description="你是管理員才讓你用")
     async def reload(self, ctx, package) -> None:
         """

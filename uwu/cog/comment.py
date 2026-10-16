@@ -15,7 +15,7 @@ import discord.ext.commands
 import mysql.connector.abstracts
 
 # Local imports
-import cog.core.sql
+import uwu.cog.core.sql
 
 try:
     with open(
@@ -92,12 +92,14 @@ def reset(
     user_id = message.author.id
 
     try:
-        cog.core.sql.write(user_id, "today_comments", 0, cursor)  # 歸零發言次數
-        cog.core.sql.write(user_id, "last_comment", str(now), cursor)
-        cog.core.sql.write(
+        uwu.cog.core.sql.write(user_id, "today_comments", 0, cursor)  # 歸零發言次數
+        uwu.cog.core.sql.write(user_id, "last_comment", str(now), cursor)
+        uwu.cog.core.sql.write(
             user_id, "times", 2, cursor, table="comment_points"
         )  # 初始化達標後能獲得的電電點
-        cog.core.sql.write(user_id, "next_reward", 1, cursor, table="comment_points")
+        uwu.cog.core.sql.write(
+            user_id, "next_reward", 1, cursor, table="comment_points"
+        )
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
         print(f"Error resetting user {user_id}: {exception}")
@@ -118,13 +120,13 @@ def reward(
 
     try:
         # 讀user資料表的東西
-        today_comments = cog.core.sql.read(user_id, "today_comments", cursor)
-        point = cog.core.sql.read(user_id, "point", cursor)
+        today_comments = uwu.cog.core.sql.read(user_id, "today_comments", cursor)
+        point = uwu.cog.core.sql.read(user_id, "point", cursor)
         # 讀comment_points 資料表裡面的東西，這個表格記錄有關發言次數非線性加分的資料
-        next_reward = cog.core.sql.read(
+        next_reward = uwu.cog.core.sql.read(
             user_id, "next_reward", cursor, table="comment_points"
         )
-        times = cog.core.sql.read(user_id, "times", cursor, table="comment_points")
+        times = uwu.cog.core.sql.read(user_id, "times", cursor, table="comment_points")
 
         today_comments += 1
 
@@ -132,18 +134,20 @@ def reward(
             point += 2
             next_reward += times**2
             times += 1
-            cog.core.sql.write(user_id, "point", point, cursor)
-            cog.core.sql.write(
+            uwu.cog.core.sql.write(user_id, "point", point, cursor)
+            uwu.cog.core.sql.write(
                 user_id, "next_reward", next_reward, cursor, table="comment_points"
             )
-            cog.core.sql.write(user_id, "times", times, cursor, table="comment_points")
+            uwu.cog.core.sql.write(
+                user_id, "times", times, cursor, table="comment_points"
+            )
 
             # 紀錄log
             print(
                 f"{user_id}, {user_display_name} Get 2 point by comment {datetime.datetime.now()}"
             )
 
-        cog.core.sql.write(user_id, "today_comments", today_comments, cursor)
+        uwu.cog.core.sql.write(user_id, "today_comments", today_comments, cursor)
     # pylint: disable-next = broad-exception-caught
     except Exception as exception:
         print(f"Error rewarding user {user_id}: {exception}")
@@ -179,9 +183,9 @@ class Comment(discord.ext.commands.Cog):
 
                 if message.channel.id not in self.sp_channel["exclude_point"]:
                     # 平方發言加電電點，列表中頻道不算發言次數
-                    connection, cursor = cog.core.sql.link_sql()  # SQL 會話
+                    connection, cursor = uwu.cog.core.sql.link_sql()  # SQL 會話
                     self.today_comment(user_id, message, cursor)
-                    cog.core.sql.end(connection, cursor)
+                    uwu.cog.core.sql.end(connection, cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
             print(f"Error in comment for user {user_id}: {exception}")
@@ -201,11 +205,11 @@ class Comment(discord.ext.commands.Cog):
 
         try:
             # 新增該user的資料表
-            if not cog.core.sql.user_id_exists(user_id, "user", cursor):
+            if not uwu.cog.core.sql.user_id_exists(user_id, "user", cursor):
                 # 該 user id 不在user資料表內，插入該筆使用者資料
                 insert_user(user_id, "user", cursor)
 
-            if not cog.core.sql.user_id_exists(user_id, "comment_points", cursor):
+            if not uwu.cog.core.sql.user_id_exists(user_id, "comment_points", cursor):
                 insert_user(user_id, "comment_points", cursor)
         # pylint: disable-next = broad-exception-caught
         except Exception as exception:
@@ -214,7 +218,7 @@ class Comment(discord.ext.commands.Cog):
         now = datetime.date.today()
         delta = datetime.timedelta(days=1)
         # SQL回傳型態：<class 'datetime.date'>
-        last_comment = cog.core.sql.read(user_id, "last_comment", cursor)
+        last_comment = uwu.cog.core.sql.read(user_id, "last_comment", cursor)
 
         # 今天第一次發言，重設發言次數
         if now - last_comment >= delta:
@@ -231,7 +235,7 @@ class Comment(discord.ext.commands.Cog):
         """
 
         try:
-            connection, cursor = cog.core.sql.link_sql()
+            connection, cursor = uwu.cog.core.sql.link_sql()
 
             raw_content = message.content
             # 每月更新的數數
@@ -307,8 +311,10 @@ class Comment(discord.ext.commands.Cog):
                 rand = random.randint(1, 100)
 
                 if rand % 11 == 10:
-                    point = cog.core.sql.read(message.author.id, "point", cursor) + 5
-                    cog.core.sql.write(message.author.id, "point", point, cursor)
+                    point = (
+                        uwu.cog.core.sql.read(message.author.id, "point", cursor) + 5
+                    )
+                    uwu.cog.core.sql.write(message.author.id, "point", point, cursor)
                     # pylint: disable-next = line-too-long
                     print(
                         f"{message.author.id}, {message.author} Get 5 point by count reward {datetime.datetime.now()}"
@@ -325,7 +331,7 @@ class Comment(discord.ext.commands.Cog):
         except Exception as exception:
             print(f"Error: {exception}")
 
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
     @staticmethod
     async def nice_color(message: discord.Message) -> None:
@@ -342,7 +348,7 @@ class Comment(discord.ext.commands.Cog):
             return
 
         try:
-            connection, cursor = cog.core.sql.link_sql()
+            connection, cursor = uwu.cog.core.sql.link_sql()
             cursor.execute("SELECT nicecolor FROM game")
             nice_color = cursor.fetchone()[0]
             # Convert to upper case before check
@@ -378,8 +384,8 @@ class Comment(discord.ext.commands.Cog):
                 )
                 await message.channel.send(embed=embed)
                 # 猜對的使用者加分
-                point = cog.core.sql.read(message.author.id, "point", cursor) + 2
-                cog.core.sql.write(message.author.id, "point", point, cursor)
+                point = uwu.cog.core.sql.read(message.author.id, "point", cursor) + 2
+                uwu.cog.core.sql.write(message.author.id, "point", point, cursor)
                 # Log
                 # pylint: disable-next = line-too-long
                 print(
@@ -416,7 +422,7 @@ class Comment(discord.ext.commands.Cog):
         except Exception as exception:
             print(f"Error: {exception}")
 
-        cog.core.sql.end(connection, cursor)
+        uwu.cog.core.sql.end(connection, cursor)
 
 
 def setup(bot: discord.Bot) -> None:

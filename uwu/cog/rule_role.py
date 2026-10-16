@@ -6,10 +6,10 @@ import discord
 import discord.ext.commands
 
 # Local imports
-import build.build
+import uwu.build
 
 
-class RuleRoles(build.build.Build):
+class RuleRoles(uwu.build.Build):
     # 當使用者按下表情符號 -> 領取身分組
     @discord.ext.commands.Cog.listener()
     async def on_raw_reaction_add(self, payload) -> None:
