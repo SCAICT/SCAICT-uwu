@@ -9,7 +9,7 @@ from __future__ import annotations
 import discord
 
 # Local imports
-import scaict_uwu.core.config
+import scaict_uwu.config
 import scaict_uwu.libs.language
 import scaict_uwu.libs.services
 
@@ -43,7 +43,7 @@ class Services(scaict_uwu.libs.services.ServiceContainer):
     @staticmethod
     def _init_config(
         services: scaict_uwu.libs.services.ServiceContainer,
-    ) -> scaict_uwu.core.config.Config:
+    ) -> scaict_uwu.config.Config:
         """
         Parameters:
             services (scaict_uwu.libs.services.ServiceContainer):
@@ -57,7 +57,7 @@ class Services(scaict_uwu.libs.services.ServiceContainer):
     @staticmethod
     def _init_config_factory(
         services: scaict_uwu.libs.services.ServiceContainer,
-    ) -> scaict_uwu.core.config.ConfigFactory:
+    ) -> scaict_uwu.config.ConfigFactory:
         """
         Parameters:
             services (scaict_uwu.libs.services.ServiceContainer):
@@ -66,7 +66,7 @@ class Services(scaict_uwu.libs.services.ServiceContainer):
             scaict_uwu.core.config.ConfigFactory
         """
 
-        return scaict_uwu.core.config.ConfigFactory()
+        return scaict_uwu.config.ConfigFactory()
 
     @staticmethod
     def _init_discord_bot(
