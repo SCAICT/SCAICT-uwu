@@ -83,47 +83,56 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
 2. Create an environment in Python **3.14** (recommended).
 3. Install the required libraries.
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+   * With uv (assuming already installed uv):
+
+     ```bash
+     uv sync --python 3.14
+     ```
+
+   * Without uv (using pip):
+
+     ```bash
+     pip install -r requirements.txt
+     ```
 
 4. Configure the channels in `database/server.config.json`.
 5. Start the SQL server.
 6. Configure the SQL server in `cog/core/sql_acc.py` within Breadcrumbs SCAICT-uwu.
 7. Run Flask.
 
-   ```bash
-   flask run
-   ```
+   * With uv:
+
+     ```bash
+     uv run flask run
+     ```
+
+   * Without uv:
+
+     ```bash
+     flask run
+     ```
 
 8. Execute `main.py`.
 
-   ```bash
-   python main.py
-   ```
+   * With uv:
+
+     ```bash
+     uv run main.py
+     ```
+
+   * Without uv:
+
+     ```bash
+     python main.py
+     ```
 
 ### Files
 
 * `main.py`: 中電喵.
 * `app.py`: 中電商店.
-* `generate_secrets.py`: Generates keys for `app.py`. After execution, the keys are stored in `token.json`.
-* Database MySQL: Uses an external server. Configuration is in `cog/core/secret.py`.
-* `token.json`:
-
-  ```json
-  {
-      "discord_token": "",
-      "secret_key": "",
-      "discord_client_id": "",
-      "discord_client_secret": "",
-      "discord_redirect_uri": "http://127.0.0.1:5000/callback",
-      "github_client_id": "",
-      "github_client_secret": "",
-      "github_redirect_uri": "http://127.0.0.1:5000/github/callback",
-      "github_discord_redirect_uri": "http://127.0.0.1:5000/github/discord-callback"
-  }
-  ```
-
+* `generate_secrets.py`: Generates keys for `app.py`. After execution, the keys are stored in `.env`.
+* Database MySQL: Uses an external server. Configuration is in `uwu/cog/core/secret.py`.
+* `.env`: See `.env.example`.
 * `database/slot.json`:
 
   Configures the jackpot probabilities for the slot machine.
