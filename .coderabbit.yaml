@@ -18,6 +18,6 @@ reviews:
     drafts: true
     base_branches:
       - main
-      - development
+      - dev
 chat:
   auto_reply: true
