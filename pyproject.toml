@@ -51,18 +51,18 @@ urls.repository = "https://github.com/SCAICT/SCAICT-uwu.git"
 urls.issues = "https://github.com/SCAICT/SCAICT-uwu/issues"
 dependencies = [
 	"flask==3.1.3",
-	"google-genai==2.18.0",
+	"google-genai==2.31.0",
 	"mysql-connector-python==26.7.0",
-	"openai==3.0.0",
+	"openai==3.33.0",
 	"py-cord==2.8.1",
-	"python-dotenv==1.2.2",
+	"python-dotenv==1.2.4",
 	"requests==2.34.2",
 ]
 
 [dependency-groups]
 dev = [
-	"black==26.5.1",
-	"pylint==4.0.7",
+	"black==26.10.1",
+	"pylint==4.1.3",
 	"pytest==9.1.1",
 ]
 
