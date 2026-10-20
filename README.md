@@ -80,7 +80,7 @@ Get some tickets, and you can play the slot machine to earn Electric Points. Jus
 ## How to Deploy?
 
 1. Clone this repository.
-2. Create an environment in Python **3.14** (recommended).
+2. Create an environment in Python **3.14** (recommended) or 3.15 (**experimental**).
 3. Install the required libraries.
 
    * With uv (assuming already installed uv):
