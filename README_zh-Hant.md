@@ -23,47 +23,56 @@
 2. 在 Python **3.14**（推薦）中建立環境。
 3. 安裝必要的函式庫。
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+   * 透過 uv（假設已事先安裝 uv）：
+
+     ```bash
+     uv sync --python 3.14
+     ```
+
+   * 不透過 uv（透過 pip）：
+
+     ```bash
+     pip install -r requirements.txt
+     ```
 
 4. 在 `database/server.config.json` 中設定頻道。
 5. 啟動 SQL 伺服器。
 6. 在 Breadcrumbs SCAICT-uwu 的 `cog/core/sql_acc.py` 中設定 SQL 伺服器。
 7. 執行 Flask。
 
-   ```bash
-   flask run
-   ```
+   * 透過 uv：
+
+     ```bash
+     uv run flask run
+     ```
+
+   * 不透過 uv：
+
+     ```bash
+     flask run
+     ```
 
 8. 執行 `main.py`。
 
-   ```bash
-   python main.py
-   ```
+   * 透過 uv：
+
+     ```bash
+     uv run main.py
+     ```
+
+   * 不透過 uv：
+
+     ```bash
+     python main.py
+     ```
 
 ## 檔案
 
 * `main.py`：中電喵。
 * `app.py`：中電商店。
-* `generate_secrets.py`：為 `app.py` 產生密鑰，執行後儲存在 `token.json` 中。
-* 資料庫 MySQL：使用外部伺服器，相關設定在 `cog/core/secret.py` 中。
-* `token.json`：
-
-  ```json
-  {
-      "discord_token": "",
-      "secret_key": "",
-      "discord_client_id": "",
-      "discord_client_secret": "",
-      "discord_redirect_uri": "http://127.0.0.1:5000/callback",
-      "github_client_id": "",
-      "github_client_secret": "",
-      "github_redirect_uri": "http://127.0.0.1:5000/github/callback",
-      "github_discord_redirect_uri": "http://127.0.0.1:5000/github/discord-callback"
-  }
-  ```
-
+* `generate_secrets.py`：為 `app.py` 產生密鑰，執行後儲存在 `.env` 中。
+* 資料庫 MySQL：使用外部伺服器，相關設定在 `uwu/cog/core/secret.py` 中。
+* `.env`：請參閱 `.env.sample`。
 * `database/slot.json`：
 
   設定老虎機的中獎機率。
