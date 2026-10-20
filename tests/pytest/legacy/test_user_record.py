@@ -18,7 +18,7 @@ skip = False
 try:
     with uwu.cog.core.sql.mysql_connection() as _:
         pass
-except (RuntimeError, TypeError, mysql.connector.errors.Error):
+except RuntimeError, TypeError, mysql.connector.errors.Error:
     skip = True
 
 

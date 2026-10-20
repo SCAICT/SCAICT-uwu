@@ -324,7 +324,7 @@ class Comment(discord.ext.commands.Cog):
                 # 不同人數數，但數字不對
                 await message.add_reaction("❌")
                 await message.add_reaction("❓")
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             # 在decimal_number賦值因為不是數字（可能聊天或其他文字）產生錯誤產生問號emoji回應
             await message.add_reaction("❔")
         # pylint: disable-next = broad-exception-caught
