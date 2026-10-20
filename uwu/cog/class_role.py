@@ -27,7 +27,7 @@ def get_courses() -> typing.Any | dict:
             data = json.load(file)
 
         return data
-    except (FileNotFoundError, json.JSONDecodeError):
+    except FileNotFoundError, json.JSONDecodeError:
         return {}
 
 
