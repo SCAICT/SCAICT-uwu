@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-      PYTHON_VERSION: "3.14"
+      PYTHON_VERSION: "3.15"
     steps:
       - uses: actions/checkout@v7
         with:
