@@ -152,9 +152,12 @@ class Charge(discord.ext.commands.Cog):
 
         if user.avatar is not None:  # 預設頭像沒有這個
             embed.set_thumbnail(url=str(user.avatar))
-            embed.add_field(
-                name="您夠電了，明天再來!", value="⚡⚡⚡🛐🛐🛐", inline=False
-            )
+
+        embed.add_field(
+            name="您夠電了，明天再來!",
+            value="今天的充電已記錄，點數與連續登入獎勵已入帳。⚡",
+            inline=False,
+        )
 
         return embed
 
@@ -400,6 +403,10 @@ class Charge(discord.ext.commands.Cog):
             # End connection instead of return
             return
 
+        # Acknowledge before opening MySQL: Discord only allows three seconds
+        # for the initial response, even when the charge has already committed.
+        await interaction.response.defer()
+
         with uwu.cog.core.sql.mysql_connection() as c:  # SQL 會話
             connection, cursor = c
             user = interaction.user
@@ -412,7 +419,7 @@ class Charge(discord.ext.commands.Cog):
 
             if already_charged:
                 embed = self.embed_already_charged(user)
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
 
                 return
 
@@ -437,7 +444,7 @@ class Charge(discord.ext.commands.Cog):
             connection.commit()
 
             embed = self.embed_successful(changed.point, changed.charge_combo, user)
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
 
 
 def setup(bot: discord.Bot) -> None:
